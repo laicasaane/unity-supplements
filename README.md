@@ -20,13 +20,21 @@
 ## System.Collection.Generics
 
 - ListExtensions
+- EnumValues<T>
 - Segment<T>
 - Segment1<T>
+- ArraySegment<T>
+- ListSegement<T>
+- StringSegment
 - SegmentReader
 - SegmentExtensions
 - Segment1Extensions
 - StringSegmentExtensions
-- EnumValues<T>
+- ArraySource
+- ListSource
+- IListSource
+- IReadOnlyListSource
+- StringSource
 
 ## UnityEngine
 
