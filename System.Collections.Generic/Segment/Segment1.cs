@@ -8,8 +8,8 @@
         public static bool operator !=(in Segment1<T> a, in Segment1<T> b)
             => !(a == b);
 
-        public static implicit operator Segment1<T>(T item)
-            => new Segment1<T>(item);
+        public static implicit operator Segment1<T>(T source)
+            => new Segment1<T>(source);
 
         public static implicit operator Segment<T>(in Segment1<T> segment)
             => new Segment<T>(segment);
@@ -155,18 +155,18 @@
 
         public struct Enumerator : IEnumerator<T>
         {
-            private readonly Segment1<T> array;
+            private readonly Segment1<T> segment;
             private int current;
 
-            public Enumerator(in Segment1<T> array)
+            public Enumerator(in Segment1<T> segment)
             {
-                this.array = array;
+                this.segment = segment;
                 this.current = -1;
             }
 
             public bool MoveNext()
             {
-                if (this.array.Count <= 0)
+                if (this.segment.Count <= 0)
                     return false;
 
                 if (this.current < 0)
@@ -188,7 +188,7 @@
                     if (this.current > 0)
                         throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumEnded();
 
-                    return this.array.item;
+                    return this.segment.item;
                 }
             }
 

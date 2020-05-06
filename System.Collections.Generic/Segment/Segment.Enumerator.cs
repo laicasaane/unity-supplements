@@ -12,6 +12,15 @@
             internal Enumerator(in Segment<T> segment)
             {
                 this.source = segment.source;
+
+                if (!segment.HasSource)
+                {
+                    this.start = 0;
+                    this.end = 0;
+                    this.current = 0;
+                    return;
+                }
+
                 this.start = segment.Offset;
                 this.end = segment.Offset + segment.Count;
                 this.current = this.start - 1;

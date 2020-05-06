@@ -1,8 +1,8 @@
 ﻿namespace System.Collections.Generic
 {
-    public readonly partial struct Segment<T> : ISegment<T>, IEquatable<Segment<T>>, IEqualityComparer<Segment<T>>
+    public readonly partial struct ArraySegment<T> : ISegment<T>, IEquatable<ArraySegment<T>>, IEqualityComparer<ArraySegment<T>>
     {
-        private readonly ISegmentSource<T> source;
+        private readonly T[] source;
 
         public bool HasSource { get; }
 
@@ -21,42 +21,23 @@
             }
         }
 
-        public Segment(T[] source)
+        public ArraySegment(T[] source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            this.source = new ArraySource<T>(source);
+            this.source = source;
             this.HasSource = true;
             this.Offset = 0;
             this.Count = source.Length;
         }
 
-        public Segment(T[] source, int offset, int count)
+        public ArraySegment(T[] source, int offset, int count)
         {
             // Validate arguments, check is minimal instructions with reduced branching for inlinable fast-path
             // Negative values discovered though conversion to high values when converted to unsigned
             // Failure should be rare and location determination and message is delegated to failure functions
             if (source == null || (uint)offset > (uint)source.Length || (uint)count > (uint)(source.Length - offset))
-                throw ThrowHelper.GetSegmentCtorValidationFailedException(source, offset, count);
-
-            this.source = new ArraySource<T>(source);
-            this.HasSource = true;
-            this.Offset = offset;
-            this.Count = count;
-        }
-
-        public Segment(ISegmentSource<T> source)
-        {
-            this.source = source ?? throw new ArgumentNullException(nameof(source));
-            this.HasSource = true;
-            this.Offset = 0;
-            this.Count = source.Count;
-        }
-
-        public Segment(ISegmentSource<T> source, int offset, int count)
-        {
-            if (source == null || (uint)offset > (uint)source.Count || (uint)count > (uint)(source.Count - offset))
                 throw ThrowHelper.GetSegmentCtorValidationFailedException(source, offset, count);
 
             this.source = source;
@@ -65,7 +46,7 @@
             this.Count = count;
         }
 
-        public Segment<T> Slice(int index)
+        public ArraySegment<T> Slice(int index)
         {
             if (!this.HasSource)
                 return Empty;
@@ -73,10 +54,10 @@
             if ((uint)index > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new Segment<T>(this.source, this.Offset + index, this.Count - index);
+            return new ArraySegment<T>(this.source, this.Offset + index, this.Count - index);
         }
 
-        public Segment<T> Slice(int index, int count)
+        public ArraySegment<T> Slice(int index, int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -84,10 +65,10 @@
             if ((uint)index > (uint)this.Count || (uint)count > (uint)(this.Count - index))
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new Segment<T>(this.source, this.Offset + index, count);
+            return new ArraySegment<T>(this.source, this.Offset + index, count);
         }
 
-        public Segment<T> Skip(int count)
+        public ArraySegment<T> Skip(int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -95,10 +76,10 @@
             if ((uint)count > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new Segment<T>(this.source, this.Offset + count, this.Count - count);
+            return new ArraySegment<T>(this.source, this.Offset + count, this.Count - count);
         }
 
-        public Segment<T> Take(int count)
+        public ArraySegment<T> Take(int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -106,13 +87,13 @@
             if ((uint)count > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new Segment<T>(this.source, this.Offset, count);
+            return new ArraySegment<T>(this.source, this.Offset, count);
         }
 
-        public Segment<T> TakeLast(int count)
+        public ArraySegment<T> TakeLast(int count)
             => Skip(this.Count - count);
 
-        public Segment<T> SkipLast(int count)
+        public ArraySegment<T> SkipLast(int count)
             => Take(this.Count - count);
 
         ISegment<T> ISegment<T>.Slice(int index)
@@ -212,9 +193,9 @@
         }
 
         public override bool Equals(object obj)
-            => obj is Segment<T> other && Equals(other);
+            => obj is ArraySegment<T> other && Equals(other);
 
-        public bool Equals(Segment<T> other)
+        public bool Equals(ArraySegment<T> other)
         {
             if (!this.HasSource)
                 return !other.HasSource || ReferenceEquals(other.source, _empty);
@@ -224,23 +205,88 @@
                    other.Count == this.Count;
         }
 
-        public bool Equals(Segment<T> x, Segment<T> y)
+        public bool Equals(ArraySegment<T> x, ArraySegment<T> y)
             => x.Equals(y);
 
-        public int GetHashCode(Segment<T> obj)
+        public int GetHashCode(ArraySegment<T> obj)
             => obj.GetHashCode();
 
         private static T[] _empty { get; } = new T[0];
 
-        public static Segment<T> Empty { get; } = new Segment<T>(_empty);
+        public static ArraySegment<T> Empty { get; } = new ArraySegment<T>(_empty);
 
-        public static implicit operator Segment<T>(T[] source)
-            => source == null ? Empty : new Segment<T>(source);
+        public static implicit operator ArraySegment<T>(T[] source)
+            => source == null ? Empty : new ArraySegment<T>(source);
 
-        public static bool operator ==(in Segment<T> a, in Segment<T> b)
+        public static implicit operator Segment<T>(in ArraySegment<T> segment)
+            => new Segment<T>(segment.source, segment.Offset, segment.Count);
+
+        public static bool operator ==(in ArraySegment<T> a, in ArraySegment<T> b)
             => a.Equals(b);
 
-        public static bool operator !=(in Segment<T> a, in Segment<T> b)
+        public static bool operator !=(in ArraySegment<T> a, in ArraySegment<T> b)
             => !(a == b);
+
+        public struct Enumerator : IEnumerator<T>
+        {
+            private readonly T[] source;
+            private readonly int start;
+            private readonly int end; // cache Offset + Count, since it's a little slow
+            private int current;
+
+            internal Enumerator(in ArraySegment<T> segment)
+            {
+                this.source = segment.source;
+
+                if (!segment.HasSource)
+                {
+                    this.start = 0;
+                    this.end = 0;
+                    this.current = 0;
+                    return;
+                }
+
+                this.start = segment.Offset;
+                this.end = segment.Offset + segment.Count;
+                this.current = this.start - 1;
+            }
+
+            public bool MoveNext()
+            {
+                if (this.current < this.end)
+                {
+                    this.current++;
+                    return (this.current < this.end);
+                }
+
+                return false;
+            }
+
+            public T Current
+            {
+                get
+                {
+                    if (this.current < this.start)
+                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumNotStarted();
+
+                    if (this.current >= this.end)
+                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumEnded();
+
+                    return this.source[this.current];
+                }
+            }
+
+            object IEnumerator.Current
+                => this.Current;
+
+            public void Reset()
+            {
+                this.current = this.start - 1;
+            }
+
+            public void Dispose()
+            {
+            }
+        }
     }
 }
