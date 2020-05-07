@@ -25,10 +25,10 @@ namespace System
 
                 var type = typeof(T);
 
-                if (!_instances.ContainsKey(type))
-                {
-                    _instances.Add(type, instance);
-                }
+                if (_instances.ContainsKey(type))
+                    throw new InvalidOperationException($"An instance of type {type} has already existed.");
+
+                _instances.Add(type, instance);
             }
 
             public static T Get<T>() where T : class
