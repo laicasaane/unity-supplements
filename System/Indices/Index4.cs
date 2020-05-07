@@ -130,9 +130,9 @@
         /// Converts 1D array index to 4D array index.
         /// </summary>
         /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="xLength">The length of dimension <see cref="X"/> of the 3D array.</param>
-        /// <param name="yLength">The length of dimension <see cref="Y"/> of the 3D array.</param>
-        /// <param name="zLength">The length of dimension <see cref="Z"/> of the 3D array.</param>
+        /// <param name="xLength">The length of dimension <see cref="X"/> of the 4D array.</param>
+        /// <param name="yLength">The length of dimension <see cref="Y"/> of the 4D array.</param>
+        /// <param name="zLength">The length of dimension <see cref="Z"/> of the 4D array.</param>
         /// <returns>
         /// <para>If any length is zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
