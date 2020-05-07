@@ -15,25 +15,25 @@
 - Index4
 - Converter
 - Singleton
-- Singleton<T>
+- Singleton\<T>
 
 ## System.Collection.Generics
 
 - ListExtensions
-- EnumValues<T>
-- Segment<T>
-- Segment1<T>
-- ArraySegment<T>
-- ListSegment<T>
+- EnumValues\<T>
+- Segment\<T>
+- Segment1\<T>
+- ArraySegment\<T>
+- ListSegment\<T>
 - StringSegment
-- SegmentReader
+- SegmentReader\<T, U>
 - SegmentExtensions
 - Segment1Extensions
 - StringSegmentExtensions
-- ArraySource
-- ListSource
-- IListSource
-- IReadOnlyListSource
+- ArraySource\<T>
+- ListSource\<T>
+- IListSource\<T>
+- IReadOnlyListSource\<T>
 - StringSource
 
 ## UnityEngine
@@ -42,7 +42,7 @@
 - LEBColor
 - Offset
 - OffsetInt
-- SerializableDictionary
-- SingletonBehaviour
+- SerializableDictionary\<T, U>
+- SingletonBehaviour\<T>
 - Size
 - SizeInt
