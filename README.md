@@ -24,7 +24,7 @@
 - Segment<T>
 - Segment1<T>
 - ArraySegment<T>
-- ListSegement<T>
+- ListSegment<T>
 - StringSegment
 - SegmentReader
 - SegmentExtensions
