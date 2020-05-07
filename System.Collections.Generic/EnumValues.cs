@@ -1,33 +1,16 @@
 ﻿namespace System.Collections.Generic
 {
-    public abstract class EnumValues<T> where T : Enum
+    public abstract class EnumValues<T> where T : struct, Enum
     {
-        private static T[] _values;
-        private static int _valueCount;
+        private readonly static T[] _values;
 
-        public static Segment<T> Values
+        public static ArraySegment<T> Values
+            => _values;
+
+        public static int ValueCount { get; }
+
+        static EnumValues()
         {
-            get
-            {
-                EnsureInitialization();
-                return _values;
-            }
-        }
-
-        public static int ValueCount
-        {
-            get
-            {
-                EnsureInitialization();
-                return _valueCount;
-            }
-        }
-
-        private static void EnsureInitialization()
-        {
-            if (_values != null)
-                return;
-
             _values = (T[])Enum.GetValues(typeof(T));
 
             var index = 0;
@@ -40,7 +23,7 @@
                     index = val;
             }
 
-            _valueCount = index + 1;
+            ValueCount = index + 1;
         }
     }
 }
