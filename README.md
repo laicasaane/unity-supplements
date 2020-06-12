@@ -36,6 +36,14 @@
 - IReadOnlyListSource\<T>
 - StringSource
 
+## System.Table
+- IEntry
+- Entry
+- IGetId
+- ITable
+- Table
+- ReadTable
+
 ## UnityEngine
 
 - HSBColor
