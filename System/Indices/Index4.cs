@@ -4,95 +4,127 @@
     /// 4D array index
     /// </summary>
     [Serializable]
-    public readonly struct Index4 : IEquatable<Index4>, IComparable<Index4>
+    public readonly struct Index4 : IEquatableReadOnlyStruct<Index4>, IComparableReadOnlyStruct<Index4>
     {
-        public readonly int X;
-        public readonly int Y;
-        public readonly int Z;
-        public readonly int W;
+        public readonly int A;
+        public readonly int B;
+        public readonly int C;
+        public readonly int D;
 
-        public Index4(int x, int y, int z, int w)
+        [Obsolete("This property has been deprecated. Use A instead.")]
+        public int X => this.A;
+
+        [Obsolete("This property has been deprecated. Use B instead.")]
+        public int Y => this.B;
+
+        [Obsolete("This property has been deprecated. Use C instead.")]
+        public int Z => this.C;
+
+        [Obsolete("This property has been deprecated. Use D instead.")]
+        public int W => this.D;
+
+        public Index4(int a, int b, int c, int d)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
-            this.W = w;
+            this.A = a;
+            this.B = b;
+            this.C = c;
+            this.D = d;
         }
 
         /// <summary>
         /// Converts to 1D array index.
         /// </summary>
-        /// <param name="xLength">The length of dimension <see cref="X"/> of the 4D array.</param>
-        /// <param name="yLength">The length of dimension <see cref="Y"/> of the 4D array.</param>
-        /// <param name="zLength">The length of dimension <see cref="Z"/> of the 4D array.</param>
+        /// <param name="aLength">The length of dimension <see cref="A"/> of the 4D array.</param>
+        /// <param name="bLength">The length of dimension <see cref="B"/> of the 4D array.</param>
+        /// <param name="cLength">The length of dimension <see cref="C"/> of the 4D array.</param>
         /// <returns>
         /// <para>If any length is zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public int ToIndex1(int xLength, int yLength, int zLength)
+        public int ToIndex1(int aLength, int bLength, int cLength)
         {
-            if (xLength == 0 || yLength == 0 || zLength == 0)
+            if (aLength == 0 || bLength == 0 || cLength == 0)
                 return 0;
 
-            var xyArea = xLength * yLength;
-            return this.X + (this.Y * xLength) + (this.Z * xyArea) + (this.W * xyArea * zLength);
+            var ab = aLength * bLength;
+            return this.A + (this.B * aLength) + (this.C * ab) + (this.D * ab * cLength);
         }
 
         public override int GetHashCode()
         {
             var hashCode = 240067226;
-            hashCode = hashCode * -1521134295 + this.X;
-            hashCode = hashCode * -1521134295 + this.Y;
-            hashCode = hashCode * -1521134295 + this.Z;
-            hashCode = hashCode * -1521134295 + this.W;
+            hashCode = hashCode * -1521134295 + this.A;
+            hashCode = hashCode * -1521134295 + this.B;
+            hashCode = hashCode * -1521134295 + this.C;
+            hashCode = hashCode * -1521134295 + this.D;
             return hashCode;
         }
 
         public override bool Equals(object obj)
             => obj is Index4 other &&
-               this.X == other.X &&
-               this.Y == other.Y &&
-               this.Z == other.Z &&
-               this.W == other.W;
+               this.A == other.A &&
+               this.B == other.B &&
+               this.C == other.C &&
+               this.D == other.D;
 
         public int CompareTo(Index4 other)
         {
-            var comp = this.X.CompareTo(other.X);
+            var comp = this.A.CompareTo(other.A);
 
-            if (comp == 0)
-            {
-                var comp1 = this.Y.CompareTo(other.Y);
+            if (comp != 0)
+                return comp;
 
-                if (comp1 == 0)
-                {
-                    var comp2 = this.Z.CompareTo(other.Z);
+            var comp1 = this.B.CompareTo(other.B);
 
-                    if (comp2 == 0)
-                        return this.W.CompareTo(other.W);
-
-                    return comp2;
-                }
-
+            if (comp1 != 0)
                 return comp1;
-            }
 
-            return comp;
+            var comp2 = this.C.CompareTo(other.C);
+
+            if (comp2 == 0)
+                return this.D.CompareTo(other.D);
+
+            return comp2;
+        }
+
+        public int CompareTo(in Index4 other)
+        {
+            var comp = this.A.CompareTo(other.A);
+
+            if (comp != 0)
+                return comp;
+
+            var comp1 = this.B.CompareTo(other.B);
+
+            if (comp1 != 0)
+                return comp1;
+
+            var comp2 = this.C.CompareTo(other.C);
+
+            if (comp2 == 0)
+                return this.D.CompareTo(other.D);
+
+            return comp2;
         }
 
         public bool Equals(Index4 other)
-            => this.X == other.X && this.Y == other.Y &&
-               this.Z == other.Z && this.W == other.W;
+            => this.A == other.A && this.B == other.B &&
+               this.C == other.C && this.D == other.D;
 
-        public void Deconstruct(out int x, out int y, out int z, out int w)
+        public bool Equals(in Index4 other)
+            => this.A == other.A && this.B == other.B &&
+               this.C == other.C && this.D == other.D;
+
+        public void Deconstruct(out int a, out int b, out int c, out int d)
         {
-            x = this.X;
-            y = this.Y;
-            z = this.Z;
-            w = this.W;
+            a = this.A;
+            b = this.B;
+            c = this.C;
+            d = this.D;
         }
 
         public override string ToString()
-            => $"({this.X}, {this.Y}, {this.Z}, {this.W})";
+            => $"({this.A}, {this.B}, {this.C}, {this.D})";
 
         /// <summary>
         /// Shorthand for writing <see cref="Index4"/>(0, 0, 0, 0).
@@ -103,55 +135,55 @@
             => new Index4(value.Item1, value.Item2, value.Item3, value.Item4);
 
         public static Index4 operator +(in Index4 lhs, in Index4 rhs)
-            => new Index4(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z, lhs.W + rhs.W);
+            => new Index4(lhs.A + rhs.A, lhs.B + rhs.B, lhs.C + rhs.C, lhs.D + rhs.D);
 
         public static Index4 operator -(in Index4 lhs, in Index4 rhs)
-            => new Index4(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z, lhs.W - rhs.W);
+            => new Index4(lhs.A - rhs.A, lhs.B - rhs.B, lhs.C - rhs.C, lhs.D - rhs.D);
 
         public static Index4 operator -(in Index4 a)
-            => new Index4(-a.X, -a.Y, -a.Z, -a.W);
+            => new Index4(-a.A, -a.B, -a.C, -a.D);
 
         public static Index4 operator *(in Index4 lhs, int rhs)
-            => new Index4(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs, lhs.W * rhs);
+            => new Index4(lhs.A * rhs, lhs.B * rhs, lhs.C * rhs, lhs.D * rhs);
 
         public static Index4 operator *(int lhs, in Index4 rhs)
-            => new Index4(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z, lhs * rhs.W);
+            => new Index4(lhs * rhs.A, lhs * rhs.B, lhs * rhs.C, lhs * rhs.D);
 
         public static Index4 operator /(in Index4 lhs, int rhs)
-            => new Index4(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs, lhs.W / rhs);
+            => new Index4(lhs.A / rhs, lhs.B / rhs, lhs.C / rhs, lhs.D / rhs);
 
         public static bool operator ==(in Index4 lhs, in Index4 rhs)
-            => lhs.X == rhs.X && lhs.Y == rhs.Y && lhs.Z == rhs.Z && lhs.W == rhs.W;
+            => lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C && lhs.D == rhs.D;
 
         public static bool operator !=(in Index4 lhs, in Index4 rhs)
-            => lhs.X != rhs.X || lhs.Y != rhs.Y || lhs.Z != rhs.Z || lhs.W != rhs.W;
+            => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C || lhs.D != rhs.D;
 
         /// <summary>
         /// Converts 1D array index to 4D array index.
         /// </summary>
         /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="xLength">The length of dimension <see cref="X"/> of the 4D array.</param>
-        /// <param name="yLength">The length of dimension <see cref="Y"/> of the 4D array.</param>
-        /// <param name="zLength">The length of dimension <see cref="Z"/> of the 4D array.</param>
+        /// <param name="aLength">The length of dimension <see cref="A"/> of the 4D array.</param>
+        /// <param name="bLength">The length of dimension <see cref="B"/> of the 4D array.</param>
+        /// <param name="cLength">The length of dimension <see cref="C"/> of the 4D array.</param>
         /// <returns>
         /// <para>If any length is zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public static Index4 Convert(int index1, int xLength, int yLength, int zLength)
+        public static Index4 Convert(int index1, int aLength, int bLength, int cLength)
         {
-            if (xLength == 0 || yLength == 0 || zLength == 0)
+            if (aLength == 0 || bLength == 0 || cLength == 0)
                 return Zero;
 
-            var xyLength = xLength * yLength;
-            var xyzLength = xyLength * zLength;
-            var w = index1 / xyzLength;
-            var iXYZ = index1 - (w * xyzLength);
-            var z = iXYZ / xyLength;
-            var iXY = iXYZ - (z * xyLength);
-            var y = iXY / xLength;
-            var x = iXY % xLength;
+            var abLength = aLength * bLength;
+            var abcLength = abLength * cLength;
+            var d = index1 / abcLength;
+            var i_abc = index1 - (d * abcLength);
+            var c = i_abc / abLength;
+            var i_ab = i_abc - (c * abLength);
+            var b = i_ab / aLength;
+            var a = i_ab % aLength;
 
-            return new Index4(x, y, z, w);
+            return new Index4(a, b, c, d);
         }
     }
 }

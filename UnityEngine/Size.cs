@@ -3,18 +3,20 @@
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct Size : IEquatable<Size>, IComparable<Size>
+    public readonly struct Size : IEquatableReadOnlyStruct<Size>, IComparableReadOnlyStruct<Size>
     {
         public readonly float Width;
         public readonly float Height;
+        public readonly float Area;
 
-        public float Total
-            => this.Width * this.Height;
+        [Obsolete("This property has been deprecated. Use Area instead.")]
+        public float Total => this.Area;
 
         public Size(float width, float height)
         {
             this.Width = width;
             this.Height = height;
+            this.Area = width * height;
         }
 
         public override int GetHashCode()
@@ -40,7 +42,21 @@ namespace UnityEngine
             return comp;
         }
 
+        public int CompareTo(in Size other)
+        {
+            var comp = this.Width.CompareTo(other.Width);
+
+            if (comp == 0)
+                return this.Height.CompareTo(other.Height);
+
+            return comp;
+        }
+
         public bool Equals(Size other)
+            => Mathf.Approximately(this.Width, other.Width) &&
+               Mathf.Approximately(this.Height, other.Height);
+
+        public bool Equals(in Size other)
             => Mathf.Approximately(this.Width, other.Width) &&
                Mathf.Approximately(this.Height, other.Height);
 

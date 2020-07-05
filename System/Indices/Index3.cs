@@ -4,80 +4,105 @@
     /// 3D array index
     /// </summary>
     [Serializable]
-    public readonly struct Index3 : IEquatable<Index3>, IComparable<Index3>
+    public readonly struct Index3 : IEquatableReadOnlyStruct<Index3>, IComparableReadOnlyStruct<Index3>
     {
-        public readonly int X;
-        public readonly int Y;
-        public readonly int Z;
+        public readonly int A;
+        public readonly int B;
+        public readonly int C;
 
-        public Index3(int x, int y, int z)
+        [Obsolete("This property has been deprecated. Use A instead.")]
+        public int X => this.A;
+
+        [Obsolete("This property has been deprecated. Use B instead.")]
+        public int Y => this.B;
+
+        [Obsolete("This property has been deprecated. Use C instead.")]
+        public int Z => this.C;
+
+        public Index3(int a, int b, int c)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
+            this.A = a;
+            this.B = b;
+            this.C = c;
         }
 
         /// <summary>
         /// Converts to 1D array index.
         /// </summary>
-        /// <param name="xLength">The length of dimension <see cref="X"/> of the 3D array.</param>
-        /// <param name="yLength">The length of dimension <see cref="Y"/> of the 3D array.</param>
+        /// <param name="aLength">The length of dimension <see cref="A"/> of the 3D array.</param>
+        /// <param name="bLength">The length of dimension <see cref="B"/> of the 3D array.</param>
         /// <returns>
         /// <para>If any length is zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public int ToIndex1(int xLength, int yLength)
+        public int ToIndex1(int aLength, int bLength)
         {
-            if (xLength == 0 || yLength == 0)
+            if (aLength == 0 || bLength == 0)
                 return 0;
 
-            return this.X + (this.Y * xLength) + (this.Z * xLength * yLength);
+            return this.A + (this.B * aLength) + (this.C * aLength * bLength);
         }
 
         public override int GetHashCode()
         {
             var hashCode = 240067226;
-            hashCode = hashCode * -1521134295 + this.X;
-            hashCode = hashCode * -1521134295 + this.Y;
-            hashCode = hashCode * -1521134295 + this.Z;
+            hashCode = hashCode * -1521134295 + this.A;
+            hashCode = hashCode * -1521134295 + this.B;
+            hashCode = hashCode * -1521134295 + this.C;
             return hashCode;
         }
 
         public override bool Equals(object obj)
             => obj is Index3 other &&
-               this.X == other.X &&
-               this.Y == other.Y &&
-               this.Z == other.Z;
+               this.A == other.A &&
+               this.B == other.B &&
+               this.C == other.C;
 
         public int CompareTo(Index3 other)
         {
-            var comp = this.X.CompareTo(other.X);
+            var comp = this.A.CompareTo(other.A);
 
-            if (comp == 0)
-            {
-                var comp1 = this.Y.CompareTo(other.Y);
+            if (comp != 0)
+                return comp;
 
-                if (comp1 == 0)
-                    return this.Z.CompareTo(other.Z);
+            var comp1 = this.B.CompareTo(other.B);
 
-                return comp1;
-            }
+            if (comp1 == 0)
+                return this.C.CompareTo(other.C);
 
-            return comp;
+            return comp1;
+        }
+
+        public int CompareTo(in Index3 other)
+        {
+            var comp = this.A.CompareTo(other.A);
+
+            if (comp != 0)
+                return comp;
+
+            var comp1 = this.B.CompareTo(other.B);
+
+            if (comp1 == 0)
+                return this.C.CompareTo(other.C);
+
+            return comp1;
         }
 
         public bool Equals(Index3 other)
-            => this.X == other.X && this.Y == other.Y && this.Z == other.Z;
+            => this.A == other.A && this.B == other.B && this.C == other.C;
 
-        public void Deconstruct(out int x, out int y, out int z)
+        public bool Equals(in Index3 other)
+            => this.A == other.A && this.B == other.B && this.C == other.C;
+
+        public void Deconstruct(out int a, out int b, out int c)
         {
-            x = this.X;
-            y = this.Y;
-            z = this.Z;
+            a = this.A;
+            b = this.B;
+            c = this.C;
         }
 
         public override string ToString()
-            => $"({this.X}, {this.Y}, {this.Z})";
+            => $"({this.A}, {this.B}, {this.C})";
 
         /// <summary>
         /// Shorthand for writing <see cref="Index3"/>(0, 0, 0).
@@ -88,51 +113,51 @@
             => new Index3(value.Item1, value.Item2, value.Item3);
 
         public static Index3 operator +(in Index3 lhs, in Index3 rhs)
-            => new Index3(lhs.X + rhs.X, lhs.Y + rhs.Y, lhs.Z + rhs.Z);
+            => new Index3(lhs.A + rhs.A, lhs.B + rhs.B, lhs.C + rhs.C);
 
         public static Index3 operator -(in Index3 lhs, in Index3 rhs)
-            => new Index3(lhs.X - rhs.X, lhs.Y - rhs.Y, lhs.Z - rhs.Z);
+            => new Index3(lhs.A - rhs.A, lhs.B - rhs.B, lhs.C - rhs.C);
 
         public static Index3 operator -(in Index3 a)
-            => new Index3(-a.X, -a.Y, -a.Z);
+            => new Index3(-a.A, -a.B, -a.C);
 
         public static Index3 operator *(in Index3 lhs, int rhs)
-            => new Index3(lhs.X * rhs, lhs.Y * rhs, lhs.Z * rhs);
+            => new Index3(lhs.A * rhs, lhs.B * rhs, lhs.C * rhs);
 
         public static Index3 operator *(int lhs, in Index3 rhs)
-            => new Index3(lhs * rhs.X, lhs * rhs.Y, lhs * rhs.Z);
+            => new Index3(lhs * rhs.A, lhs * rhs.B, lhs * rhs.C);
 
         public static Index3 operator /(in Index3 lhs, int rhs)
-            => new Index3(lhs.X / rhs, lhs.Y / rhs, lhs.Z / rhs);
+            => new Index3(lhs.A / rhs, lhs.B / rhs, lhs.C / rhs);
 
         public static bool operator ==(in Index3 lhs, in Index3 rhs)
-            => lhs.X == rhs.X && lhs.Y == rhs.Y && lhs.Z == rhs.Z;
+            => lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C;
 
         public static bool operator !=(in Index3 lhs, in Index3 rhs)
-            => lhs.X != rhs.X || lhs.Y != rhs.Y || lhs.Z != rhs.Z;
+            => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C;
 
         /// <summary>
         /// Converts 1D array index to 3D array index.
         /// </summary>
         /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="xLength">The length of dimension <see cref="X"/> of the 3D array.</param>
-        /// <param name="yLength">The length of dimension <see cref="Y"/> of the 3D array.</param>
+        /// <param name="aLength">The length of dimension <see cref="A"/> of the 3D array.</param>
+        /// <param name="bLength">The length of dimension <see cref="B"/> of the 3D array.</param>
         /// <returns>
         /// <para>If any length is zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public static Index3 Convert(int index1, int xLength, int yLength)
+        public static Index3 Convert(int index1, int aLength, int bLength)
         {
-            if (xLength == 0 || yLength == 0)
+            if (aLength == 0 || bLength == 0)
                 return Zero;
 
-            var xyLength = xLength * yLength;
-            var z = index1 / xyLength;
-            var iXY = index1 - (z * xyLength);
-            var y = iXY / xLength;
-            var x = iXY % xLength;
+            var abLength = aLength * bLength;
+            var c = index1 / abLength;
+            var i_ab = index1 - (c * abLength);
+            var b = i_ab / aLength;
+            var a = i_ab % aLength;
 
-            return new Index3(x, y, z);
+            return new Index3(a, b, c);
         }
     }
 }

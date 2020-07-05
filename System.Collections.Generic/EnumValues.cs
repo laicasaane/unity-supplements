@@ -2,20 +2,23 @@
 {
     public abstract class EnumValues<T> where T : struct, Enum
     {
-        private readonly static T[] _values;
+        public static ArraySegment<T> Values { get; }
 
-        public static ArraySegment<T> Values
-            => _values;
+        [Obsolete("This property has been deprecated. Use UnderlyingValueCount instead.")]
+        public static int ValueCount => UnderlyingValueCount;
 
-        public static int ValueCount { get; }
+        /// <summary>
+        /// Total count of the underlying values
+        /// </summary>
+        public static int UnderlyingValueCount { get; }
 
         static EnumValues()
         {
-            _values = (T[])Enum.GetValues(typeof(T));
+            Values = Enum<T>.Values;
 
             var index = 0;
 
-            foreach (var e in _values)
+            foreach (var e in Values)
             {
                 var val = (int)(object)e;
 
@@ -23,7 +26,7 @@
                     index = val;
             }
 
-            ValueCount = index + 1;
+            UnderlyingValueCount = index + 1;
         }
     }
 }

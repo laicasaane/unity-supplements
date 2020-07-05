@@ -10,5 +10,8 @@
 
         public static bool ValidateIndex<T>(this IReadOnlyList<T> self, int index)
             => self != null && index >= 0 && index < self.Count;
+
+        public static ReadList<T> AsReadList<T>(this List<T> self)
+            => self;
     }
 }
