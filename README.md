@@ -10,17 +10,27 @@
 - ReadOnlyStructAction delegates
 - ReadOnlyStructFunc delegates
 - ReadOnlyStructPredicate delegates
+- IComparableReadOnlyStruct\<T>
+- IEquatableReadOnlyStruct\<T>
 - Index2
 - Index3
 - Index4
+- Index5
+- Length2
+- Length3
+- Length4
+- Length5
 - Converter
+- Enum\<T>
+- ReadArray\<T>
 - Singleton
 - Singleton\<T>
 
 ## System.Collection.Generics
 
+- IReadOnlyStructEqualityComparer\<T>
+- CollectionExtensions
 - ListExtensions
-- EnumValues\<T>
 - Segment\<T>
 - Segment1\<T>
 - ArraySegment\<T>
@@ -30,17 +40,20 @@
 - SegmentExtensions
 - Segment1Extensions
 - StringSegmentExtensions
-- ArraySource\<T>
-- ListSource\<T>
-- IListSource\<T>
-- IReadOnlyListSource\<T>
-- StringSource
+- EnumValues\<T>
+- ReadCollection\<T>
+- ReadDictionary\<TKey, TValue>
+- ReadList\<T>
+
+## System.Fluent
+
+- ObjectExtensions
 
 ## System.Table
 - IEntry
-- Entry
 - IGetId
 - ITable
+- Entry
 - Table
 - ReadTable
 
