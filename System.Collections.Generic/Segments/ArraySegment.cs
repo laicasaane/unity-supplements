@@ -225,7 +225,7 @@
             => source == null ? Empty : new ArraySegment<T>(source);
 
         public static implicit operator Segment<T>(in ArraySegment<T> segment)
-            => new Segment<T>(segment.source, segment.Offset, segment.Count);
+            => new Segment<T>(segment.source.GetSource(), segment.Offset, segment.Count);
 
         public static bool operator ==(in ArraySegment<T> a, in ArraySegment<T> b)
             => a.Equals(in b);
