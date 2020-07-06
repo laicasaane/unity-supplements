@@ -17,7 +17,7 @@ namespace System.Collections.Generic
         public int Count { get; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ICollection<T> GetSource()
+        internal ICollection<T> GetSource()
             => this.hasSource ? this.source : _empty;
 
         public override int GetHashCode()

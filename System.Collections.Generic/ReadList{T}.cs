@@ -15,7 +15,7 @@ namespace System.Collections.Generic
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private List<T> GetSource()
+        internal List<T> GetSource()
             => this.hasSource ? this.source : _empty;
 
         public T this[int index]

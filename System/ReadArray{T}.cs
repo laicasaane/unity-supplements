@@ -17,7 +17,7 @@ namespace System
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private T[] GetSource()
+        internal T[] GetSource()
             => this.hasSource ? this.source : _empty;
 
         public T this[int index]

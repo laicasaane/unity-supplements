@@ -19,7 +19,7 @@ namespace System.Collections.Generic
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Dictionary<TKey, TValue> GetSource()
+        internal Dictionary<TKey, TValue> GetSource()
             => this.hasSource ? this.source : _empty;
 
         public TValue this[TKey key]
