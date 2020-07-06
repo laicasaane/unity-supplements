@@ -2,7 +2,7 @@
 {
     public readonly partial struct Segment<T>
     {
-        public readonly struct IListSource : ISegmentSource<T>
+        private readonly struct IListSource : ISegmentSource<T>
         {
             private readonly IList<T> source;
 

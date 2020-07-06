@@ -2,9 +2,9 @@
 {
     public readonly partial struct Segment<T>
     {
-        public readonly struct ListSource : ISegmentSource<T>
+        private readonly struct ListSource : ISegmentSource<T>
         {
-            private readonly ReadList<T> source;
+            private readonly List<T> source;
 
             public int Count
                 => this.source.Count;
@@ -12,7 +12,7 @@
             public T this[int index]
                 => this.source[index];
 
-            public ListSource(in ReadList<T> source)
+            public ListSource(List<T> source)
             {
                 this.source = source;
             }

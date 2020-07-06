@@ -2,7 +2,7 @@
 {
     public readonly partial struct StringSegment
     {
-        public readonly struct CharSource : ISegmentSource<char>
+        private readonly struct CharSource : ISegmentSource<char>
         {
             private readonly string source;
 
