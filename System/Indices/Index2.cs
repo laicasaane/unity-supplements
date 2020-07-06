@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 2D array index
+    /// Represents an index of the 2D variable size array
     /// </summary>
     [Serializable]
     public readonly struct Index2 : IEquatableReadOnlyStruct<Index2>, IComparableReadOnlyStruct<Index2>
@@ -22,15 +22,15 @@
         }
 
         /// <summary>
-        /// Converts to 1D array index.
+        /// Converts to 1D index.
         /// </summary>
-        /// <param name="aLength">The length of dimension <see cref="A"/> of the 2D array.</param>
+        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 2D array.</param>
         /// <returns>
-        /// <para>If length is zero, returns zero.</para>
+        /// <para>If length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
         public int ToIndex1(int aLength)
-            => aLength == 0 ? 0 : this.A + this.B * aLength;
+            => aLength <= 0 ? 0 : this.A + this.B * aLength;
 
         public override int GetHashCode()
         {
@@ -113,15 +113,15 @@
             => lhs.A != rhs.A || lhs.B != rhs.B;
 
         /// <summary>
-        /// Converts 1D array index to 2D array index.
+        /// Converts 1D index to 2D index.
         /// </summary>
-        /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="aLength">The length of dimension <see cref="A"/> of the 2D array.</param>
+        /// <param name="index1">1D index.</param>
+        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 2D array.</param>
         /// <returns>
-        /// <para>If length is zero, returns <see cref="Zero"/>.</para>
+        /// <para>If length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
         public static Index2 Convert(int index1, int aLength)
-            => aLength == 0 ? Zero: new Index2(index1 % aLength, index1 / aLength);
+            => aLength <= 0 ? Zero: new Index2(index1 % aLength, index1 / aLength);
     }
 }

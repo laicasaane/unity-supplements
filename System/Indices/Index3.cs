@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 3D array index
+    /// Represents an index of the 3D variable size array
     /// </summary>
     [Serializable]
     public readonly struct Index3 : IEquatableReadOnlyStruct<Index3>, IComparableReadOnlyStruct<Index3>
@@ -27,17 +27,17 @@
         }
 
         /// <summary>
-        /// Converts to 1D array index.
+        /// Converts to 1D index.
         /// </summary>
-        /// <param name="aLength">The length of dimension <see cref="A"/> of the 3D array.</param>
-        /// <param name="bLength">The length of dimension <see cref="B"/> of the 3D array.</param>
+        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 3D array.</param>
+        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 3D array.</param>
         /// <returns>
-        /// <para>If any length is zero, returns zero.</para>
+        /// <para>If any length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
         public int ToIndex1(int aLength, int bLength)
         {
-            if (aLength == 0 || bLength == 0)
+            if (aLength <= 0 || bLength <= 0)
                 return 0;
 
             return this.A + (this.B * aLength) + (this.C * aLength * bLength);
@@ -137,18 +137,18 @@
             => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C;
 
         /// <summary>
-        /// Converts 1D array index to 3D array index.
+        /// Converts 1D index to 3D index.
         /// </summary>
-        /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="aLength">The length of dimension <see cref="A"/> of the 3D array.</param>
-        /// <param name="bLength">The length of dimension <see cref="B"/> of the 3D array.</param>
+        /// <param name="index1">1D index.</param>
+        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 3D array.</param>
+        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 3D array.</param>
         /// <returns>
-        /// <para>If any length is zero, returns <see cref="Zero"/>.</para>
+        /// <para>If any length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
         public static Index3 Convert(int index1, int aLength, int bLength)
         {
-            if (aLength == 0 || bLength == 0)
+            if (aLength <= 0 || bLength <= 0)
                 return Zero;
 
             var abLength = aLength * bLength;

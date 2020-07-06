@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 5D array index
+    /// Represents an index of the 5D variable size array
     /// </summary>
     [Serializable]
     public readonly struct Index5 : IEquatableReadOnlyStruct<Index5>, IComparableReadOnlyStruct<Index5>
@@ -24,12 +24,12 @@
         /// <summary>
         /// Converts to 1D array index.
         /// </summary>
-        /// <param name="aLength">The length of dimension <see cref="A"/> of the 5D array.</param>
-        /// <param name="bLength">The length of dimension <see cref="B"/> of the 5D array.</param>
-        /// <param name="cLength">The length of dimension <see cref="C"/> of the 5D array.</param>
-        /// <param name="dLength">The length of dimension <see cref="D"/> of the 5D array.</param>
+        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 5D array.</param>
+        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 5D array.</param>
+        /// <param name="cLength">Length of the dimension <see cref="C"/> of the 5D array.</param>
+        /// <param name="dLength">Length of the dimension <see cref="D"/> of the 5D array.</param>
         /// <returns>
-        /// <para>If any length is zero, returns zero.</para>
+        /// <para>If any length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
         public int ToIndex1(int aLength, int bLength, int cLength, int dLength)
@@ -167,20 +167,20 @@
             => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C || lhs.D != rhs.D || lhs.E != rhs.E;
 
         /// <summary>
-        /// Converts 1D array index to 5D array index.
+        /// Converts 1D index to 5D index.
         /// </summary>
         /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="aLength">The length of dimension <see cref="A"/> of the 5D array.</param>
-        /// <param name="bLength">The length of dimension <see cref="B"/> of the 5D array.</param>
-        /// <param name="cLength">The length of dimension <see cref="C"/> of the 5D array.</param>
-        /// <param name="dLength">The length of dimension <see cref="D"/> of the 5D array.</param>
+        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 5D array.</param>
+        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 5D array.</param>
+        /// <param name="cLength">Length of the dimension <see cref="C"/> of the 5D array.</param>
+        /// <param name="dLength">Length of the dimension <see cref="D"/> of the 5D array.</param>
         /// <returns>
-        /// <para>If any length is zero, returns <see cref="Zero"/>.</para>
+        /// <para>If any length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
         public static Index5 Convert(int index1, int aLength, int bLength, int cLength, int dLength)
         {
-            if (aLength == 0 || bLength == 0 || cLength == 0 || dLength == 0)
+            if (aLength <= 0 || bLength <= 0 || cLength <= 0 || dLength <= 0)
                 return Zero;
 
             var abLength = aLength * bLength;
