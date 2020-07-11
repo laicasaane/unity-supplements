@@ -37,7 +37,7 @@ namespace System.Table
         public Enumerator GetEnumerator()
             => new Enumerator(this.hasSource ? this : _empty);
 
-        IEnumerator<Entry<T>> IEnumerable<Entry<T>>.GetEnumerator()
+        IEnumerator<ReadEntry<T>> IEnumerable<ReadEntry<T>>.GetEnumerator()
             => GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -50,9 +50,9 @@ namespace System.Table
 
         public static ReadTable<T> Empty { get; } = new ReadTable<T>(_empty);
 
-        public struct Enumerator : IEnumerator<Entry<T>>
+        public struct Enumerator : IEnumerator<ReadEntry<T>>
         {
-            private readonly IEnumerator<Entry<T>> source;
+            private readonly IEnumerator<ReadEntry<T>> source;
 
             internal Enumerator(in ReadTable<T> table)
             {
@@ -62,7 +62,7 @@ namespace System.Table
             public bool MoveNext()
                 => this.source.MoveNext();
 
-            public Entry<T> Current
+            public ReadEntry<T> Current
                 => this.source.Current;
 
             object IEnumerator.Current

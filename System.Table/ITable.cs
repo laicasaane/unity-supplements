@@ -2,7 +2,7 @@
 
 namespace System.Table
 {
-    public interface IReadTable<T> : IEnumerable<Entry<T>>
+    public interface IReadTable<T> : IEnumerable<ReadEntry<T>>
         where T : IEntry
     {
         int Count { get; }
@@ -21,46 +21,68 @@ namespace System.Table
     {
         void Clear();
 
-        void Insert(T entry);
+        void Add(int id, T entry);
 
-        void Insert(T entry, bool autoIncrement);
+        void Add(T entry);
 
-        void Insert(T entry, IGetId<T> idGetter);
+        void Add(T entry, bool autoIncrement);
 
-        void Insert(in Entry<T> entry);
+        void Add(T entry, IGetId<T> idGetter);
 
-        void Insert(in Entry<T> entry, bool autoIncrement);
+        void Add(int id, in ReadEntry<T> entry);
 
-        void Insert(in Entry<T> entry, IGetId<T> idGetter);
+        void Add(in ReadEntry<T> entry);
 
-        void Insert(T[] entries);
+        void Add(in ReadEntry<T> entry, bool autoIncrement);
 
-        void Insert(T[] entries, bool autoIncrement);
+        void Add(in ReadEntry<T> entry, IGetId<T> idGetter);
 
-        void Insert(T[] entries, IGetId<T> idGetter);
+        bool TryAdd(int id, T entry);
 
-        void Insert(IEnumerable<T> entries);
+        bool TryAdd(T entry);
 
-        void Insert(IEnumerable<T> entries, bool autoIncrement);
+        bool TryAdd(T entry, IGetId<T> idGetter);
 
-        void Insert(IEnumerable<T> entries, IGetId<T> idGetter);
+        bool TryAdd(int id, in ReadEntry<T> entry);
 
-        void Insert(Entry<T>[] entries);
+        bool TryAdd(in ReadEntry<T> entry);
 
-        void Insert(Entry<T>[] entries, bool autoIncrement);
+        bool TryAdd(in ReadEntry<T> entry, IGetId<T> idGetter);
 
-        void Insert(Entry<T>[] entries, IGetId<T> idGetter);
+        void AddRange(T[] entries);
 
-        void Insert(IEnumerable<Entry<T>> entries);
+        void AddRange(T[] entries, bool autoIncrement);
 
-        void Insert(IEnumerable<Entry<T>> entries, bool autoIncrement);
+        void AddRange(T[] entries, IGetId<T> idGetter);
 
-        void Insert(IEnumerable<Entry<T>> entries, IGetId<T> idGetter);
+        void AddRange(IEnumerable<T> entries);
+
+        void AddRange(IEnumerable<T> entries, bool autoIncrement);
+
+        void AddRange(IEnumerable<T> entries, IGetId<T> idGetter);
+
+        void AddRange(ReadEntry<T>[] entries);
+
+        void AddRange(ReadEntry<T>[] entries, bool autoIncrement);
+
+        void AddRange(ReadEntry<T>[] entries, IGetId<T> idGetter);
+
+        void AddRange(IEnumerable<ReadEntry<T>> entries);
+
+        void AddRange(IEnumerable<ReadEntry<T>> entries, bool autoIncrement);
+
+        void AddRange(IEnumerable<ReadEntry<T>> entries, IGetId<T> idGetter);
 
         void Remove(int id);
 
         void Remove(T entry);
 
-        void Remove(in Entry<T> entry);
+        void Remove(in ReadEntry<T> entry);
+
+        bool TryRemove(int id);
+
+        bool TryRemove(T entry);
+
+        bool TryRemove(in ReadEntry<T> entry);
     }
 }
