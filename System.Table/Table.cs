@@ -6,8 +6,25 @@ namespace System.Table
 {
     public class Table<T> : ITable<T> where T : IEntry
     {
-        private readonly Dictionary<int, T> table
-            = new Dictionary<int, T>();
+        private readonly Dictionary<int, T> table;
+
+        public Table()
+        {
+            this.table = new Dictionary<int, T>();
+        }
+
+        public Table(int capacity)
+        {
+            this.table = new Dictionary<int, T>(capacity);
+        }
+
+        public Table(IDictionary<int, T> dictionary)
+        {
+            if (dictionary == null)
+                throw new ArgumentNullException();
+
+            this.table = new Dictionary<int, T>(dictionary);
+        }
 
         public int Count
             => this.table.Count;
