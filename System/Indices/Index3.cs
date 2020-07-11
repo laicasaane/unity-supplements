@@ -29,18 +29,26 @@
         /// <summary>
         /// Converts to 1D index.
         /// </summary>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 3D array.</param>
-        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 3D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 3D array.</param>
+        /// <param name="lengthB">Length of the dimension <see cref="B"/> of the 3D array.</param>
         /// <returns>
         /// <para>If any length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public int ToIndex1(int aLength, int bLength)
+        public int ToIndex1(int lengthA, int lengthB)
         {
-            if (aLength <= 0 || bLength <= 0)
+            if (lengthA <= 0 || lengthB <= 0)
                 return 0;
 
-            return this.A + (this.B * aLength) + (this.C * aLength * bLength);
+            return this.A + (this.B * lengthA) + (this.C * lengthA * lengthB);
+        }
+
+        public int ToIndex1(in Length2 length)
+        {
+            if (length.A <= 0 || length.B <= 0)
+                return 0;
+
+            return this.A + (this.B * length.A) + (this.C * length.A * length.B);
         }
 
         public override int GetHashCode()
@@ -140,22 +148,36 @@
         /// Converts 1D index to 3D index.
         /// </summary>
         /// <param name="index1">1D index.</param>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 3D array.</param>
-        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 3D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 3D array.</param>
+        /// <param name="lengthB">Length of the dimension <see cref="B"/> of the 3D array.</param>
         /// <returns>
         /// <para>If any length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public static Index3 Convert(int index1, int aLength, int bLength)
+        public static Index3 Convert(int index1, int lengthA, int lengthB)
         {
-            if (aLength <= 0 || bLength <= 0)
+            if (lengthA <= 0 || lengthB <= 0)
                 return Zero;
 
-            var abLength = aLength * bLength;
-            var c = index1 / abLength;
-            var i_ab = index1 - (c * abLength);
-            var b = i_ab / aLength;
-            var a = i_ab % aLength;
+            var alengthB = lengthA * lengthB;
+            var c = index1 / alengthB;
+            var i_ab = index1 - (c * alengthB);
+            var b = i_ab / lengthA;
+            var a = i_ab % lengthA;
+
+            return new Index3(a, b, c);
+        }
+
+        public static Index3 Convert(int index1, in Length2 length)
+        {
+            if (length.A <= 0 || length.B <= 0)
+                return Zero;
+
+            var alengthB = length.A * length.B;
+            var c = index1 / alengthB;
+            var i_ab = index1 - (c * alengthB);
+            var b = i_ab / length.A;
+            var a = i_ab % length.A;
 
             return new Index3(a, b, c);
         }

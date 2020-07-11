@@ -34,20 +34,29 @@
         /// <summary>
         /// Converts to 1D index.
         /// </summary>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 4D array.</param>
-        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 4D array.</param>
-        /// <param name="cLength">Length of the dimension <see cref="C"/> of the 4D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 4D array.</param>
+        /// <param name="lengthB">Length of the dimension <see cref="B"/> of the 4D array.</param>
+        /// <param name="lengthC">Length of the dimension <see cref="C"/> of the 4D array.</param>
         /// <returns>
         /// <para>If any length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public int ToIndex1(int aLength, int bLength, int cLength)
+        public int ToIndex1(int lengthA, int lengthB, int lengthC)
         {
-            if (aLength <= 0 || bLength <= 0 || cLength <= 0)
+            if (lengthA <= 0 || lengthB <= 0 || lengthC <= 0)
                 return 0;
 
-            var ab = aLength * bLength;
-            return this.A + (this.B * aLength) + (this.C * ab) + (this.D * ab * cLength);
+            var ab = lengthA * lengthB;
+            return this.A + (this.B * lengthA) + (this.C * ab) + (this.D * ab * lengthC);
+        }
+
+        public int ToIndex1(in Length3 length)
+        {
+            if (length.A <= 0 || length.B <= 0 || length.C <= 0)
+                return 0;
+
+            var ab = length.A * length.B;
+            return this.A + (this.B * length.A) + (this.C * ab) + (this.D * ab * length.C);
         }
 
         public override int GetHashCode()
@@ -158,30 +167,53 @@
         public static bool operator !=(in Index4 lhs, in Index4 rhs)
             => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C || lhs.D != rhs.D;
 
+        public static implicit operator Index2(in Index4 value)
+            => new Index2(value.A, value.B);
+
+        public static implicit operator Index3(in Index4 value)
+            => new Index3(value.A, value.B, value.C);
+
         /// <summary>
         /// Converts 1D index to 4D index.
         /// </summary>
         /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 4D array.</param>
-        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 4D array.</param>
-        /// <param name="cLength">Length of the dimension <see cref="C"/> of the 4D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 4D array.</param>
+        /// <param name="lengthB">Length of the dimension <see cref="B"/> of the 4D array.</param>
+        /// <param name="lengthC">Length of the dimension <see cref="C"/> of the 4D array.</param>
         /// <returns>
         /// <para>If any length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public static Index4 Convert(int index1, int aLength, int bLength, int cLength)
+        public static Index4 Convert(int index1, int lengthA, int lengthB, int lengthC)
         {
-            if (aLength <= 0 || bLength <= 0 || cLength <= 0)
+            if (lengthA <= 0 || lengthB <= 0 || lengthC <= 0)
                 return Zero;
 
-            var abLength = aLength * bLength;
-            var abcLength = abLength * cLength;
-            var d = index1 / abcLength;
-            var i_abc = index1 - (d * abcLength);
-            var c = i_abc / abLength;
-            var i_ab = i_abc - (c * abLength);
-            var b = i_ab / aLength;
-            var a = i_ab % aLength;
+            var alengthB = lengthA * lengthB;
+            var ablengthC = alengthB * lengthC;
+            var d = index1 / ablengthC;
+            var i_abc = index1 - (d * ablengthC);
+            var c = i_abc / alengthB;
+            var i_ab = i_abc - (c * alengthB);
+            var b = i_ab / lengthA;
+            var a = i_ab % lengthA;
+
+            return new Index4(a, b, c, d);
+        }
+
+        public static Index4 Convert(int index1, in Length3 length)
+        {
+            if (length.A <= 0 || length.B <= 0 || length.C <= 0)
+                return Zero;
+
+            var alengthB = length.A * length.B;
+            var ablengthC = alengthB * length.C;
+            var d = index1 / ablengthC;
+            var i_abc = index1 - (d * ablengthC);
+            var c = i_abc / alengthB;
+            var i_ab = i_abc - (c * alengthB);
+            var b = i_ab / length.A;
+            var a = i_ab % length.A;
 
             return new Index4(a, b, c, d);
         }

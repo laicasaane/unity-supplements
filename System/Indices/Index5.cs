@@ -24,23 +24,34 @@
         /// <summary>
         /// Converts to 1D array index.
         /// </summary>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 5D array.</param>
-        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 5D array.</param>
-        /// <param name="cLength">Length of the dimension <see cref="C"/> of the 5D array.</param>
-        /// <param name="dLength">Length of the dimension <see cref="D"/> of the 5D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 5D array.</param>
+        /// <param name="lengthB">Length of the dimension <see cref="B"/> of the 5D array.</param>
+        /// <param name="lengthC">Length of the dimension <see cref="C"/> of the 5D array.</param>
+        /// <param name="lengthD">Length of the dimension <see cref="D"/> of the 5D array.</param>
         /// <returns>
         /// <para>If any length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public int ToIndex1(int aLength, int bLength, int cLength, int dLength)
+        public int ToIndex1(int lengthA, int lengthB, int lengthC, int lengthD)
         {
-            if (aLength == 0 || bLength == 0 || cLength == 0 || dLength == 0)
+            if (lengthA == 0 || lengthB == 0 || lengthC == 0 || lengthD == 0)
                 return 0;
 
-            var ab = aLength * bLength;
-            var abc = ab * cLength;
+            var ab = lengthA * lengthB;
+            var abc = ab * lengthC;
 
-            return this.A + (this.B * aLength) + (this.C * ab) + (this.D * abc) + (this.E * abc * dLength);
+            return this.A + (this.B * lengthA) + (this.C * ab) + (this.D * abc) + (this.E * abc * lengthD);
+        }
+
+        public int ToIndex1(in Length4 length)
+        {
+            if (length.A == 0 || length.B == 0 || length.C == 0 || length.D == 0)
+                return 0;
+
+            var ab = length.A * length.B;
+            var abc = ab * length.C;
+
+            return this.A + (this.B * length.A) + (this.C * ab) + (this.D * abc) + (this.E * abc * length.D);
         }
 
         public override int GetHashCode()
@@ -166,34 +177,63 @@
         public static bool operator !=(in Index5 lhs, in Index5 rhs)
             => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C || lhs.D != rhs.D || lhs.E != rhs.E;
 
+        public static implicit operator Index2(in Index5 value)
+            => new Index2(value.A, value.B);
+
+        public static implicit operator Index3(in Index5 value)
+            => new Index3(value.A, value.B, value.C);
+
+        public static implicit operator Index4(in Index5 value)
+            => new Index4(value.A, value.B, value.C, value.D);
+
         /// <summary>
         /// Converts 1D index to 5D index.
         /// </summary>
         /// <param name="index1">Index in the 1D array.</param>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 5D array.</param>
-        /// <param name="bLength">Length of the dimension <see cref="B"/> of the 5D array.</param>
-        /// <param name="cLength">Length of the dimension <see cref="C"/> of the 5D array.</param>
-        /// <param name="dLength">Length of the dimension <see cref="D"/> of the 5D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 5D array.</param>
+        /// <param name="lengthB">Length of the dimension <see cref="B"/> of the 5D array.</param>
+        /// <param name="lengthC">Length of the dimension <see cref="C"/> of the 5D array.</param>
+        /// <param name="lengthD">Length of the dimension <see cref="D"/> of the 5D array.</param>
         /// <returns>
         /// <para>If any length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public static Index5 Convert(int index1, int aLength, int bLength, int cLength, int dLength)
+        public static Index5 Convert(int index1, int lengthA, int lengthB, int lengthC, int lengthD)
         {
-            if (aLength <= 0 || bLength <= 0 || cLength <= 0 || dLength <= 0)
+            if (lengthA <= 0 || lengthB <= 0 || lengthC <= 0 || lengthD <= 0)
                 return Zero;
 
-            var abLength = aLength * bLength;
-            var abcLength = abLength * cLength;
-            var abcdLength = abcLength * dLength;
-            var e = index1 / abcdLength;
-            var i_abcd = index1 - (e * abcdLength);
-            var d = i_abcd / abcLength;
-            var i_abc = i_abcd - (d * abcLength);
-            var c = i_abc / abLength;
-            var i_ab = i_abc - (c * abLength);
-            var b = i_ab / aLength;
-            var a = i_ab % aLength;
+            var alengthB = lengthA * lengthB;
+            var ablengthC = alengthB * lengthC;
+            var abclengthD = ablengthC * lengthD;
+            var e = index1 / abclengthD;
+            var i_abcd = index1 - (e * abclengthD);
+            var d = i_abcd / ablengthC;
+            var i_abc = i_abcd - (d * ablengthC);
+            var c = i_abc / alengthB;
+            var i_ab = i_abc - (c * alengthB);
+            var b = i_ab / lengthA;
+            var a = i_ab % lengthA;
+
+            return new Index5(a, b, c, d, e);
+        }
+
+        public static Index5 Convert(int index1, in Length4 length)
+        {
+            if (length.A <= 0 || length.B <= 0 || length.C <= 0 || length.D <= 0)
+                return Zero;
+
+            var alengthB = length.A * length.B;
+            var ablengthC = alengthB * length.C;
+            var abclengthD = ablengthC * length.D;
+            var e = index1 / abclengthD;
+            var i_abcd = index1 - (e * abclengthD);
+            var d = i_abcd / ablengthC;
+            var i_abc = i_abcd - (d * ablengthC);
+            var c = i_abc / alengthB;
+            var i_ab = i_abc - (c * alengthB);
+            var b = i_ab / length.A;
+            var a = i_ab % length.A;
 
             return new Index5(a, b, c, d, e);
         }

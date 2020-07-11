@@ -24,13 +24,13 @@
         /// <summary>
         /// Converts to 1D index.
         /// </summary>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 2D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 2D array.</param>
         /// <returns>
         /// <para>If length is less than or equal to zero, returns zero.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public int ToIndex1(int aLength)
-            => aLength <= 0 ? 0 : this.A + this.B * aLength;
+        public int ToIndex1(int lengthA)
+            => lengthA <= 0 ? 0 : this.A + this.B * lengthA;
 
         public override int GetHashCode()
         {
@@ -112,16 +112,19 @@
         public static bool operator !=(in Index2 lhs, in Index2 rhs)
             => lhs.A != rhs.A || lhs.B != rhs.B;
 
+        public static implicit operator Index2(in Index3 value)
+            => new Index2(value.A, value.B);
+
         /// <summary>
         /// Converts 1D index to 2D index.
         /// </summary>
         /// <param name="index1">1D index.</param>
-        /// <param name="aLength">Length of the dimension <see cref="A"/> of the 2D array.</param>
+        /// <param name="lengthA">Length of the dimension <see cref="A"/> of the 2D array.</param>
         /// <returns>
         /// <para>If length is less than or equal to zero, returns <see cref="Zero"/>.</para>
         /// <para>Otherwise, returns the converted value.</para>
         /// </returns>
-        public static Index2 Convert(int index1, int aLength)
-            => aLength <= 0 ? Zero: new Index2(index1 % aLength, index1 / aLength);
+        public static Index2 Convert(int index1, int lengthA)
+            => lengthA <= 0 ? Zero: new Index2(index1 % lengthA, index1 / lengthA);
     }
 }

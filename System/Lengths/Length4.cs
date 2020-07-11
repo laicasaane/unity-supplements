@@ -126,5 +126,11 @@
 
         public static bool operator !=(in Length4 lhs, in Length4 rhs)
             => lhs.A != rhs.A || lhs.B != rhs.B || lhs.C != rhs.C || lhs.D != rhs.D;
+
+        public static implicit operator Length2(in Length4 value)
+            => new Length2(value.A, value.B);
+
+        public static implicit operator Length3(in Length4 value)
+            => new Length3(value.A, value.B, value.C);
     }
 }
