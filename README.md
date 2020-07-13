@@ -4,12 +4,13 @@
 
 - ArrayExtensions
 - StringExtensions
+- NumberExtensions
 
 ## System
 
-- ReadOnlyStructAction delegates
-- ReadOnlyStructFunc delegates
-- ReadOnlyStructPredicate delegates
+- ReadStructAction delegates
+- ReadStructFunc delegates
+- ReadStructPredicate delegates
 - IComparableReadOnlyStruct\<T>
 - IEquatableReadOnlyStruct\<T>
 - Index2
@@ -25,6 +26,10 @@
 - ReadArray\<T>
 - Singleton
 - Singleton\<T>
+
+## System.IO
+
+- FileSystem
 
 ## System.Collection.Generics
 
@@ -47,14 +52,14 @@
 
 ## System.Fluent
 
-- ObjectExtensions
+- ObjectExtensions.FluentDelegates
 
 ## System.Table
 - IEntry
 - IGetId
 - ITable
-- Entry
 - Table
+- ReadEntry
 - ReadTable
 
 ## UnityEngine
