@@ -1,6 +1,6 @@
 ﻿namespace System.Fluent
 {
-    public static class ObjectExtensions
+    public static partial class ObjectExtensions
     {
         public static T Action<T>(this T self, Action action)
         {
@@ -14,7 +14,7 @@
             return self;
         }
 
-        public static T Action<T>(this T self, ReadOnlyStructAction<T> action)
+        public static T Action<T>(this T self, ReadStructAction<T> action)
             where T : struct
         {
             action(self);
@@ -33,7 +33,7 @@
             return self;
         }
 
-        public static T Func<T, TResult>(this T self, ReadOnlyStructFunc<T, TResult> func)
+        public static T Func<T, TResult>(this T self, ReadStructFunc<T, TResult> func)
             where T : struct
         {
             func(self);
@@ -52,7 +52,7 @@
             return self;
         }
 
-        public static T Func<T, TResult>(this T self, out TResult result, ReadOnlyStructFunc<T, TResult> func)
+        public static T Func<T, TResult>(this T self, out TResult result, ReadStructFunc<T, TResult> func)
             where T : struct
         {
             result = func(self);
@@ -65,7 +65,21 @@
             return self;
         }
 
+        public static T Predicate<T>(this T self, ReadStructPredicate<T> predicate)
+            where T : struct
+        {
+            predicate(self);
+            return self;
+        }
+
         public static T Predicate<T>(this T self, out bool result, Predicate<T> predicate)
+        {
+            result = predicate(self);
+            return self;
+        }
+
+        public static T Predicate<T>(this T self, out bool result, ReadStructPredicate<T> predicate)
+            where T : struct
         {
             result = predicate(self);
             return self;
