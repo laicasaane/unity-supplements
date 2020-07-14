@@ -31,6 +31,11 @@
 
 - FileSystem
 
+## System.Runtime.Serialization
+
+- IStringFormatter
+- IStringFormatter\<T>
+
 ## System.Collection.Generics
 
 - IReadOnlyStructEqualityComparer\<T>
