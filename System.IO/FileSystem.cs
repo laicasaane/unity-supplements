@@ -1,11 +1,12 @@
-﻿using System.Runtime.Serialization.Formatters.Binary;
+﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 
 namespace System.IO
 {
     public static class FileSystem
     {
-        private static BinaryFormatter _binaryFormatter;
+        private static readonly BinaryFormatter _binaryFormatter;
 
         static FileSystem()
         {
@@ -32,7 +33,7 @@ namespace System.IO
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
         public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, bool append = false)
         {
-            using (Stream stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            using (var stream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
             {
                 _binaryFormatter.Serialize(stream, objectToWrite);
             }
@@ -40,9 +41,9 @@ namespace System.IO
 
         public static void WriteToBinaryFile<T>(string filePath, T objectToWrite, ICryptoTransform encryptor, bool append = false)
         {
-            using (Stream innerStream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            using (var innerStream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
             {
-                using (Stream cryptoStream = new CryptoStream(innerStream, encryptor, CryptoStreamMode.Write))
+                using (var cryptoStream = new CryptoStream(innerStream, encryptor, CryptoStreamMode.Write))
                 {
                     _binaryFormatter.Serialize(cryptoStream, objectToWrite);
                 }
@@ -76,7 +77,7 @@ namespace System.IO
         {
             if (File.Exists(filePath))
             {
-                using (Stream stream = File.Open(filePath, FileMode.Open))
+                using (var stream = File.Open(filePath, FileMode.Open))
                 {
                     return (T)_binaryFormatter.Deserialize(stream);
                 }
@@ -89,9 +90,9 @@ namespace System.IO
         {
             if (File.Exists(filePath))
             {
-                using (Stream innerStream = File.Open(filePath, FileMode.Open))
+                using (var innerStream = File.Open(filePath, FileMode.Open))
                 {
-                    using (Stream cryptoStream = new CryptoStream(innerStream, decryptor, CryptoStreamMode.Read))
+                    using (var cryptoStream = new CryptoStream(innerStream, decryptor, CryptoStreamMode.Read))
                     {
                         return (T)_binaryFormatter.Deserialize(cryptoStream);
                     }
@@ -115,6 +116,98 @@ namespace System.IO
                 CreateDirectory(directoryPath);
 
             return ReadFromBinaryFile(filePath, decryptor, @default);
+        }
+
+        /// <summary>
+        /// Writes the given object instance to a text file.
+        /// <para>Object type (and all child types) must be decorated with the [Serializable] attribute.</para>
+        /// <para>To prevent a variable from being serialized, decorate it with the [NonSerialized] attribute; cannot be applied to properties.</para>
+        /// </summary>
+        /// <typeparam name="T">The type of object being written to the text file.</typeparam>
+        /// <param name="filePath">The file path to write the object instance to.</param>
+        /// <param name="objectToWrite">The object instance to write to the text file.</param>
+        /// <param name="formatter">The formatter to serialize the object.</param>
+        /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter formatter, bool append = false)
+        {
+            using (var writer = new StreamWriter(filePath, append))
+            {
+                formatter.Serialize(writer, objectToWrite);
+            }
+        }
+
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter formatter, bool append = false)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            WriteToTextFile(filePath, objectToWrite, formatter, append);
+        }
+
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter<T> formatter, bool append = false)
+        {
+            using (var writer = new StreamWriter(filePath, append))
+            {
+                formatter.Serialize(writer, objectToWrite);
+            }
+        }
+
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter<T> formatter, bool append = false)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            WriteToTextFile(filePath, objectToWrite, formatter, append);
+        }
+
+        /// <summary>
+        /// Reads an object instance from a text file.
+        /// </summary>
+        /// <typeparam name="T">The type of object to read from the text file.</typeparam>
+        /// <param name="filePath">The file path to read the object instance from.</param>
+        /// <param name="formatter">The formatter to deserialize the text file.</param>
+        /// <param name="default">The default value to return if the file cannot be read.</param>
+        /// <returns>Returns a new instance of the object read from the text file.</returns>
+        public static T ReadFromTextFile<T>(string filePath, IStringFormatter formatter, T @default = default)
+        {
+            if (File.Exists(filePath))
+            {
+                using (var reader = new StreamReader(filePath))
+                {
+                    return formatter.Deserialize<T>(reader);
+                }
+            }
+
+            return @default;
+        }
+
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter formatter, T @default = default)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            return ReadFromTextFile(filePath, formatter, @default);
+        }
+
+        public static T ReadFromTextFile<T>(string filePath, IStringFormatter<T> formatter, T @default = default)
+        {
+            if (File.Exists(filePath))
+            {
+                using (var reader = new StreamReader(filePath))
+                {
+                    return formatter.Deserialize(reader);
+                }
+            }
+
+            return @default;
+        }
+
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter<T> formatter, T @default = default)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            return ReadFromTextFile(filePath, formatter, @default);
         }
     }
 }
