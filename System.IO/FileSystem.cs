@@ -144,6 +144,28 @@ namespace System.IO
             WriteToTextFile(filePath, objectToWrite, formatter, append);
         }
 
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter formatter, ICryptoTransform encryptor, bool append = false)
+        {
+            using (var innerStream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            {
+                using (var cryptoStream = new CryptoStream(innerStream, encryptor, CryptoStreamMode.Write))
+                {
+                    using (var writer = new StreamWriter(cryptoStream))
+                    {
+                        formatter.Serialize(writer, objectToWrite);
+                    }
+                }
+            }
+        }
+
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter formatter, ICryptoTransform encryptor, bool append = false)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            WriteToTextFile(filePath, objectToWrite, formatter, encryptor, append);
+        }
+
         public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter<T> formatter, bool append = false)
         {
             using (var writer = new StreamWriter(filePath, append))
@@ -158,6 +180,28 @@ namespace System.IO
                 CreateDirectory(directoryPath);
 
             WriteToTextFile(filePath, objectToWrite, formatter, append);
+        }
+
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter<T> formatter, ICryptoTransform encryptor, bool append = false)
+        {
+            using (var innerStream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
+            {
+                using (var cryptoStream = new CryptoStream(innerStream, encryptor, CryptoStreamMode.Write))
+                {
+                    using (var writer = new StreamWriter(cryptoStream))
+                    {
+                        formatter.Serialize(writer, objectToWrite);
+                    }
+                }
+            }
+        }
+
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter<T> formatter, ICryptoTransform encryptor, bool append = false)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            WriteToTextFile(filePath, objectToWrite, formatter, encryptor, append);
         }
 
         /// <summary>
@@ -189,6 +233,33 @@ namespace System.IO
             return ReadFromTextFile(filePath, formatter, @default);
         }
 
+        public static T ReadFromTextFile<T>(string filePath, IStringFormatter formatter, ICryptoTransform decryptor, T @default = default)
+        {
+            if (File.Exists(filePath))
+            {
+                using (var innerStream = File.Open(filePath, FileMode.Open))
+                {
+                    using (var cryptoStream = new CryptoStream(innerStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var reader = new StreamReader(cryptoStream))
+                        {
+                            return formatter.Deserialize<T>(reader);
+                        }
+                    }
+                }
+            }
+
+            return @default;
+        }
+
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter formatter, ICryptoTransform decryptor, T @default = default)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            return ReadFromTextFile(filePath, formatter, decryptor, @default);
+        }
+
         public static T ReadFromTextFile<T>(string filePath, IStringFormatter<T> formatter, T @default = default)
         {
             if (File.Exists(filePath))
@@ -208,6 +279,33 @@ namespace System.IO
                 CreateDirectory(directoryPath);
 
             return ReadFromTextFile(filePath, formatter, @default);
+        }
+
+        public static T ReadFromTextFile<T>(string filePath, IStringFormatter<T> formatter, ICryptoTransform decryptor, T @default = default)
+        {
+            if (File.Exists(filePath))
+            {
+                using (var innerStream = File.Open(filePath, FileMode.Open))
+                {
+                    using (var cryptoStream = new CryptoStream(innerStream, decryptor, CryptoStreamMode.Read))
+                    {
+                        using (var reader = new StreamReader(cryptoStream))
+                        {
+                            return formatter.Deserialize(reader);
+                        }
+                    }
+                }
+            }
+
+            return @default;
+        }
+
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter<T> formatter, ICryptoTransform decryptor, T @default = default)
+        {
+            if (!DirectoryExists(directoryPath))
+                CreateDirectory(directoryPath);
+
+            return ReadFromTextFile(filePath, formatter, decryptor, @default);
         }
     }
 }
