@@ -4,7 +4,7 @@ namespace System.Runtime.Serialization
 {
     public interface IStringFormatter<T>
     {
-        string Serialize(TextWriter writer, T @object);
+        void Serialize(TextWriter writer, T @object);
 
         T Deserialize(TextReader reader);
     }
