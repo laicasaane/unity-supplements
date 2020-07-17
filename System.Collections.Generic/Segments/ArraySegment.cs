@@ -224,6 +224,9 @@
         public static implicit operator ArraySegment<T>(T[] source)
             => source == null ? Empty : new ArraySegment<T>(source);
 
+        public static implicit operator ArraySegment<T>(in ReadArray<T> source)
+            => new ArraySegment<T>(source);
+
         public static implicit operator Segment<T>(in ArraySegment<T> segment)
             => new Segment<T>(segment.source.GetSource(), segment.Offset, segment.Count);
 

@@ -224,6 +224,9 @@
         public static implicit operator ListSegment<T>(List<T> source)
             => source == null ? Empty : new ListSegment<T>(source);
 
+        public static implicit operator ListSegment<T>(in ReadList<T> source)
+            => new ListSegment<T>(source);
+
         public static implicit operator Segment<T>(in ListSegment<T> segment)
             => new Segment<T>(segment.source.GetSource(), segment.Offset, segment.Count);
 
