@@ -3,7 +3,7 @@
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct Offset
+    public readonly struct Offset : IEquatableReadOnlyStruct<Offset>
     {
         public readonly float Left;
 
@@ -43,6 +43,29 @@ namespace UnityEngine
 
         public override string ToString()
             => $"({this.Left}, {this.Right}, {this.Top}, {this.Bottom})";
+
+        public override int GetHashCode()
+        {
+            var hashCode = 551583723;
+            hashCode = hashCode * -1521134295 + this.Left.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Right.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Top.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Bottom.GetHashCode();
+            return hashCode;
+        }
+
+        public override bool Equals(object obj)
+            => obj is Offset other &&
+               this.Left == other.Left && this.Right == other.Right &&
+               this.Top == other.Top && this.Bottom == other.Bottom;
+
+        public bool Equals(Offset other)
+            => this.Left == other.Left && this.Right == other.Right &&
+               this.Top == other.Top && this.Bottom == other.Bottom;
+
+        public bool Equals(in Offset other)
+            => this.Left == other.Left && this.Right == other.Right &&
+               this.Top == other.Top && this.Bottom == other.Bottom;
 
         /// <summary>
         /// Shorthand for writing <see cref="Offset"/>(0, 0, 0, 0).

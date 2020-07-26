@@ -9,7 +9,7 @@ using System.Globalization;
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct LEBColor : IEquatable<LEBColor>, IFormattable
+    public readonly struct LEBColor : IEquatableReadOnlyStruct<LEBColor>, IFormattable
     {
         public static LEBColor Cyan { get; } = Color.cyan;
 
@@ -108,6 +108,12 @@ namespace UnityEngine
             => obj is LEBColor other && Equals(other);
 
         public bool Equals(LEBColor other)
+            => Mathf.Approximately(this.L, other.L) &&
+               Mathf.Approximately(this.E, other.E) &&
+               Mathf.Approximately(this.B, other.B) &&
+               Mathf.Approximately(this.A, other.A);
+
+        public bool Equals(in LEBColor other)
             => Mathf.Approximately(this.L, other.L) &&
                Mathf.Approximately(this.E, other.E) &&
                Mathf.Approximately(this.B, other.B) &&

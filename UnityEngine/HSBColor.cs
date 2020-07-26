@@ -4,7 +4,7 @@ using System.Globalization;
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct HSBColor : IEquatable<HSBColor>, IFormattable
+    public readonly struct HSBColor : IEquatableReadOnlyStruct<HSBColor>, IFormattable
     {
         public static HSBColor Cyan { get; } = Color.cyan;
 
@@ -87,6 +87,12 @@ namespace UnityEngine
             => obj is HSBColor other && Equals(other);
 
         public bool Equals(HSBColor other)
+            => Mathf.Approximately(this.H, other.H) &&
+               Mathf.Approximately(this.S, other.S) &&
+               Mathf.Approximately(this.B, other.B) &&
+               Mathf.Approximately(this.A, other.A);
+
+        public bool Equals(in HSBColor other)
             => Mathf.Approximately(this.H, other.H) &&
                Mathf.Approximately(this.S, other.S) &&
                Mathf.Approximately(this.B, other.B) &&
