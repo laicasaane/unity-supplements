@@ -4,10 +4,7 @@ using System.Collections.Generic;
 
 namespace Unity.Collections
 {
-    public readonly partial struct NativeArraySegment<T> :
-        ISegment<T>,
-        IEquatableReadOnlyStruct<NativeArraySegment<T>>,
-        IReadOnlyStructEqualityComparer<NativeArraySegment<T>>
+    public readonly partial struct NativeArraySegment<T> : ISegment<T>, IEquatableReadOnlyStruct<NativeArraySegment<T>>
         where T : struct
     {
         private readonly ReadNativeArray<T> source;
@@ -211,18 +208,6 @@ namespace Unity.Collections
                    other.Offset == this.Offset &&
                    other.Count == this.Count;
         }
-
-        public bool Equals(NativeArraySegment<T> x, NativeArraySegment<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(NativeArraySegment<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in NativeArraySegment<T> x, in NativeArraySegment<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in NativeArraySegment<T> obj)
-            => obj.GetHashCode();
 
         public static NativeArraySegment<T> Empty { get; } = new NativeArraySegment<T>(ReadNativeArray<T>.Empty);
 

@@ -1,9 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public readonly partial struct ListSegment<T> :
-        ISegment<T>,
-        IEquatableReadOnlyStruct<ListSegment<T>>,
-        IReadOnlyStructEqualityComparer<ListSegment<T>>
+    public readonly partial struct ListSegment<T> : ISegment<T>, IEquatableReadOnlyStruct<ListSegment<T>>
     {
         private readonly ReadList<T> source;
 
@@ -206,18 +203,6 @@
                    other.Offset == this.Offset &&
                    other.Count == this.Count;
         }
-
-        public bool Equals(ListSegment<T> x, ListSegment<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ListSegment<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ListSegment<T> x, in ListSegment<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ListSegment<T> obj)
-            => obj.GetHashCode();
 
         public static ListSegment<T> Empty { get; } = new ListSegment<T>();
 

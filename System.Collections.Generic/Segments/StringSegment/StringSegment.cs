@@ -2,10 +2,7 @@
 
 namespace System.Collections.Generic
 {
-    public readonly partial struct StringSegment :
-        ISegment<char>,
-        IEquatableReadOnlyStruct<StringSegment>,
-        IReadOnlyStructEqualityComparer<StringSegment>
+    public readonly partial struct StringSegment : ISegment<char>, IEquatableReadOnlyStruct<StringSegment>
     {
         private readonly string source;
 
@@ -212,18 +209,6 @@ namespace System.Collections.Generic
                    other.Offset == this.Offset &&
                    other.Count == this.Count;
         }
-
-        public bool Equals(StringSegment x, StringSegment y)
-            => x.Equals(in y);
-
-        public int GetHashCode(StringSegment obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in StringSegment x, in StringSegment y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in StringSegment obj)
-            => obj.GetHashCode();
 
         public override string ToString()
         {
