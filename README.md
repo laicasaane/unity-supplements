@@ -26,6 +26,10 @@
 - ReadArray\<T>
 - Singleton
 - Singleton\<T>
+- PseudoProbability
+- PseudoProbability.PRD
+- PseudoProbability.IMath
+- PseudoProbability.IRandom
 
 ## System.IO
 
@@ -78,6 +82,15 @@
 - Size
 - SizeInt
 - SingleLayer
+- ScreenResolution
+
+## Unity.Collections
+
+- ReadNativeArray\<T>
+- ReadNativeSlice\<T>
+- NativeArraySegment\<T>
+- NativeSliceSegment\<T>
+- NativeSegmentExtensions
 
 ## UnityEditor
 - SingleLayerDrawer
