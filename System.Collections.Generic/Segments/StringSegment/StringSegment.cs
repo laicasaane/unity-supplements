@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
 {
@@ -225,6 +225,20 @@ namespace System.Collections.Generic
         public int GetHashCode(in StringSegment obj)
             => obj.GetHashCode();
 
+        public override string ToString()
+        {
+            if (!this.HasSource || this.Count == 0)
+                return new string(new char[0]);
+
+            unsafe
+            {
+                fixed (char* p = this.source)
+                {
+                    return new string(p, this.Offset, this.Count);
+                }
+            }
+        }
+
         private static string _empty { get; } = new string(new char[0]);
 
         public static StringSegment Empty { get; } = new StringSegment(_empty);
@@ -234,6 +248,9 @@ namespace System.Collections.Generic
 
         public static implicit operator Segment<char>(in StringSegment segment)
             => new Segment<char>(new CharSource(segment.GetSource()), segment.Offset, segment.Count);
+
+        public static implicit operator string(in StringSegment segment)
+            => segment.ToString();
 
         public static bool operator ==(in StringSegment a, in StringSegment b)
             => a.Equals(in b);
