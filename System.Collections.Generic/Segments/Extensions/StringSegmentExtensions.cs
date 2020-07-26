@@ -2,6 +2,18 @@
 {
     public static class StringSegmentExtensions
     {
+        public static bool ValidateIndex<T>(in this StringSegment self, int index)
+            => self.HasSource && index >= 0 && index < self.Count;
+
+        /// <summary>
+        /// Creates an <see cref="SegmentReader{char}"/> over this segment.
+        /// </summary>
+        /// <typeparam name="T">The type of elements contained in the source.</typeparam>
+        /// <param name="segment">The segment.</param>
+        /// <returns>A new <see cref="SegmentReader{char}"/>.</returns>
+        public static SegmentReader<StringSegment, char> CreateReader(in this StringSegment segment)
+            => new SegmentReader<StringSegment, char>(segment);
+
         /// <summary>
         /// Creates a segment referencing this source.
         /// </summary>
