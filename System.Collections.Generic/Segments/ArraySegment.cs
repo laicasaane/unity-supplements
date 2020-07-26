@@ -240,7 +240,7 @@
         {
             private readonly ReadArray<T> source;
             private readonly int start;
-            private readonly int end; // cache Offset + Count, since it's a little slow
+            private readonly int end;
             private int current;
 
             internal Enumerator(in ArraySegment<T> segment)

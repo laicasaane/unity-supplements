@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 namespace System.Collections.Generic
 {
@@ -245,7 +245,7 @@ namespace System.Collections.Generic
         {
             private readonly string source;
             private readonly int start;
-            private readonly int end; // cache Offset + Count, since it's a little slow
+            private readonly int end;
             private int current;
 
             internal Enumerator(in StringSegment segment)
