@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 public static class ArrayExtensions
 {
@@ -9,13 +9,18 @@ public static class ArrayExtensions
         => self;
 
     public static T Get<T>(this object[] self, int index)
-        => self.Length > index && self[index] is T val ? val : default;
+    {
+        if (self == null)
+            return default;
+
+        return self.Length > index && self[index] is T val ? val : default;
+    }
 
     public static object[] Get<T>(this object[] self, int index, out T value)
     {
         value = default;
 
-        if (self.Length > index && self[index] is T val)
+        if (self != null && self.Length > index && self[index] is T val)
             value = val;
 
         return self;

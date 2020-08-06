@@ -13,8 +13,13 @@
 
         public static IReadOnlyList<T> Randomize<T>(this IEnumerable<T> collection, IRandom rand, ICache<T> cache)
         {
+            if (rand == null) throw new ArgumentNullException(nameof(rand));
+            if (cache == null) throw new ArgumentNullException(nameof(cache));
+
             cache.Clear();
-            cache.Input.AddRange(collection);
+
+            if (collection != null)
+                cache.Input.AddRange(collection);
 
             for (var i = 0; i < cache.Input.Count; i++)
             {
