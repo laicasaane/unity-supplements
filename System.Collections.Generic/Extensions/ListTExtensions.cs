@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public static class ListExtensions
+    public static class ListTExtensions
     {
         public static bool ValidateIndex<T>(this List<T> self, int index)
             => self != null && index >= 0 && index < self.Count;
