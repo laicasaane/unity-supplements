@@ -43,8 +43,9 @@
 ## System.Collection.Generics
 
 - IReadOnlyStructEqualityComparer\<T>
-- CollectionExtensions
-- ListExtensions
+- EnumerableTExtensions
+- CollectionTExtensions
+- ListTExtensions
 - Segment\<T>
 - Segment1\<T>
 - ArraySegment\<T>
@@ -58,6 +59,9 @@
 - ReadCollection\<T>
 - ReadDictionary\<TKey, TValue>
 - ReadList\<T>
+- Randomizer
+- Randomizer.IRandom
+- Randomizer.ICache\<T>
 
 ## System.Fluent
 
