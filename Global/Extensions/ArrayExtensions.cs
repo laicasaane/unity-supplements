@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 public static class ArrayExtensions
 {
@@ -30,10 +30,38 @@ public static class ArrayExtensions
     {
         value = default;
 
-        if (self.Length > index && self[index] is T val)
+        if (self != null)
+        {
+            if (self.Length > index && self[index] is T val)
+                value = val;
+
+            index += 1;
+        }
+
+        return self;
+    }
+
+    public static T[] Get<T, TResult>(this T[] self, int index, out TResult value)
+    {
+        value = default;
+
+        if (self != null && self.Length > index && self[index] is TResult val)
             value = val;
 
-        index += 1;
+        return self;
+    }
+
+    public static T[] GetThenMoveNext<T, TResult>(this T[] self, ref int index, out TResult value)
+    {
+        value = default;
+
+        if (self != null)
+        {
+            if (self.Length > index && self[index] is TResult val)
+                value = val;
+
+            index += 1;
+        }
 
         return self;
     }
