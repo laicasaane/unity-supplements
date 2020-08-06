@@ -18,14 +18,14 @@
             float Range(float min, float max);
         }
 
-        private sealed class PRandom : IRandom
+        private readonly struct PRandom : IRandom
         {
-            private readonly Random rand = new Random();
-
-            public float Value => (float)this.rand.NextDouble();
+            public float Value => (float)_rand.NextDouble();
 
             public float Range(float min, float max)
-                => (float)(this.rand.NextDouble() * (max - min) + min);
+                => (float)(_rand.NextDouble() * (max - min) + min);
+
+            private static readonly Random _rand = new Random();
 
             public static PRandom Default { get; } = new PRandom();
         }

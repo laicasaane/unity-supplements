@@ -13,12 +13,12 @@
             int Range(int min, int max);
         }
 
-        private sealed class PRandom : IRandom
+        private readonly struct PRandom : IRandom
         {
-            private readonly Random rand = new Random();
-
             public int Range(int min, int max)
-                => this.rand.Next(min, max);
+                => _rand.Next(min, max);
+
+            private static readonly Random _rand = new Random();
 
             public static PRandom Default { get; } = new PRandom();
         }
