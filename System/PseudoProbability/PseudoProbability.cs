@@ -6,12 +6,18 @@ namespace System
     {
         private readonly Dictionary<int, float> cValues;
         private readonly IMath math;
-        private readonly IRandom random;
+        private readonly IRandom rand;
 
-        public PseudoProbability(IMath math, IRandom random)
+        public PseudoProbability() : this(PMath.Default, PRandom.Default) { }
+
+        public PseudoProbability(IMath math) : this(math, PRandom.Default) { }
+
+        public PseudoProbability(IRandom rand) : this(PMath.Default, rand) { }
+
+        public PseudoProbability(IMath math, IRandom rand)
         {
-            this.math = math ?? throw new ArgumentNullException(nameof(random));
-            this.random = random ?? throw new ArgumentNullException(nameof(random));
+            this.math = math ?? throw new ArgumentNullException(nameof(rand));
+            this.rand = rand ?? throw new ArgumentNullException(nameof(rand));
             this.cValues = new Dictionary<int, float>();
             Generate();
         }
@@ -34,7 +40,7 @@ namespace System
         /// <returns></returns>
         public bool DoIHaveLuck(float chance)
         {
-            var r = this.random.Range(0f, 1f);
+            var r = this.rand.Value;
             return r <= chance;
         }
 
@@ -45,7 +51,7 @@ namespace System
         /// <returns></returns>
         public bool DoIHaveLuckInHundred(float chance)
         {
-            var r = this.random.Range(1f, 100f);
+            var r = this.rand.Range(1f, 101f);
             return r <= chance;
         }
 
@@ -56,7 +62,7 @@ namespace System
         /// <returns></returns>
         public bool DoIHaveLuckInHundred(int chance)
         {
-            var r = this.random.Range(1, 100);
+            var r = this.rand.Range(1, 101);
             return r <= chance;
         }
 
@@ -136,14 +142,17 @@ namespace System
 
         private bool DoIHaveLuck_Internal(int thousand, int n, int n_0, out int n_1)
         {
-            var c = this.cValues[thousand];
-            var p = c * n;
-            var r = this.random.Value * 100f;
-
-            if (r > p)
+            if (thousand < 1000)
             {
-                n_1 = n + 1;
-                return false;
+                var c = this.cValues[thousand];
+                var p = c * n;
+                var r = this.rand.Value * 100f;
+
+                if (r > p)
+                {
+                    n_1 = n + 1;
+                    return false;
+                }
             }
 
             n_1 = n_0;
