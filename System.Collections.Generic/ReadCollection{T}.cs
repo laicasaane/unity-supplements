@@ -48,18 +48,6 @@ namespace System.Collections.Generic
             return ReferenceEquals(this.source, other.source);
         }
 
-        public bool Equals(ReadCollection<T> x, ReadCollection<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ReadCollection<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ReadCollection<T> x, in ReadCollection<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ReadCollection<T> obj)
-            => obj.GetHashCode();
-
         public bool Contains(T item)
             => GetSource().Contains(item);
 

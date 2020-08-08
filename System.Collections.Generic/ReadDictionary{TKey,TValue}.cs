@@ -67,18 +67,6 @@ namespace System.Collections.Generic
             return ReferenceEquals(this.source, other.source);
         }
 
-        public bool Equals(ReadDictionary<TKey, TValue> x, ReadDictionary<TKey, TValue> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ReadDictionary<TKey, TValue> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ReadDictionary<TKey, TValue> x, in ReadDictionary<TKey, TValue> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ReadDictionary<TKey, TValue> obj)
-            => obj.GetHashCode();
-
         public bool ContainsKey(TKey key)
             => GetSource().ContainsKey(key);
 

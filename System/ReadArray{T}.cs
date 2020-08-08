@@ -64,18 +64,6 @@ namespace System
             return ReferenceEquals(this.source, other.source);
         }
 
-        public bool Equals(ReadArray<T> x, ReadArray<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ReadArray<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ReadArray<T> x, in ReadArray<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ReadArray<T> obj)
-            => obj.GetHashCode();
-
         public void CopyTo(Array array, long index)
             => GetSource().CopyTo(array, index);
 

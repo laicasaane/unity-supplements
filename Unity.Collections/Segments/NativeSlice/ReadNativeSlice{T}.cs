@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -66,26 +66,14 @@ namespace Unity.Collections
             return ReferenceEquals(this.source, other.source);
         }
 
-        public bool Equals(ReadNativeSlice<T> x, ReadNativeSlice<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ReadNativeSlice<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ReadNativeSlice<T> x, in ReadNativeSlice<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ReadNativeSlice<T> obj)
-            => obj.GetHashCode();
-
         public void CopyTo(T[] array)
             => GetSource().CopyTo(array);
 
-        public void CopyTo(in NativeArray<T> array)
+        public void CopyTo(NativeArray<T> array)
             => GetSource().CopyTo(array);
 
         public T[] ToArray()
-            => this.source.ToArray();
+            => GetSource().ToArray();
 
         public Enumerator GetEnumerator()
             => new Enumerator(this.hasSource ? this : Empty);

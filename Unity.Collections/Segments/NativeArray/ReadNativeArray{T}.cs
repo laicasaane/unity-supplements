@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -65,18 +65,6 @@ namespace Unity.Collections
 
             return ReferenceEquals(this.source, other.source);
         }
-
-        public bool Equals(ReadNativeArray<T> x, ReadNativeArray<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ReadNativeArray<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ReadNativeArray<T> x, in ReadNativeArray<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ReadNativeArray<T> obj)
-            => obj.GetHashCode();
 
         public void CopyTo(T[] array)
             => GetSource().CopyTo(array);

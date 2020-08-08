@@ -59,18 +59,6 @@ namespace System.Collections.Generic
             return ReferenceEquals(this.source, other.source);
         }
 
-        public bool Equals(ReadList<T> x, ReadList<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(ReadList<T> obj)
-            => obj.GetHashCode();
-
-        public bool Equals(in ReadList<T> x, in ReadList<T> y)
-            => x.Equals(in y);
-
-        public int GetHashCode(in ReadList<T> obj)
-            => obj.GetHashCode();
-
         public int BinarySearch(T item)
             => GetSource().BinarySearch(item);
 
