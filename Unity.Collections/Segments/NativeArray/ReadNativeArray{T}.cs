@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -73,7 +73,7 @@ namespace Unity.Collections
             => GetSource().CopyTo(array);
 
         public T[] ToArray()
-            => !this.hasSource || this.Length == 0 ? (new T[0]) : this.source.ToArray();
+            => GetSource().ToArray();
 
         public Enumerator GetEnumerator()
             => new Enumerator(this.hasSource ? this : Empty);
