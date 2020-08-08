@@ -2,7 +2,7 @@
 {
     public abstract class EnumValues<T> where T : struct, Enum
     {
-        public static ArraySegment<T> Values { get; }
+        public static ReadArray<T> Values { get; }
 
         [Obsolete("This property has been deprecated. Use UnderlyingValueCount instead.")]
         public static int ValueCount => UnderlyingValueCount;
