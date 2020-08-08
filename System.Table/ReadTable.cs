@@ -7,10 +7,10 @@ namespace System.Table
     public readonly struct ReadTable<T> : IReadTable<T> where T : IEntry
     {
         public int Count
-            => this.source.Count;
+            => GetSource().Count;
 
         public IEnumerable<T> Entries
-            => this.source.Entries;
+            => GetSource().Entries;
 
         private readonly Table<T> source;
         private readonly bool hasSource;
