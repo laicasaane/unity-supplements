@@ -14,6 +14,12 @@ namespace UnityEngine
             this.Height = height;
         }
 
+        public void Deconstruct(out float width, out float height)
+        {
+            width = this.Width;
+            height = this.Height;
+        }
+
         public override bool Equals(object obj)
             => obj is ScreenResolution other &&
                this.Width == other.Width &&

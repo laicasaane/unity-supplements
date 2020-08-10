@@ -64,6 +64,21 @@ namespace UnityEngine
             this.A = a;
         }
 
+        public void Deconstruct(out float h, out float s, out float b)
+        {
+            h = this.H;
+            s = this.S;
+            b = this.B;
+        }
+
+        public void Deconstruct(out float h, out float s, out float b, out float a)
+        {
+            h = this.H;
+            s = this.S;
+            b = this.B;
+            a = this.A;
+        }
+
         public HSBColor(in Color rgb)
         {
             RGBToHSB(rgb, out this.H, out this.S, out this.B, out this.A);

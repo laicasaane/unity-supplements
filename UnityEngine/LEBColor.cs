@@ -53,8 +53,12 @@ namespace UnityEngine
         /// </summary>
         public readonly float A;
 
-        public LEBColor(float l, float e, float b) : this(l, e, b, 1f)
+        public LEBColor(float l, float e, float b)
         {
+            this.L = l;
+            this.E = e;
+            this.B = b;
+            this.A = 1f;
         }
 
         public LEBColor(float l, float e, float b, float a)
@@ -68,6 +72,21 @@ namespace UnityEngine
         public LEBColor(in Color rgb)
         {
             RGBToLEB(rgb, out this.L, out this.E, out this.B, out this.A);
+        }
+
+        public void Deconstruct(out float l, out float e, out float b)
+        {
+            l = this.L;
+            e = this.E;
+            b = this.B;
+        }
+
+        public void Deconstruct(out float l, out float e, out float b, out float a)
+        {
+            l = this.L;
+            e = this.E;
+            b = this.B;
+            a = this.A;
         }
 
         public override string ToString()

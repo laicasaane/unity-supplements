@@ -26,6 +26,13 @@
             this.C = c;
         }
 
+        public void Deconstruct(out int a, out int b, out int c)
+        {
+            a = this.A;
+            b = this.B;
+            c = this.C;
+        }
+
         /// <summary>
         /// Converts to 1D index.
         /// </summary>
@@ -101,13 +108,6 @@
 
         public bool Equals(in Index3 other)
             => this.A == other.A && this.B == other.B && this.C == other.C;
-
-        public void Deconstruct(out int a, out int b, out int c)
-        {
-            a = this.A;
-            b = this.B;
-            c = this.C;
-        }
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C})";

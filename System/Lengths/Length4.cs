@@ -19,6 +19,14 @@
             this.D = d;
         }
 
+        public void Deconstruct(out int a, out int b, out int c, out int d)
+        {
+            a = this.A;
+            b = this.B;
+            c = this.C;
+            d = this.D;
+        }
+
         public override int GetHashCode()
         {
             var hashCode = 240067226;
@@ -83,14 +91,6 @@
         public bool Equals(in Length4 other)
             => this.A == other.A && this.B == other.B &&
                this.C == other.C && this.D == other.D;
-
-        public void Deconstruct(out int a, out int b, out int c, out int d)
-        {
-            a = this.A;
-            b = this.B;
-            c = this.C;
-            d = this.D;
-        }
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C}, {this.D})";

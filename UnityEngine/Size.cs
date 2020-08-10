@@ -19,6 +19,12 @@ namespace UnityEngine
             this.Area = width * height;
         }
 
+        public void Deconstruct(out float width, out float height)
+        {
+            width = this.Width;
+            height = this.Height;
+        }
+
         public override int GetHashCode()
         {
             var hashCode = 859600377;
@@ -59,12 +65,6 @@ namespace UnityEngine
         public bool Equals(in Size other)
             => Mathf.Approximately(this.Width, other.Width) &&
                Mathf.Approximately(this.Height, other.Height);
-
-        public void Deconstruct(out float width, out float height)
-        {
-            width = this.Width;
-            height = this.Height;
-        }
 
         public override string ToString()
             => $"({this.Width}, {this.Height})";

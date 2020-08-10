@@ -11,6 +11,12 @@
             this.Data = data;
         }
 
+        public void Deconstruct(out int id, out T data)
+        {
+            id = this.Id;
+            data = this.Data;
+        }
+
         public static implicit operator T(in ReadEntry<T> entry)
             => entry.Data;
 

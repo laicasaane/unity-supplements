@@ -21,6 +21,12 @@
             this.B = b;
         }
 
+        public void Deconstruct(out int a, out int b)
+        {
+            a = this.A;
+            b = this.B;
+        }
+
         /// <summary>
         /// Converts to 1D index.
         /// </summary>
@@ -70,12 +76,6 @@
 
         public bool Equals(in Index2 other)
             => this.A == other.A && this.B == other.B;
-
-        public void Deconstruct(out int a, out int b)
-        {
-            a = this.A;
-            b = this.B;
-        }
 
         public override string ToString()
             => $"({this.A}, {this.B})";

@@ -21,6 +21,15 @@
             this.E = e;
         }
 
+        public void Deconstruct(out int a, out int b, out int c, out int d, out int e)
+        {
+            a = this.A;
+            b = this.B;
+            c = this.C;
+            d = this.D;
+            e = this.E;
+        }
+
         /// <summary>
         /// Converts to 1D array index.
         /// </summary>
@@ -132,15 +141,6 @@
             => this.A == other.A && this.B == other.B &&
                this.C == other.C && this.D == other.D &&
                this.E == other.E;
-
-        public void Deconstruct(out int a, out int b, out int c, out int d, out int e)
-        {
-            a = this.A;
-            b = this.B;
-            c = this.C;
-            d = this.D;
-            e = this.E;
-        }
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C}, {this.D}, {this.E})";
