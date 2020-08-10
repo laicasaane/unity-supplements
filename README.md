@@ -87,6 +87,15 @@
 - SizeInt
 - SingleLayer
 - ScreenResolution
+- BoundsExtensions
+- ColorExtensions
+- MatrixExtenions
+- QuaternionExtensions
+- RangeExtensions
+- RayExtensions
+- RectExtensions
+- ResolutionExtensions
+- VectorExtensions
 
 ## Unity.Collections
 
