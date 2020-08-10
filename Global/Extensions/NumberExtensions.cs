@@ -4,7 +4,7 @@
         => value * 0.01;
 
     public static double Percent(this long value)
-        => value * 0.01f;
+        => value * 0.01;
 
     public static double Percent(this ulong value)
         => value * 0.01;
