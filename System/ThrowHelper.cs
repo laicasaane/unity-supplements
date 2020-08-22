@@ -108,6 +108,11 @@ namespace System
             return new InvalidOperationException("Enumeration has not started. Call MoveNext.");
         }
 
+        public static Exception GetInvalidOperationException_InvalidOperation_EnumOpCantHappen()
+        {
+            return new InvalidOperationException("The enumerator is invalidated due to changes made in the collection, such as adding, modifying, or deleting elements.");
+        }
+
         public static Exception GetInvalidOperationException_InvalidOperation_EnumEnded()
         {
             return new InvalidOperationException("Enumeration already finished.");

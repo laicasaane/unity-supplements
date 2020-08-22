@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
 namespace System.Collections.Generic
@@ -83,7 +84,7 @@ namespace System.Collections.Generic
             => GetSource().OnDeserialization(sender);
 
         public Enumerator GetEnumerator()
-            => new Enumerator(this.hasSource ? this : Empty);
+            => new Enumerator(GetSource());
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
             => GetEnumerator();
@@ -104,32 +105,105 @@ namespace System.Collections.Generic
         public static bool operator !=(in ReadDictionary<TKey, TValue> a, in ReadDictionary<TKey, TValue> b)
             => !a.Equals(in b);
 
-        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>, IDictionaryEnumerator
         {
-            private readonly Dictionary<TKey, TValue>.Enumerator source;
-            private readonly IEnumerator<KeyValuePair<TKey, TValue>> isource;
+            private readonly TKey[] keys;
+            private readonly TValue[] values;
+            private readonly int count;
 
-            internal Enumerator(in ReadDictionary<TKey, TValue> dict)
+            private int index;
+            private KeyValuePair<TKey, TValue> current;
+
+            internal Enumerator(in ReadDictionary<TKey, TValue> dictionary)
             {
-                this.source = dict.GetSource().GetEnumerator();
-                this.isource = this.source;
+                var dict = dictionary.GetSource();
+                this.keys = dict.Keys.ToArray();
+                this.values = dict.Values.ToArray();
+                this.count = dict.Count;
+
+                this.index = 0;
+                this.current = new KeyValuePair<TKey, TValue>();
+            }
+
+            public bool MoveNext()
+            {
+                // Use unsigned comparison since we set index to this.count+1 when the enumeration ends.
+                // this.count+1 could be negative if this.count is Int32.MaxValue
+                while ((uint)this.index < (uint)this.count)
+                {
+                    this.current = new KeyValuePair<TKey, TValue>(this.keys[this.index], this.values[this.index]);
+                    this.index++;
+                    return true;
+                }
+
+                this.index = this.count + 1;
+                this.current = new KeyValuePair<TKey, TValue>();
+                return false;
             }
 
             public KeyValuePair<TKey, TValue> Current
-                => this.source.Current;
+            {
+                get { return this.current; }
+            }
 
+            public void Dispose() { }
 
             object IEnumerator.Current
-                => this.source.Current;
+            {
+                get
+                {
+                    if (this.index == 0 || (this.index == this.count + 1))
+                    {
+                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumOpCantHappen();
+                    }
 
-            public bool MoveNext()
-                => this.source.MoveNext();
+                    return new KeyValuePair<TKey, TValue>(this.current.Key, this.current.Value);
+                }
+            }
 
             void IEnumerator.Reset()
-                => this.isource.Reset();
-
-            public void Dispose()
             {
+                this.index = 0;
+                this.current = new KeyValuePair<TKey, TValue>();
+            }
+
+            DictionaryEntry IDictionaryEnumerator.Entry
+            {
+                get
+                {
+                    if (this.index == 0 || (this.index == this.count + 1))
+                    {
+                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumOpCantHappen();
+                    }
+
+                    return new DictionaryEntry(this.current.Key, this.current.Value);
+                }
+            }
+
+            object IDictionaryEnumerator.Key
+            {
+                get
+                {
+                    if (this.index == 0 || (this.index == this.count + 1))
+                    {
+                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumOpCantHappen();
+                    }
+
+                    return this.current.Key;
+                }
+            }
+
+            object IDictionaryEnumerator.Value
+            {
+                get
+                {
+                    if (this.index == 0 || (this.index == this.count + 1))
+                    {
+                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumOpCantHappen();
+                    }
+
+                    return this.current.Value;
+                }
             }
         }
     }
