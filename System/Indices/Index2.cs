@@ -9,12 +9,6 @@
         public readonly int A;
         public readonly int B;
 
-        [Obsolete("This property has been deprecated. Use A instead.")]
-        public int X => this.A;
-
-        [Obsolete("This property has been deprecated. Use B instead.")]
-        public int Y => this.B;
-
         public Index2(int a, int b)
         {
             this.A = a;
@@ -37,6 +31,9 @@
         /// </returns>
         public int ToIndex1(int lengthA)
             => lengthA <= 0 ? 0 : this.A + this.B * lengthA;
+
+        public int ToIndex1(in Length2 length)
+            => length.A <= 0 ? 0 : this.A + this.B * length.A;
 
         public override int GetHashCode()
         {
@@ -126,5 +123,8 @@
         /// </returns>
         public static Index2 Convert(int index1, int lengthA)
             => lengthA <= 0 ? Zero: new Index2(index1 % lengthA, index1 / lengthA);
+
+        public static Index2 Convert(int index1, in Length2 length)
+            => length.A <= 0 ? Zero : new Index2(index1 % length.A, index1 / length.A);
     }
 }

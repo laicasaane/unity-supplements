@@ -4,9 +4,6 @@
     {
         public static ReadArray<T> Values { get; }
 
-        [Obsolete("This property has been deprecated. Use UnderlyingValueCount instead.")]
-        public static int ValueCount => UnderlyingValueCount;
-
         /// <summary>
         /// Total count of the underlying values
         /// </summary>

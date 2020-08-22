@@ -9,9 +9,6 @@ namespace UnityEngine
         public readonly int Height;
         public readonly int Area;
 
-        [Obsolete("This property has been deprecated. Use Area instead.")]
-        public int Total => this.Area;
-
         public SizeInt(int width, int height)
         {
             this.Width = width;

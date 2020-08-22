@@ -10,15 +10,6 @@
         public readonly int B;
         public readonly int C;
 
-        [Obsolete("This property has been deprecated. Use A instead.")]
-        public int X => this.A;
-
-        [Obsolete("This property has been deprecated. Use B instead.")]
-        public int Y => this.B;
-
-        [Obsolete("This property has been deprecated. Use C instead.")]
-        public int Z => this.C;
-
         public Index3(int a, int b, int c)
         {
             this.A = a;
