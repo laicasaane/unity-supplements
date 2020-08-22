@@ -1,4 +1,6 @@
-﻿namespace System.Collections.Generic
+﻿using System.Runtime.CompilerServices;
+
+namespace System.Collections.Generic
 {
     public readonly partial struct Segment<T> : ISegment<T>, IEquatableReadOnlyStruct<Segment<T>>
     {
@@ -11,22 +13,11 @@
         public int Count { get; }
 
         public T this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= this.Count)
-                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
-
-                return this.source[this.Offset + index];
-            }
-        }
+            => GetSource()[this.Offset + index];
 
         public Segment(in ReadArray<T> source)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            this.source = new ArraySource(source);
+            this.source = source == null ? _empty : new ArraySource(source);
             this.HasSource = true;
             this.Offset = 0;
             this.Count = this.source.Count;
@@ -34,10 +25,7 @@
 
         public Segment(in ReadArray<T> source, int offset, int count)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            this.source = new ArraySource(source);
+            this.source = source == null ? _empty : new ArraySource(source);
 
             // Validate arguments, check is minimal instructions with reduced branching for inlinable fast-path
             // Negative values discovered though conversion to high values when converted to unsigned
@@ -52,7 +40,7 @@
 
         public Segment(ISegmentSource<T> source)
         {
-            this.source = source ?? throw new ArgumentNullException(nameof(source));
+            this.source = source ?? _empty;
             this.HasSource = true;
             this.Offset = 0;
             this.Count = source.Count;
@@ -113,6 +101,10 @@
             return new Segment<T>(this.source, this.Offset, count);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal ISegmentSource<T> GetSource()
+            => this.HasSource ? this.source : _empty;
+
         public Segment<T> TakeLast(int count)
             => Skip(this.Count - count);
 
@@ -139,15 +131,13 @@
 
         public T[] ToArray()
         {
-            if (!this.HasSource || this.Count == 0)
-                return new T[0];
-
+            var source = GetSource();
             var array = new T[this.Count];
             var count = this.Count + this.Offset;
 
             for (int i = this.Offset, j = 0; i < count; i++, j++)
             {
-                array[j] = this.source[i];
+                array[j] = source[i];
             }
 
             return array;
@@ -157,14 +147,16 @@
         {
             var index = -1;
 
-            if (!this.HasSource)
+            var source = GetSource();
+
+            if (source.Count <= 0)
                 return index;
 
             var count = this.Count + this.Offset;
 
             for (var i = this.Offset; i < count; i++)
             {
-                if (this.source[i].Equals(item))
+                if (source[i].Equals(item))
                 {
                     index = i;
                     break;
@@ -176,14 +168,12 @@
 
         public bool Contains(T item)
         {
-            if (!this.HasSource)
-                return false;
-
+            var source = GetSource();
             var count = this.Count + this.Offset;
 
             for (var i = this.Offset; i < count; i++)
             {
-                if (this.source[i].Equals(item))
+                if (source[i].Equals(item))
                     return true;
             }
 
@@ -214,13 +204,13 @@
         {
             var hashCode = 1328453276;
             hashCode = hashCode * -1521134295 + this.HasSource.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<ISegmentSource<T>>.Default.GetHashCode(this.source);
+            hashCode = hashCode * -1521134295 + GetSource().GetHashCode();
             hashCode = hashCode * -1521134295 + this.Offset.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Count.GetHashCode();
             return hashCode;
         }
 
-        private static ReadArray<T> _empty { get; } = new T[0];
+        private static ArraySource _empty { get; } = new ArraySource(new T[0]);
 
         public static Segment<T> Empty { get; } = new Segment<T>(_empty);
 
