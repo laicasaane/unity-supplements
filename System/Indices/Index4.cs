@@ -69,11 +69,11 @@
 
         public override int GetHashCode()
         {
-            var hashCode = 240067226;
-            hashCode = hashCode * -1521134295 + this.A;
-            hashCode = hashCode * -1521134295 + this.B;
-            hashCode = hashCode * -1521134295 + this.C;
-            hashCode = hashCode * -1521134295 + this.D;
+            var hashCode = -1408250474;
+            hashCode = hashCode * -1521134295 + this.A.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.B.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.C.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.D.GetHashCode();
             return hashCode;
         }
 

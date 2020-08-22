@@ -21,14 +21,6 @@
             b = this.B;
         }
 
-        public override int GetHashCode()
-        {
-            var hashCode = 240067226;
-            hashCode = hashCode * -1521134295 + this.A;
-            hashCode = hashCode * -1521134295 + this.B;
-            return hashCode;
-        }
-
         public override bool Equals(object obj)
             => obj is Length2 other &&
                this.A == other.A &&
@@ -62,6 +54,14 @@
 
         public override string ToString()
             => $"({this.A}, {this.B})";
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1817952719;
+            hashCode = hashCode * -1521134295 + this.A.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.B.GetHashCode();
+            return hashCode;
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Length2"/>(0, 0).

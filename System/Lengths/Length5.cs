@@ -30,17 +30,6 @@
             e = this.E;
         }
 
-        public override int GetHashCode()
-        {
-            var hashCode = 240067226;
-            hashCode = hashCode * -1521134295 + this.A;
-            hashCode = hashCode * -1521134295 + this.B;
-            hashCode = hashCode * -1521134295 + this.C;
-            hashCode = hashCode * -1521134295 + this.D;
-            hashCode = hashCode * -1521134295 + this.E;
-            return hashCode;
-        }
-
         public override bool Equals(object obj)
             => obj is Length5 other &&
                this.A == other.A &&
@@ -111,6 +100,17 @@
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C}, {this.D}, {this.E})";
+
+        public override int GetHashCode()
+        {
+            var hashCode = 2124721030;
+            hashCode = hashCode * -1521134295 + this.A.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.B.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.C.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.D.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.E.GetHashCode();
+            return hashCode;
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Length5"/>(0, 0, 0, 0, 0).
