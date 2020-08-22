@@ -32,6 +32,7 @@
 - PseudoProbability.IRandom
 - Array1Pool\<T>
 - EnumRandomizer\<T>
+- EnumIndex
 
 ## System.IO
 
