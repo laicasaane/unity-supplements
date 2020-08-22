@@ -30,6 +30,8 @@
 - PseudoProbability.PRD
 - PseudoProbability.IMath
 - PseudoProbability.IRandom
+- Array1Pool\<T>
+- EnumRandomizer\<T>
 
 ## System.IO
 
@@ -62,6 +64,8 @@
 - Randomizer
 - Randomizer.IRandom
 - Randomizer.ICache\<T>
+- ListPool\<T>
+- DictionaryPool\<TKey, TValue>
 
 ## System.Fluent
 
