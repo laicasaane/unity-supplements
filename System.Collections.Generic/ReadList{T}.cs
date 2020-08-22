@@ -19,15 +19,7 @@ namespace System.Collections.Generic
             => this.hasSource ? this.source : _empty;
 
         public T this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= this.Count)
-                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
-
-                return this.source[index];
-            }
-        }
+            => GetSource()[index];
 
         public int Count { get; }
 
@@ -39,24 +31,18 @@ namespace System.Collections.Generic
 
         public bool Equals(ReadList<T> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public bool Equals(in ReadList<T> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public int BinarySearch(T item)
@@ -141,14 +127,12 @@ namespace System.Collections.Generic
 
         public T[] ToArray()
         {
-            if (!this.hasSource || this.Count == 0)
-                return new T[0];
+            var source = GetSource();
+            var array = new T[source.Count];
 
-            var array = new T[this.Count];
-
-            for (var i = 0; i < this.Count; i++)
+            for (var i = 0; i < source.Count; i++)
             {
-                array[i] = this.source[i];
+                array[i] = source[i];
             }
 
             return array;

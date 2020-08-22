@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Unity.Collections
 {
     public readonly partial struct NativeArraySegment<T>
     {
-        private readonly struct NativeArraySource : ISegmentSource<T>
+        private readonly struct NativeArraySource : ISegmentSource<T>,
+            IEquatable<NativeArraySource>, IEquatableReadOnlyStruct<NativeArraySource>
         {
             private readonly ReadNativeArray<T> source;
 
@@ -18,6 +20,21 @@ namespace Unity.Collections
             {
                 this.source = source;
             }
+
+            public override int GetHashCode()
+                => this.source.GetHashCode();
+
+            public override bool Equals(object obj)
+                => obj is NativeArraySource other && Equals(in other);
+
+            public bool Equals(NativeArraySource other)
+                => this.source.Equals(in other.source);
+
+            public bool Equals(in NativeArraySource other)
+                => this.source.Equals(in other.source);
+
+            public bool Equals(ISegmentSource<T> obj)
+                => obj is NativeArraySource other && Equals(in other);
         }
     }
 }

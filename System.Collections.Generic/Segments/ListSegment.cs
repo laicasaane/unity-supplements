@@ -174,46 +174,37 @@
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = (int)2166136261;
-                hash = (hash * 16777619) ^ this.Offset;
-                hash = (hash * 16777619) ^ this.Count;
-                hash ^= this.source.GetHashCode();
-
-                return hash;
-            }
-        }
-
         public override bool Equals(object obj)
             => obj is ListSegment<T> other && Equals(in other);
 
         public bool Equals(ListSegment<T> other)
-        {
-            return this.source.Equals(other.source) &&
-                   other.Offset == this.Offset &&
-                   other.Count == this.Count;
-        }
+            => this.HasSource == other.HasSource && this.source.Equals(in other.source) &&
+               other.Count == this.Count && other.Offset == this.Offset;
 
         public bool Equals(in ListSegment<T> other)
+            => this.HasSource == other.HasSource && this.source.Equals(in other.source) &&
+               other.Count == this.Count && other.Offset == this.Offset;
+
+        public override int GetHashCode()
         {
-            return this.source.Equals(other.source) &&
-                   other.Offset == this.Offset &&
-                   other.Count == this.Count;
+            var hashCode = 1328453276;
+            hashCode = hashCode * -1521134295 + this.HasSource.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.source.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Offset.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Count.GetHashCode();
+            return hashCode;
         }
 
         public static ListSegment<T> Empty { get; } = new ListSegment<T>();
 
         public static implicit operator ListSegment<T>(List<T> source)
-            => source == null ? Empty : new ListSegment<T>(source);
+            => new ListSegment<T>(source.AsReadList());
 
         public static implicit operator ListSegment<T>(in ReadList<T> source)
             => new ListSegment<T>(source);
 
         public static implicit operator Segment<T>(in ListSegment<T> segment)
-            => new Segment<T>(segment.source.GetSource(), segment.Offset, segment.Count);
+            => new Segment<T>(segment.source, segment.Offset, segment.Count);
 
         public static bool operator ==(in ListSegment<T> a, in ListSegment<T> b)
             => a.Equals(in b);

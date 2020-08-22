@@ -48,24 +48,18 @@ namespace System.Collections.Generic
 
         public bool Equals(ReadDictionary<TKey, TValue> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public bool Equals(in ReadDictionary<TKey, TValue> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public bool ContainsKey(TKey key)

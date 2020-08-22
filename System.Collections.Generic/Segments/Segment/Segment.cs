@@ -21,7 +21,7 @@
             }
         }
 
-        public Segment(T[] source)
+        public Segment(in ReadArray<T> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -32,7 +32,7 @@
             this.Count = this.source.Count;
         }
 
-        public Segment(T[] source, int offset, int count)
+        public Segment(in ReadArray<T> source, int offset, int count)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -199,51 +199,36 @@
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hash = (int)2166136261;
-                hash = (hash * 16777619) ^ this.Offset;
-                hash = (hash * 16777619) ^ this.Count;
-
-                // The array hash is expected to be an evenly-distributed mixture of bits,
-                // so rather than adding the cost of another rotation we just xor it.
-                hash ^= this.HasSource ? this.source.GetHashCode() : _empty.GetHashCode();
-
-                return hash;
-            }
-        }
-
         public override bool Equals(object obj)
             => obj is Segment<T> other && Equals(in other);
 
         public bool Equals(Segment<T> other)
-        {
-            if (!this.HasSource)
-                return !other.HasSource || ReferenceEquals(other.source, _empty);
-
-            return ReferenceEquals(this.source, other.source) &&
-                   other.Offset == this.Offset &&
-                   other.Count == this.Count;
-        }
+            => this.HasSource == other.HasSource && this.source.Equals(other) &&
+               this.Count == other.Count && this.Offset == other.Offset;
 
         public bool Equals(in Segment<T> other)
-        {
-            if (!this.HasSource)
-                return !other.HasSource || ReferenceEquals(other.source, _empty);
+            => this.HasSource == other.HasSource && this.source.Equals(other) &&
+               this.Count == other.Count && this.Offset == other.Offset;
 
-            return ReferenceEquals(this.source, other.source) &&
-                   other.Offset == this.Offset &&
-                   other.Count == this.Count;
+        public override int GetHashCode()
+        {
+            var hashCode = 1328453276;
+            hashCode = hashCode * -1521134295 + this.HasSource.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<ISegmentSource<T>>.Default.GetHashCode(this.source);
+            hashCode = hashCode * -1521134295 + this.Offset.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Count.GetHashCode();
+            return hashCode;
         }
 
-        private static T[] _empty { get; } = new T[0];
+        private static ReadArray<T> _empty { get; } = new T[0];
 
         public static Segment<T> Empty { get; } = new Segment<T>(_empty);
 
         public static implicit operator Segment<T>(T[] source)
-            => source == null ? Empty : new Segment<T>(source);
+            => new Segment<T>(source.AsReadArray());
+
+        public static implicit operator Segment<T>(in ReadArray<T> source)
+            => new Segment<T>(source);
 
         public static bool operator ==(in Segment<T> a, in Segment<T> b)
             => a.Equals(in b);

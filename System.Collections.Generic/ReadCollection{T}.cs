@@ -28,24 +28,18 @@ namespace System.Collections.Generic
 
         public bool Equals(ReadCollection<T> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public bool Equals(in ReadCollection<T> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public bool Contains(T item)

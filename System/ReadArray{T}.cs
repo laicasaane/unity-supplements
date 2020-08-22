@@ -21,15 +21,7 @@ namespace System
             => this.hasSource ? this.source : _empty;
 
         public T this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= this.Length)
-                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
-
-                return this.source[index];
-            }
-        }
+            => GetSource()[index];
 
         public int Length { get; }
 
@@ -44,24 +36,18 @@ namespace System
 
         public bool Equals(ReadArray<T> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public bool Equals(in ReadArray<T> other)
         {
-            if (this.source == null && other.source == null)
-                return true;
+            var source = GetSource();
+            var otherSource = other.GetSource();
 
-            if (this.source == null || other.source == null)
-                return false;
-
-            return ReferenceEquals(this.source, other.source);
+            return source == otherSource;
         }
 
         public void CopyTo(Array array, long index)
@@ -72,14 +58,12 @@ namespace System
 
         public T[] ToArray()
         {
-            if (!this.hasSource || this.Length == 0)
-                return new T[0];
+            var source = GetSource();
+            var array = new T[source.Length];
 
-            var array = new T[this.Length];
-
-            for (var i = 0; i < this.Length; i++)
+            for (var i = 0; i < source.Length; i++)
             {
-                array[i] = this.source[i];
+                array[i] = source[i];
             }
 
             return array;

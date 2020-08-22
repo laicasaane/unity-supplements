@@ -52,7 +52,7 @@
             this.Count = count;
         }
 
-        public Segment(List<T> source)
+        public Segment(in ReadList<T> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -63,7 +63,7 @@
             this.Count = source.Count;
         }
 
-        public Segment(List<T> source, int offset, int count)
+        public Segment(in ReadList<T> source, int offset, int count)
         {
             // Validate arguments, check is minimal instructions with reduced branching for inlinable fast-path
             // Negative values discovered though conversion to high values when converted to unsigned
@@ -78,6 +78,9 @@
         }
 
         public static implicit operator Segment<T>(List<T> source)
+            => source == null ? Empty : new Segment<T>(source.AsReadList());
+
+        public static implicit operator Segment<T>(in ReadList<T> source)
             => source == null ? Empty : new Segment<T>(source);
     }
 }

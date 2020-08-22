@@ -46,7 +46,7 @@ namespace System.Table
         public static implicit operator ReadTable<T>(Table<T> table)
             => new ReadTable<T>(table);
 
-        private static readonly Table<T> _empty = new Table<T>(0);
+        private static Table<T> _empty { get; } = new Table<T>(0);
 
         public static ReadTable<T> Empty { get; } = new ReadTable<T>(_empty);
 
