@@ -13,14 +13,14 @@
             int Range(int min, int max);
         }
 
-        private readonly struct PRandom : IRandom
+        private readonly struct DefaultRandom : IRandom
         {
             public int Range(int min, int max)
                 => _rand.Next(min, max);
 
             private static readonly Random _rand = new Random();
 
-            public static PRandom Default { get; } = new PRandom();
+            public static DefaultRandom Default { get; } = new DefaultRandom();
         }
     }
 }

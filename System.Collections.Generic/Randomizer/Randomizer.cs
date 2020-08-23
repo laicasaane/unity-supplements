@@ -3,13 +3,13 @@
     public static partial class Randomizer
     {
         public static IReadOnlyList<T> Randomize<T>(this IEnumerable<T> collection)
-            => Randomize(collection, PRandom.Default, PCache<T>.Default);
+            => Randomize(collection, DefaultRandom.Default, DefaultCache<T>.Default);
 
         public static IReadOnlyList<T> Randomize<T>(this IEnumerable<T> collection, IRandom rand)
-            => Randomize(collection, rand, PCache<T>.Default);
+            => Randomize(collection, rand, DefaultCache<T>.Default);
 
         public static IReadOnlyList<T> Randomize<T>(this IEnumerable<T> collection, ICache<T> cache)
-            => Randomize(collection, PRandom.Default, cache);
+            => Randomize(collection, DefaultRandom.Default, cache);
 
         public static IReadOnlyList<T> Randomize<T>(this IEnumerable<T> collection, IRandom rand, ICache<T> cache)
         {
@@ -32,9 +32,9 @@
         }
 
         public static IReadOnlyList<T> RandomizeAllocated<T>(this IEnumerable<T> collection)
-            => Randomize(collection, PRandom.Default, new PCache<T>());
+            => Randomize(collection, DefaultRandom.Default, new DefaultCache<T>());
 
         public static IReadOnlyList<T> RandomizeAllocated<T>(this IEnumerable<T> collection, IRandom rand)
-            => Randomize(collection, rand, new PCache<T>());
+            => Randomize(collection, rand, new DefaultCache<T>());
     }
 }

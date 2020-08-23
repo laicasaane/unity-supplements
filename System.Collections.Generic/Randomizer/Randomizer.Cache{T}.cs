@@ -11,7 +11,7 @@
             void Clear();
         }
 
-        private sealed class PCache<T> : ICache<T>
+        private sealed class DefaultCache<T> : ICache<T>
         {
             public List<T> Input { get; } = new List<T>();
 
@@ -23,7 +23,7 @@
                 this.Output.Clear();
             }
 
-            public static PCache<T> Default { get; } = new PCache<T>();
+            public static DefaultCache<T> Default { get; } = new DefaultCache<T>();
         }
     }
 }
