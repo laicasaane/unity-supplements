@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace System.Runtime.Serialization
+namespace System.Runtime.Serialization.Formatters.Text
 {
     public interface ITextFormatter
     {
