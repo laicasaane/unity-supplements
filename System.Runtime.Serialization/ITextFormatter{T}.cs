@@ -2,7 +2,7 @@
 
 namespace System.Runtime.Serialization
 {
-    public interface IStringFormatter<T>
+    public interface ITextFormatter<T>
     {
         void Serialize(TextWriter writer, T @object);
 

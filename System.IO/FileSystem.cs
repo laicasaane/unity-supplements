@@ -128,7 +128,7 @@ namespace System.IO
         /// <param name="objectToWrite">The object instance to write to the text file.</param>
         /// <param name="formatter">The formatter to serialize the object.</param>
         /// <param name="append">If false the file will be overwritten if it already exists. If true the contents will be appended to the file.</param>
-        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter formatter, bool append = false)
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, ITextFormatter formatter, bool append = false)
         {
             using (var writer = new StreamWriter(filePath, append))
             {
@@ -136,7 +136,7 @@ namespace System.IO
             }
         }
 
-        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter formatter, bool append = false)
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, ITextFormatter formatter, bool append = false)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -144,7 +144,7 @@ namespace System.IO
             WriteToTextFile(filePath, objectToWrite, formatter, append);
         }
 
-        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter formatter, ICryptoTransform encryptor, bool append = false)
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, ITextFormatter formatter, ICryptoTransform encryptor, bool append = false)
         {
             using (var innerStream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
             {
@@ -158,7 +158,7 @@ namespace System.IO
             }
         }
 
-        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter formatter, ICryptoTransform encryptor, bool append = false)
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, ITextFormatter formatter, ICryptoTransform encryptor, bool append = false)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -166,7 +166,7 @@ namespace System.IO
             WriteToTextFile(filePath, objectToWrite, formatter, encryptor, append);
         }
 
-        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter<T> formatter, bool append = false)
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, ITextFormatter<T> formatter, bool append = false)
         {
             using (var writer = new StreamWriter(filePath, append))
             {
@@ -174,7 +174,7 @@ namespace System.IO
             }
         }
 
-        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter<T> formatter, bool append = false)
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, ITextFormatter<T> formatter, bool append = false)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -182,7 +182,7 @@ namespace System.IO
             WriteToTextFile(filePath, objectToWrite, formatter, append);
         }
 
-        public static void WriteToTextFile<T>(string filePath, T objectToWrite, IStringFormatter<T> formatter, ICryptoTransform encryptor, bool append = false)
+        public static void WriteToTextFile<T>(string filePath, T objectToWrite, ITextFormatter<T> formatter, ICryptoTransform encryptor, bool append = false)
         {
             using (var innerStream = File.Open(filePath, append ? FileMode.Append : FileMode.Create))
             {
@@ -196,7 +196,7 @@ namespace System.IO
             }
         }
 
-        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, IStringFormatter<T> formatter, ICryptoTransform encryptor, bool append = false)
+        public static void WriteToTextFile<T>(string directoryPath, string filePath, T objectToWrite, ITextFormatter<T> formatter, ICryptoTransform encryptor, bool append = false)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -212,7 +212,7 @@ namespace System.IO
         /// <param name="formatter">The formatter to deserialize the text file.</param>
         /// <param name="default">The default value to return if the file cannot be read.</param>
         /// <returns>Returns a new instance of the object read from the text file.</returns>
-        public static T ReadFromTextFile<T>(string filePath, IStringFormatter formatter, T @default = default)
+        public static T ReadFromTextFile<T>(string filePath, ITextFormatter formatter, T @default = default)
         {
             if (File.Exists(filePath))
             {
@@ -225,7 +225,7 @@ namespace System.IO
             return @default;
         }
 
-        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter formatter, T @default = default)
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, ITextFormatter formatter, T @default = default)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -233,7 +233,7 @@ namespace System.IO
             return ReadFromTextFile(filePath, formatter, @default);
         }
 
-        public static T ReadFromTextFile<T>(string filePath, IStringFormatter formatter, ICryptoTransform decryptor, T @default = default)
+        public static T ReadFromTextFile<T>(string filePath, ITextFormatter formatter, ICryptoTransform decryptor, T @default = default)
         {
             if (File.Exists(filePath))
             {
@@ -252,7 +252,7 @@ namespace System.IO
             return @default;
         }
 
-        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter formatter, ICryptoTransform decryptor, T @default = default)
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, ITextFormatter formatter, ICryptoTransform decryptor, T @default = default)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -260,7 +260,7 @@ namespace System.IO
             return ReadFromTextFile(filePath, formatter, decryptor, @default);
         }
 
-        public static T ReadFromTextFile<T>(string filePath, IStringFormatter<T> formatter, T @default = default)
+        public static T ReadFromTextFile<T>(string filePath, ITextFormatter<T> formatter, T @default = default)
         {
             if (File.Exists(filePath))
             {
@@ -273,7 +273,7 @@ namespace System.IO
             return @default;
         }
 
-        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter<T> formatter, T @default = default)
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, ITextFormatter<T> formatter, T @default = default)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
@@ -281,7 +281,7 @@ namespace System.IO
             return ReadFromTextFile(filePath, formatter, @default);
         }
 
-        public static T ReadFromTextFile<T>(string filePath, IStringFormatter<T> formatter, ICryptoTransform decryptor, T @default = default)
+        public static T ReadFromTextFile<T>(string filePath, ITextFormatter<T> formatter, ICryptoTransform decryptor, T @default = default)
         {
             if (File.Exists(filePath))
             {
@@ -300,7 +300,7 @@ namespace System.IO
             return @default;
         }
 
-        public static T ReadFromTextFile<T>(string directoryPath, string filePath, IStringFormatter<T> formatter, ICryptoTransform decryptor, T @default = default)
+        public static T ReadFromTextFile<T>(string directoryPath, string filePath, ITextFormatter<T> formatter, ICryptoTransform decryptor, T @default = default)
         {
             if (!DirectoryExists(directoryPath))
                 CreateDirectory(directoryPath);
