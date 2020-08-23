@@ -26,7 +26,7 @@ namespace System
             if (item == null)
                 return;
 
-            Clear(item);
+            item.Clear();
             Return(item.Length, item);
         }
 
@@ -40,7 +40,7 @@ namespace System
                 if (item == null)
                     continue;
 
-                Clear(item);
+                item.Clear();
                 Return(item.Length, item);
             }
         }
@@ -55,7 +55,7 @@ namespace System
                 if (item == null)
                     continue;
 
-                Clear(item);
+                item.Clear();
                 Return(item.Length, item);
             }
         }
@@ -68,14 +68,6 @@ namespace System
             }
 
             pool.Enqueue(item);
-        }
-
-        private static void Clear(T[] self)
-        {
-            for (var i = 0; i < self.Length; i++)
-            {
-                self[i] = default;
-            }
         }
 
         private class PoolMap : Dictionary<int, Queue<T[]>> { }

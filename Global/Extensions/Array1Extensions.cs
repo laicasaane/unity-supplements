@@ -65,4 +65,15 @@ public static class Array1Extensions
 
         return self;
     }
+
+    public static void Clear<T>(this T[] self)
+    {
+        if (self == null)
+            return;
+
+        for (var i = 0; i < self.Length; i++)
+        {
+            self[i] = default;
+        }
+    }
 }
