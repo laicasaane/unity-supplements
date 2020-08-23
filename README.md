@@ -2,7 +2,7 @@
 
 ## Global
 
-- ArrayExtensions
+- Array1Extensions
 - StringExtensions
 - NumberExtensions
 
@@ -22,8 +22,7 @@
 - Length4
 - Length5
 - Converter
-- Enum\<T>
-- ReadArray\<T>
+- ReadArray1\<T>
 - Singleton
 - Singleton\<T>
 - PseudoProbability
@@ -31,6 +30,7 @@
 - PseudoProbability.IMath
 - PseudoProbability.IRandom
 - Array1Pool\<T>
+- Enum\<T>
 - EnumRandomizer\<T>
 - EnumIndex
 
@@ -38,10 +38,10 @@
 
 - FileSystem
 
-## System.Runtime.Serialization
+## System.Runtime.Serialization.Formatters.Text
 
-- IStringFormatter
-- IStringFormatter\<T>
+- ITextFormatter
+- ITextFormatter\<T>
 
 ## System.Collection.Generics
 
@@ -51,7 +51,7 @@
 - ListTExtensions
 - Segment\<T>
 - Segment1\<T>
-- ArraySegment\<T>
+- Array1Segment\<T>
 - ListSegment\<T>
 - StringSegment
 - SegmentReader\<T, U>
@@ -65,6 +65,8 @@
 - Randomizer
 - Randomizer.IRandom
 - Randomizer.ICache\<T>
+- IPool\<T>
+- Pool\<T>
 - ListPool\<T>
 - DictionaryPool\<TKey, TValue>
 
