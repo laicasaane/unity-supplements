@@ -2,7 +2,7 @@
 {
     public abstract class EnumValues<T> where T : struct, Enum
     {
-        public static ReadArray<T> Values { get; }
+        public static ReadArray1<T> Values { get; }
 
         /// <summary>
         /// Total count of the underlying values

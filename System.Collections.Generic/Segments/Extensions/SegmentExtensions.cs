@@ -8,7 +8,7 @@
         public static bool ValidateIndex<T>(in this Segment<T> self, int index)
             => self.HasSource && index >= 0 && index < self.Count;
 
-        public static bool ValidateIndex<T>(in this ArraySegment<T> self, int index)
+        public static bool ValidateIndex<T>(in this Array1Segment<T> self, int index)
             => self.HasSource && index >= 0 && index < self.Count;
 
         public static bool ValidateIndex<T>(in this ListSegment<T> self, int index)
@@ -29,8 +29,8 @@
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="segment">The segment.</param>
         /// <returns>A new <see cref="SegmentReader{T}"/>.</returns>
-        public static SegmentReader<ArraySegment<T>, T> CreateReader<T>(in this ArraySegment<T> segment)
-            => new SegmentReader<ArraySegment<T>, T>(segment);
+        public static SegmentReader<Array1Segment<T>, T> CreateReader<T>(in this Array1Segment<T> segment)
+            => new SegmentReader<Array1Segment<T>, T>(segment);
 
         /// <summary>
         /// Creates an <see cref="SegmentReader{T}"/> over this segment.

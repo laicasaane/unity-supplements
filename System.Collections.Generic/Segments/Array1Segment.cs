@@ -1,8 +1,8 @@
 ﻿namespace System.Collections.Generic
 {
-    public readonly partial struct ArraySegment<T> : ISegment<T>, IEquatableReadOnlyStruct<ArraySegment<T>>
+    public readonly partial struct Array1Segment<T> : ISegment<T>, IEquatableReadOnlyStruct<Array1Segment<T>>
     {
-        private readonly ReadArray<T> source;
+        private readonly ReadArray1<T> source;
 
         public bool HasSource { get; }
 
@@ -21,7 +21,7 @@
             }
         }
 
-        public ArraySegment(in ReadArray<T> source)
+        public Array1Segment(in ReadArray1<T> source)
         {
             this.source = source;
             this.HasSource = true;
@@ -29,7 +29,7 @@
             this.Count = this.source.Length;
         }
 
-        public ArraySegment(in ReadArray<T> source, int offset, int count)
+        public Array1Segment(in ReadArray1<T> source, int offset, int count)
         {
             this.source = source;
 
@@ -44,7 +44,7 @@
             this.Count = count;
         }
 
-        public ArraySegment<T> Slice(int index)
+        public Array1Segment<T> Slice(int index)
         {
             if (!this.HasSource)
                 return Empty;
@@ -52,10 +52,10 @@
             if ((uint)index > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new ArraySegment<T>(this.source, this.Offset + index, this.Count - index);
+            return new Array1Segment<T>(this.source, this.Offset + index, this.Count - index);
         }
 
-        public ArraySegment<T> Slice(int index, int count)
+        public Array1Segment<T> Slice(int index, int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -63,10 +63,10 @@
             if ((uint)index > (uint)this.Count || (uint)count > (uint)(this.Count - index))
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new ArraySegment<T>(this.source, this.Offset + index, count);
+            return new Array1Segment<T>(this.source, this.Offset + index, count);
         }
 
-        public ArraySegment<T> Skip(int count)
+        public Array1Segment<T> Skip(int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -74,10 +74,10 @@
             if ((uint)count > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new ArraySegment<T>(this.source, this.Offset + count, this.Count - count);
+            return new Array1Segment<T>(this.source, this.Offset + count, this.Count - count);
         }
 
-        public ArraySegment<T> Take(int count)
+        public Array1Segment<T> Take(int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -85,13 +85,13 @@
             if ((uint)count > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new ArraySegment<T>(this.source, this.Offset, count);
+            return new Array1Segment<T>(this.source, this.Offset, count);
         }
 
-        public ArraySegment<T> TakeLast(int count)
+        public Array1Segment<T> TakeLast(int count)
             => Skip(this.Count - count);
 
-        public ArraySegment<T> SkipLast(int count)
+        public Array1Segment<T> SkipLast(int count)
             => Take(this.Count - count);
 
         ISegment<T> ISegment<T>.Slice(int index)
@@ -175,13 +175,13 @@
             => GetEnumerator();
 
         public override bool Equals(object obj)
-            => obj is ArraySegment<T> other && Equals(in other);
+            => obj is Array1Segment<T> other && Equals(in other);
 
-        public bool Equals(ArraySegment<T> other)
+        public bool Equals(Array1Segment<T> other)
             => this.HasSource == other.HasSource && this.source.Equals(in other.source) &&
                other.Count == this.Count && other.Offset == this.Offset;
 
-        public bool Equals(in ArraySegment<T> other)
+        public bool Equals(in Array1Segment<T> other)
             => this.HasSource == other.HasSource && this.source.Equals(in other.source) &&
                other.Count == this.Count && other.Offset == this.Offset;
 
@@ -195,31 +195,31 @@
             return hashCode;
         }
 
-        public static ArraySegment<T> Empty { get; } = new ArraySegment<T>();
+        public static Array1Segment<T> Empty { get; } = new Array1Segment<T>();
 
-        public static implicit operator ArraySegment<T>(T[] source)
-            => new ArraySegment<T>(source.AsReadArray());
+        public static implicit operator Array1Segment<T>(T[] source)
+            => new Array1Segment<T>(source.AsReadArray());
 
-        public static implicit operator ArraySegment<T>(in ReadArray<T> source)
-            => new ArraySegment<T>(source);
+        public static implicit operator Array1Segment<T>(in ReadArray1<T> source)
+            => new Array1Segment<T>(source);
 
-        public static implicit operator Segment<T>(in ArraySegment<T> segment)
+        public static implicit operator Segment<T>(in Array1Segment<T> segment)
             => new Segment<T>(segment.source, segment.Offset, segment.Count);
 
-        public static bool operator ==(in ArraySegment<T> a, in ArraySegment<T> b)
+        public static bool operator ==(in Array1Segment<T> a, in Array1Segment<T> b)
             => a.Equals(in b);
 
-        public static bool operator !=(in ArraySegment<T> a, in ArraySegment<T> b)
+        public static bool operator !=(in Array1Segment<T> a, in Array1Segment<T> b)
             => !a.Equals(in b);
 
         public struct Enumerator : IEnumerator<T>
         {
-            private readonly ReadArray<T> source;
+            private readonly ReadArray1<T> source;
             private readonly int start;
             private readonly int end;
             private int current;
 
-            internal Enumerator(in ArraySegment<T> segment)
+            internal Enumerator(in Array1Segment<T> segment)
             {
                 this.source = segment.source;
 

@@ -1,11 +1,11 @@
 ﻿using System;
 
-public static class ArrayExtensions
+public static class Array1Extensions
 {
     public static bool ValidateIndex<T>(this T[] self, int index)
         => self != null && index >= 0 && index < self.Length;
 
-    public static ReadArray<T> AsReadArray<T>(this T[] self)
+    public static ReadArray1<T> AsReadArray<T>(this T[] self)
         => self;
 
     public static T Get<T>(this object[] self, int index)

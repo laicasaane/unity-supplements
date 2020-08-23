@@ -2,9 +2,9 @@
 {
     public readonly partial struct Segment<T>
     {
-        private readonly struct ArraySource : ISegmentSource<T>, IEquatable<ArraySource>, IEquatableReadOnlyStruct<ArraySource>
+        private readonly struct Array1Source : ISegmentSource<T>, IEquatable<Array1Source>, IEquatableReadOnlyStruct<Array1Source>
         {
-            private readonly ReadArray<T> source;
+            private readonly ReadArray1<T> source;
 
             public int Count
                 => this.source.Length;
@@ -12,7 +12,7 @@
             public T this[int index]
                 => this.source[index];
 
-            public ArraySource(in ReadArray<T> source)
+            public Array1Source(in ReadArray1<T> source)
             {
                 this.source = source;
             }
@@ -21,16 +21,16 @@
                 => this.source.GetHashCode();
 
             public override bool Equals(object obj)
-                => obj is ArraySource other && Equals(in other);
+                => obj is Array1Source other && Equals(in other);
 
-            public bool Equals(ArraySource other)
+            public bool Equals(Array1Source other)
                 => this.source.Equals(in other.source);
 
-            public bool Equals(in ArraySource other)
+            public bool Equals(in Array1Source other)
                 => this.source.Equals(in other.source);
 
             public bool Equals(ISegmentSource<T> obj)
-                => obj is ArraySource other && Equals(in other);
+                => obj is Array1Source other && Equals(in other);
         }
     }
 }

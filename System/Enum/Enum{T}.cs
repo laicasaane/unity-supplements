@@ -6,9 +6,9 @@
 
         public static Type UnderlyingType { get; }
 
-        public static ReadArray<T> Values { get; }
+        public static ReadArray1<T> Values { get; }
 
-        public static ReadArray<string> Names { get; }
+        public static ReadArray1<string> Names { get; }
 
         static Enum()
         {

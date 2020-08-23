@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 
 namespace System
 {
-    public readonly struct ReadArray<T> : IReadOnlyList<T>, IEquatableReadOnlyStruct<ReadArray<T>>
+    public readonly struct ReadArray1<T> : IReadOnlyList<T>, IEquatableReadOnlyStruct<ReadArray1<T>>
     {
         private readonly T[] source;
         private readonly bool hasSource;
 
-        public ReadArray(T[] source)
+        public ReadArray1(T[] source)
         {
             this.source = source ?? _empty;
             this.Length = this.source.Length;
@@ -32,9 +32,9 @@ namespace System
             => GetSource().GetHashCode();
 
         public override bool Equals(object obj)
-            => obj is ReadArray<T> other && Equals(in other);
+            => obj is ReadArray1<T> other && Equals(in other);
 
-        public bool Equals(ReadArray<T> other)
+        public bool Equals(ReadArray1<T> other)
         {
             var source = GetSource();
             var otherSource = other.GetSource();
@@ -42,7 +42,7 @@ namespace System
             return source == otherSource;
         }
 
-        public bool Equals(in ReadArray<T> other)
+        public bool Equals(in ReadArray1<T> other)
         {
             var source = GetSource();
             var otherSource = other.GetSource();
@@ -80,15 +80,15 @@ namespace System
 
         private static T[] _empty { get; } = new T[0];
 
-        public static ReadArray<T> Empty { get; } = new ReadArray<T>(_empty);
+        public static ReadArray1<T> Empty { get; } = new ReadArray1<T>(_empty);
 
-        public static implicit operator ReadArray<T>(T[] source)
-            => source == null ? Empty : new ReadArray<T>(source);
+        public static implicit operator ReadArray1<T>(T[] source)
+            => source == null ? Empty : new ReadArray1<T>(source);
 
-        public static bool operator ==(in ReadArray<T> a, in ReadArray<T> b)
+        public static bool operator ==(in ReadArray1<T> a, in ReadArray1<T> b)
             => a.Equals(in b);
 
-        public static bool operator !=(in ReadArray<T> a, in ReadArray<T> b)
+        public static bool operator !=(in ReadArray1<T> a, in ReadArray1<T> b)
             => !a.Equals(in b);
 
         public struct Enumerator : IEnumerator<T>
@@ -97,7 +97,7 @@ namespace System
             private readonly int end;
             private int current;
 
-            internal Enumerator(in ReadArray<T> array)
+            internal Enumerator(in ReadArray1<T> array)
             {
                 this.source = array.GetSource();
                 this.end = this.source.Length;

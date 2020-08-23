@@ -15,17 +15,17 @@ namespace System.Collections.Generic
         public T this[int index]
             => GetSource()[this.Offset + index];
 
-        public Segment(in ReadArray<T> source)
+        public Segment(in ReadArray1<T> source)
         {
-            this.source = source == null ? _empty : new ArraySource(source);
+            this.source = source == null ? _empty : new Array1Source(source);
             this.HasSource = true;
             this.Offset = 0;
             this.Count = this.source.Count;
         }
 
-        public Segment(in ReadArray<T> source, int offset, int count)
+        public Segment(in ReadArray1<T> source, int offset, int count)
         {
-            this.source = source == null ? _empty : new ArraySource(source);
+            this.source = source == null ? _empty : new Array1Source(source);
 
             // Validate arguments, check is minimal instructions with reduced branching for inlinable fast-path
             // Negative values discovered though conversion to high values when converted to unsigned
@@ -210,14 +210,14 @@ namespace System.Collections.Generic
             return hashCode;
         }
 
-        private static ArraySource _empty { get; } = new ArraySource(new T[0]);
+        private static Array1Source _empty { get; } = new Array1Source(new T[0]);
 
         public static Segment<T> Empty { get; } = new Segment<T>(_empty);
 
         public static implicit operator Segment<T>(T[] source)
             => new Segment<T>(source.AsReadArray());
 
-        public static implicit operator Segment<T>(in ReadArray<T> source)
+        public static implicit operator Segment<T>(in ReadArray1<T> source)
             => new Segment<T>(source);
 
         public static bool operator ==(in Segment<T> a, in Segment<T> b)
