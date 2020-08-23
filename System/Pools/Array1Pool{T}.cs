@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace System
 {
@@ -11,12 +10,12 @@ namespace System
         {
             if (_poolMap.TryGetValue(size, out var pool))
             {
-                if (pool.TryDequeue(out var item))
-                    return item;
+                if (pool.Count > 0)
+                    return pool.Dequeue();
             }
             else
             {
-                _poolMap.TryAdd(size, new ConcurrentQueue<T[]>());
+                _poolMap.Add(size, new Queue<T[]>());
             }
 
             return new T[size];
@@ -65,10 +64,7 @@ namespace System
         {
             if (!_poolMap.TryGetValue(size, out var pool))
             {
-                pool = new ConcurrentQueue<T[]>();
-
-                if (!_poolMap.TryAdd(size, pool))
-                    return;
+                _poolMap.Add(size, pool = new Queue<T[]>());
             }
 
             pool.Enqueue(item);
@@ -82,6 +78,6 @@ namespace System
             }
         }
 
-        private class PoolMap : ConcurrentDictionary<int, ConcurrentQueue<T[]>> { }
+        private class PoolMap : Dictionary<int, Queue<T[]>> { }
     }
 }

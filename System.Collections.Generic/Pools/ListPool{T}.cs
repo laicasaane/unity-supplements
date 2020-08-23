@@ -1,18 +1,11 @@
-﻿using System.Collections.Concurrent;
-
-namespace System.Collections.Generic
+﻿namespace System.Collections.Generic
 {
     public static class ListPool<T>
     {
-        private static readonly ConcurrentQueue<List<T>> _pool = new ConcurrentQueue<List<T>>();
+        private static readonly Pool<List<T>> _pool = new Pool<List<T>>();
 
         public static List<T> Get()
-        {
-            if (_pool.TryDequeue(out var item))
-                return item;
-
-            return new List<T>();
-        }
+            => _pool.Get();
 
         public static void Return(List<T> item)
         {
@@ -20,7 +13,7 @@ namespace System.Collections.Generic
                 return;
 
             item.Clear();
-            _pool.Enqueue(item);
+            _pool.Return(item);
         }
 
         public static void Return(params List<T>[] items)
@@ -34,7 +27,7 @@ namespace System.Collections.Generic
                     continue;
 
                 item.Clear();
-                _pool.Enqueue(item);
+                _pool.Return(item);
             }
         }
 
@@ -49,7 +42,7 @@ namespace System.Collections.Generic
                     continue;
 
                 item.Clear();
-                _pool.Enqueue(item);
+                _pool.Return(item);
             }
         }
     }

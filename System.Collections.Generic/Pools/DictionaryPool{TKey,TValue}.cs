@@ -1,18 +1,11 @@
-﻿using System.Collections.Concurrent;
-
-namespace System.Collections.Generic
+﻿namespace System.Collections.Generic
 {
     public static class DictionaryPool<TKey, TValue>
     {
-        private static readonly ConcurrentQueue<Dictionary<TKey, TValue>> _pool = new ConcurrentQueue<Dictionary<TKey, TValue>>();
+        private static readonly Pool<Dictionary<TKey, TValue>> _pool = new Pool<Dictionary<TKey, TValue>>();
 
         public static Dictionary<TKey, TValue> Get()
-        {
-            if (_pool.TryDequeue(out var item))
-                return item;
-
-            return new Dictionary<TKey, TValue>();
-        }
+            => _pool.Get();
 
         public static void Return(Dictionary<TKey, TValue> item)
         {
@@ -20,7 +13,7 @@ namespace System.Collections.Generic
                 return;
 
             item.Clear();
-            _pool.Enqueue(item);
+            _pool.Return(item);
         }
 
         public static void Return(params Dictionary<TKey, TValue>[] items)
@@ -34,7 +27,7 @@ namespace System.Collections.Generic
                     continue;
 
                 item.Clear();
-                _pool.Enqueue(item);
+                _pool.Return(item);
             }
         }
 
@@ -49,7 +42,7 @@ namespace System.Collections.Generic
                     continue;
 
                 item.Clear();
-                _pool.Enqueue(item);
+                _pool.Return(item);
             }
         }
     }
