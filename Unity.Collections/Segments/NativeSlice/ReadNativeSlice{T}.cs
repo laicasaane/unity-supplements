@@ -20,7 +20,7 @@ namespace Unity.Collections
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal NativeSlice<T> GetSource()
-            => this.hasSource ? this.source : _empty;
+            => (this.hasSource && this.source.Stride > 0) ? this.source : _empty;
 
         public T this[int index]
         {
@@ -76,7 +76,7 @@ namespace Unity.Collections
             => GetSource().ToArray();
 
         public Enumerator GetEnumerator()
-            => new Enumerator(this.hasSource ? this : Empty);
+            => new Enumerator(this);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();
@@ -84,7 +84,7 @@ namespace Unity.Collections
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        private static NativeSlice<T> _empty { get; } = new NativeSlice<T>();
+        private static NativeSlice<T> _empty { get; } = new NativeSlice<T>(ReadNativeArray<T>.Empty.GetSource());
 
         public static ReadNativeSlice<T> Empty { get; } = new ReadNativeSlice<T>(_empty);
 

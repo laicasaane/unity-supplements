@@ -20,7 +20,7 @@ namespace Unity.Collections
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal NativeArray<T> GetSource()
-            => this.hasSource ? this.source : _empty;
+            => (this.hasSource && this.source.IsCreated) ? this.source : _empty;
 
         public T this[int index]
         {
@@ -76,7 +76,7 @@ namespace Unity.Collections
             => GetSource().ToArray();
 
         public Enumerator GetEnumerator()
-            => new Enumerator(this.hasSource ? this : Empty);
+            => new Enumerator(this);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();

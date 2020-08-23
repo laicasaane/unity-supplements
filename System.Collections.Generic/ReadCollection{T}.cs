@@ -18,7 +18,7 @@ namespace System.Collections.Generic
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ICollection<T> GetSource()
-            => this.hasSource ? this.source : _empty;
+            => this.hasSource ? (this.source ?? _empty) : _empty;
 
         public override int GetHashCode()
             => GetSource().GetHashCode();

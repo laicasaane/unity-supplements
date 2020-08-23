@@ -18,7 +18,7 @@ namespace System
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal T[] GetSource()
-            => this.hasSource ? this.source : _empty;
+            => this.hasSource ? (this.source ?? _empty) : _empty;
 
         public T this[int index]
             => GetSource()[index];
@@ -70,7 +70,7 @@ namespace System
         }
 
         public Enumerator GetEnumerator()
-            => new Enumerator(this.hasSource ? this : Empty);
+            => new Enumerator(this);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();

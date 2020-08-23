@@ -21,7 +21,7 @@ namespace System.Collections.Generic
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Dictionary<TKey, TValue> GetSource()
-            => this.hasSource ? this.source : _empty;
+            => this.hasSource ? (this.source ?? _empty) : _empty;
 
         public TValue this[TKey key]
             => GetSource()[key];
@@ -78,7 +78,7 @@ namespace System.Collections.Generic
             => GetSource().OnDeserialization(sender);
 
         public Enumerator GetEnumerator()
-            => new Enumerator(GetSource());
+            => new Enumerator(this);
 
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
             => GetEnumerator();
