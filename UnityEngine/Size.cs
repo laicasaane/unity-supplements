@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace UnityEngine
 {
@@ -7,13 +7,14 @@ namespace UnityEngine
     {
         public readonly float Width;
         public readonly float Height;
-        public readonly float Area;
+
+        public float Area
+            => this.Width * this.Height;
 
         public Size(float width, float height)
         {
             this.Width = width;
             this.Height = height;
-            this.Area = width * height;
         }
 
         public void Deconstruct(out float width, out float height)
