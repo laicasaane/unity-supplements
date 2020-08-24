@@ -78,6 +78,9 @@ namespace UnityEngine
         public static implicit operator Size(in Vector2 value)
             => new Size(value.x, value.y);
 
+        public static implicit operator Size(in Vector2Int value)
+            => new Size(value.x, value.y);
+
         public static implicit operator Vector2(in Size value)
             => new Vector2(value.Width, value.Height);
 
