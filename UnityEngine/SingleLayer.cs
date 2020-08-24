@@ -79,6 +79,15 @@ namespace UnityEngine
             => value.value;
 
         public static implicit operator SingleLayer(int value)
-            => new SingleLayer { value = value };
+            => new SingleLayer(value);
+
+        public static implicit operator SingleLayer(string name)
+            => new SingleLayer(name);
+
+        public static bool operator ==(SingleLayer lhs, SingleLayer rhs)
+            => lhs.value == rhs.value;
+
+        public static bool operator !=(SingleLayer lhs, SingleLayer rhs)
+            => lhs.value != rhs.value;
     }
 }
