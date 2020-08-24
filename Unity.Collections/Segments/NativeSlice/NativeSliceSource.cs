@@ -5,8 +5,7 @@ namespace Unity.Collections
 {
     public readonly partial struct NativeSliceSegment<T>
     {
-        private readonly struct NativeSliceSource : ISegmentSource<T>,
-            IEquatable<NativeSliceSource>, IEquatableReadOnlyStruct<NativeSliceSource>
+        private readonly struct NativeSliceSource : IReadSegmentSource<T>, IEquatableReadOnlyStruct<NativeSliceSource>
         {
             private readonly ReadNativeSlice<T> source;
 
@@ -33,7 +32,7 @@ namespace Unity.Collections
             public bool Equals(in NativeSliceSource other)
                 => this.source.Equals(in other.source);
 
-            public bool Equals(ISegmentSource<T> obj)
+            public bool Equals(IReadSegmentSource<T> obj)
                 => obj is NativeSliceSource other && Equals(in other);
         }
     }

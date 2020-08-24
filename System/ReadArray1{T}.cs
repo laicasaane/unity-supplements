@@ -78,7 +78,7 @@ namespace System
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        private static T[] _empty { get; } = new T[0];
+        internal static T[] _empty { get; } = new T[0];
 
         public static ReadArray1<T> Empty { get; } = new ReadArray1<T>(_empty);
 

@@ -8,4 +8,13 @@
 
         int GetHashCode();
     }
+
+    public interface IReadSegmentSource<T> : IEquatable<IReadSegmentSource<T>>
+    {
+        int Count { get; }
+
+        T this[int index] { get; }
+
+        int GetHashCode();
+    }
 }

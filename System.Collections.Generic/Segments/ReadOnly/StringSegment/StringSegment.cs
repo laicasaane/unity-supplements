@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Runtime.CompilerServices;
 
-namespace Unity.Collections
+namespace System.Collections.Generic
 {
-    public readonly partial struct NativeArraySegment<T> : IReadSegment<T>, IEquatableReadOnlyStruct<NativeArraySegment<T>>
-        where T : struct
+    public readonly partial struct StringSegment : IReadSegment<char>, IEquatableReadOnlyStruct<StringSegment>
     {
-        private readonly ReadNativeArray<T> source;
+        private readonly string source;
 
         public bool HasSource { get; }
 
@@ -15,7 +12,7 @@ namespace Unity.Collections
 
         public int Count { get; }
 
-        public T this[int index]
+        public char this[int index]
         {
             get
             {
@@ -26,17 +23,17 @@ namespace Unity.Collections
             }
         }
 
-        public NativeArraySegment(in ReadNativeArray<T> source)
+        public StringSegment(string source)
         {
-            this.source = source;
+            this.source = source ?? _empty;
             this.HasSource = true;
             this.Offset = 0;
             this.Count = this.source.Length;
         }
 
-        public NativeArraySegment(in ReadNativeArray<T> source, int offset, int count)
+        public StringSegment(string source, int offset, int count)
         {
-            this.source = source;
+            this.source = source ?? _empty;
 
             // Validate arguments, check is minimal instructions with reduced branching for inlinable fast-path
             // Negative values discovered though conversion to high values when converted to unsigned
@@ -49,7 +46,11 @@ namespace Unity.Collections
             this.Count = count;
         }
 
-        public NativeArraySegment<T> Slice(int index)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private string GetSource()
+            => this.HasSource ? this.source : _empty;
+
+        public StringSegment Slice(int index)
         {
             if (!this.HasSource)
                 return Empty;
@@ -57,10 +58,10 @@ namespace Unity.Collections
             if ((uint)index > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new NativeArraySegment<T>(this.source, this.Offset + index, this.Count - index);
+            return new StringSegment(this.source, this.Offset + index, this.Count - index);
         }
 
-        public NativeArraySegment<T> Slice(int index, int count)
+        public StringSegment Slice(int index, int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -68,10 +69,10 @@ namespace Unity.Collections
             if ((uint)index > (uint)this.Count || (uint)count > (uint)(this.Count - index))
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new NativeArraySegment<T>(this.source, this.Offset + index, count);
+            return new StringSegment(this.source, this.Offset + index, count);
         }
 
-        public NativeArraySegment<T> Skip(int count)
+        public StringSegment Skip(int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -79,10 +80,10 @@ namespace Unity.Collections
             if ((uint)count > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new NativeArraySegment<T>(this.source, this.Offset + count, this.Count - count);
+            return new StringSegment(this.source, this.Offset + count, this.Count - count);
         }
 
-        public NativeArraySegment<T> Take(int count)
+        public StringSegment Take(int count)
         {
             if (!this.HasSource)
                 return Empty;
@@ -90,39 +91,39 @@ namespace Unity.Collections
             if ((uint)count > (uint)this.Count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new NativeArraySegment<T>(this.source, this.Offset, count);
+            return new StringSegment(this.source, this.Offset, count);
         }
 
-        public NativeArraySegment<T> TakeLast(int count)
+        public StringSegment TakeLast(int count)
             => Skip(this.Count - count);
 
-        public NativeArraySegment<T> SkipLast(int count)
+        public StringSegment SkipLast(int count)
             => Take(this.Count - count);
 
-        IReadSegment<T> IReadSegment<T>.Slice(int index)
+        IReadSegment<char> IReadSegment<char>.Slice(int index)
             => Slice(index);
 
-        IReadSegment<T> IReadSegment<T>.Slice(int index, int count)
+        IReadSegment<char> IReadSegment<char>.Slice(int index, int count)
             => Slice(index, count);
 
-        IReadSegment<T> IReadSegment<T>.Skip(int count)
+        IReadSegment<char> IReadSegment<char>.Skip(int count)
             => Skip(count);
 
-        IReadSegment<T> IReadSegment<T>.Take(int count)
+        IReadSegment<char> IReadSegment<char>.Take(int count)
             => Take(count);
 
-        IReadSegment<T> IReadSegment<T>.TakeLast(int count)
+        IReadSegment<char> IReadSegment<char>.TakeLast(int count)
             => TakeLast(count);
 
-        IReadSegment<T> IReadSegment<T>.SkipLast(int count)
+        IReadSegment<char> IReadSegment<char>.SkipLast(int count)
             => SkipLast(count);
 
-        public T[] ToArray()
+        public char[] ToArray()
         {
-            if (this.HasSource || this.Count == 0)
-                return new T[0];
+            if (!this.HasSource || this.Count == 0)
+                return new char[0];
 
-            var array = new T[this.Count];
+            var array = new char[this.Count];
             var count = this.Count + this.Offset;
 
             for (int i = this.Offset, j = 0; i < count; i++, j++)
@@ -133,7 +134,7 @@ namespace Unity.Collections
             return array;
         }
 
-        public int IndexOf(T item)
+        public int IndexOf(char item)
         {
             var index = -1;
 
@@ -154,7 +155,7 @@ namespace Unity.Collections
             return index >= 0 ? index - this.Offset : -1;
         }
 
-        public bool Contains(T item)
+        public bool Contains(char item)
         {
             if (!this.HasSource)
                 return false;
@@ -173,7 +174,7 @@ namespace Unity.Collections
         public Enumerator GetEnumerator()
             => new Enumerator(this.HasSource ? this : Empty);
 
-        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+        IEnumerator<char> IEnumerable<char>.GetEnumerator()
             => GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -186,54 +187,70 @@ namespace Unity.Collections
                 var hash = (int)2166136261;
                 hash = (hash * 16777619) ^ this.Offset;
                 hash = (hash * 16777619) ^ this.Count;
-                hash ^= this.source.GetHashCode();
+                hash ^= GetSource().GetHashCode();
 
                 return hash;
             }
         }
 
         public override bool Equals(object obj)
-            => obj is NativeArraySegment<T> other && Equals(in other);
+            => obj is StringSegment other && Equals(in other);
 
-        public bool Equals(NativeArraySegment<T> other)
+        public bool Equals(StringSegment other)
         {
-            return this.source.Equals(in other.source) &&
+            return GetSource().Equals(other.source) &&
                    other.Offset == this.Offset &&
                    other.Count == this.Count;
         }
 
-        public bool Equals(in NativeArraySegment<T> other)
+        public bool Equals(in StringSegment other)
         {
-            return this.source.Equals(in other.source) &&
+            return GetSource().Equals(other.source) &&
                    other.Offset == this.Offset &&
                    other.Count == this.Count;
         }
 
-        public static NativeArraySegment<T> Empty { get; } = new NativeArraySegment<T>(ReadNativeArray<T>.Empty);
+        public override string ToString()
+        {
+            if (!this.HasSource || this.Count == 0)
+                return new string(new char[0]);
 
-        public static implicit operator NativeArraySegment<T>(in NativeArray<T> source)
-            => source.IsCreated ? new NativeArraySegment<T>(source) : Empty;
+            unsafe
+            {
+                fixed (char* p = this.source)
+                {
+                    return new string(p, this.Offset, this.Count);
+                }
+            }
+        }
 
-        public static implicit operator NativeArraySegment<T>(in ReadNativeArray<T> source)
-            => new NativeArraySegment<T>(source);
+        private static string _empty { get; } = new string(new char[0]);
 
-        public static implicit operator ReadSegment<T>(in NativeArraySegment<T> segment)
-            => new ReadSegment<T>(new NativeArraySource(segment.source.GetSource()), segment.Offset, segment.Count);
+        public static StringSegment Empty { get; } = new StringSegment(_empty);
 
-        public static bool operator ==(in NativeArraySegment<T> a, in NativeArraySegment<T> b)
+        public static implicit operator StringSegment(string source)
+            => source == null ? Empty : new StringSegment(source);
+
+        public static implicit operator ReadSegment<char>(in StringSegment segment)
+            => new ReadSegment<char>(new CharSource(segment.GetSource()), segment.Offset, segment.Count);
+
+        public static implicit operator string(in StringSegment segment)
+            => segment.ToString();
+
+        public static bool operator ==(in StringSegment a, in StringSegment b)
             => a.Equals(in b);
 
-        public static bool operator !=(in NativeArraySegment<T> a, in NativeArraySegment<T> b)
+        public static bool operator !=(in StringSegment a, in StringSegment b)
             => !a.Equals(in b);
 
-        public struct Enumerator : IEnumerator<T>
+        public struct Enumerator : IEnumerator<char>
         {
-            private readonly ReadNativeArray<T> source;
+            private readonly string source;
             private readonly int start;
             private readonly int end;
             private int current;
 
-            internal Enumerator(in NativeArraySegment<T> segment)
+            internal Enumerator(in StringSegment segment)
             {
                 this.source = segment.source;
 
@@ -261,7 +278,7 @@ namespace Unity.Collections
                 return false;
             }
 
-            public T Current
+            public char Current
             {
                 get
                 {

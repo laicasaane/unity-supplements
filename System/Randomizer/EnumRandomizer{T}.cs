@@ -18,7 +18,7 @@ namespace System
         {
         }
 
-        public EnumRandomizer(in Segment<T> values)
+        public EnumRandomizer(in ReadSegment<T> values)
         {
             if (values.Count <= 0)
                 throw new ArgumentOutOfRangeException(nameof(values), "Must be greater than 0");
@@ -73,10 +73,10 @@ namespace System
         public static T Random(params T[] enumValues)
             => RandomInternal(enumValues);
 
-        public static T Random(in Segment<T> enumValues)
+        public static T Random(in ReadSegment<T> enumValues)
             => RandomInternal(enumValues);
 
-        private static T RandomInternal(in Segment<T> enumValues)
+        private static T RandomInternal(in ReadSegment<T> enumValues)
         {
             if (!enumValues.HasSource || enumValues.Count <= 0)
                 return default;

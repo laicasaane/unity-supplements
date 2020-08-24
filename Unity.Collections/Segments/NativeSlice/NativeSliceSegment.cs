@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Unity.Collections
 {
-    public readonly partial struct NativeSliceSegment<T> : ISegment<T>, IEquatableReadOnlyStruct<NativeSliceSegment<T>>
+    public readonly partial struct NativeSliceSegment<T> : IReadSegment<T>, IEquatableReadOnlyStruct<NativeSliceSegment<T>>
         where T : struct
     {
         private readonly ReadNativeSlice<T> source;
@@ -99,22 +99,22 @@ namespace Unity.Collections
         public NativeSliceSegment<T> SkipLast(int count)
             => Take(this.Count - count);
 
-        ISegment<T> ISegment<T>.Slice(int index)
+        IReadSegment<T> IReadSegment<T>.Slice(int index)
             => Slice(index);
 
-        ISegment<T> ISegment<T>.Slice(int index, int count)
+        IReadSegment<T> IReadSegment<T>.Slice(int index, int count)
             => Slice(index, count);
 
-        ISegment<T> ISegment<T>.Skip(int count)
+        IReadSegment<T> IReadSegment<T>.Skip(int count)
             => Skip(count);
 
-        ISegment<T> ISegment<T>.Take(int count)
+        IReadSegment<T> IReadSegment<T>.Take(int count)
             => Take(count);
 
-        ISegment<T> ISegment<T>.TakeLast(int count)
+        IReadSegment<T> IReadSegment<T>.TakeLast(int count)
             => TakeLast(count);
 
-        ISegment<T> ISegment<T>.SkipLast(int count)
+        IReadSegment<T> IReadSegment<T>.SkipLast(int count)
             => SkipLast(count);
 
         public T[] ToArray()
@@ -217,8 +217,8 @@ namespace Unity.Collections
         public static implicit operator NativeSliceSegment<T>(in ReadNativeSlice<T> source)
             => new NativeSliceSegment<T>(source);
 
-        public static implicit operator Segment<T>(in NativeSliceSegment<T> segment)
-            => new Segment<T>(new NativeSliceSource(segment.source.GetSource()), segment.Offset, segment.Count);
+        public static implicit operator ReadSegment<T>(in NativeSliceSegment<T> segment)
+            => new ReadSegment<T>(new NativeSliceSource(segment.source.GetSource()), segment.Offset, segment.Count);
 
         public static bool operator ==(in NativeSliceSegment<T> a, in NativeSliceSegment<T> b)
             => a.Equals(in b);

@@ -3,11 +3,11 @@
 namespace System.Collections.Generic
 {
     /// <summary>
-    /// A reader that divides a source <see cref="Segment{T}"/> into multiple <see cref="Segment{T}"/> instances.
+    /// A reader that divides a source <see cref="ReadSegment{T}"/> into multiple <see cref="ReadSegment{T}"/> instances.
     /// </summary>
     /// <typeparam name="TSegment">The type of elements contained in the source.</typeparam>
     public sealed class SegmentReader<TSegment, TValue> : ISegmentReader<TSegment>
-        where TSegment : ISegment<TValue>
+        where TSegment : IReadSegment<TValue>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SegmentReader&lt;T&gt;"/> class.

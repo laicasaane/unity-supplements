@@ -88,6 +88,20 @@ namespace System
             return new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
         }
 
+        public static Exception GetSegmentCtorValidationFailedException<T>(IReadSegmentSource<T> source, int offset, int count)
+        {
+            if (source == null)
+                return new ArgumentNullException(nameof(source));
+
+            if (offset < 0)
+                return new ArgumentOutOfRangeException(nameof(offset), "Non-negative number required.");
+
+            if (count < 0)
+                return new ArgumentOutOfRangeException(nameof(count), "Non-negative number required.");
+
+            return new ArgumentException("Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.");
+        }
+
         public static Exception GetArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
         {
             return new ArgumentOutOfRangeException(GetArgumentName(argument), GetResourceString(resource));
