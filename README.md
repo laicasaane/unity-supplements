@@ -1,5 +1,13 @@
 # Unity Supplements
 
+## Changelog
+
+### 2.3.1
+- `ReadArray` is renamed `ReadArray1`
+- `ArraySegment` is renamed `Array1Segment`
+- `ArrayExtensions` is renamed `Array1Extensions`
+- `IStringFormatter` is renamed `ITextFormatter` and moved to `System.Runtime.Serialization.Formatters.Text` namespace
+
 ## Global
 
 - Array1Extensions
