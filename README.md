@@ -101,6 +101,7 @@
 - Size
 - SizeInt
 - SingleLayer
+- SortingLayerId
 - ScreenResolution
 - BoundsExtensions
 - ColorExtensions
@@ -122,3 +123,4 @@
 
 ## UnityEditor
 - SingleLayerDrawer
+- SortingLayerIdDrawer
