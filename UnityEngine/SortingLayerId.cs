@@ -36,7 +36,7 @@ namespace UnityEngine
             => this.id.ToString();
 
         public static implicit operator int(SortingLayerId value)
-            => SortingLayer.GetLayerValueFromID(value.id);
+            => value.id;
 
         public static implicit operator SortingLayerId(int value)
             => new SortingLayerId(value);
