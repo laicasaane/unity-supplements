@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public static class Array1Extensions
 {
@@ -74,6 +75,69 @@ public static class Array1Extensions
         for (var i = 0; i < self.Length; i++)
         {
             self[i] = default;
+        }
+    }
+
+    public static void Set<T>(this T[] self, params T[] source)
+        => self.Set(0, source);
+
+    public static void Set<T>(this T[] self, int startIndex, params T[] source)
+    {
+        if (self == null || source == null)
+            return;
+
+        var length = Math.Min(self.Length, source.Length);
+
+        for (var i = startIndex; i < length; i++)
+        {
+            self[i] = source[i];
+        }
+    }
+
+    public static void Set<T>(this T[] self, IList<T> source)
+        => self.Set(0, source);
+
+    public static void Set<T>(this T[] self, int startIndex, IList<T> source)
+        => self.Set(startIndex, source.AsSegment());
+
+    public static void Set<T>(this T[] self, IReadOnlyList<T> source)
+        => self.Set(0, source);
+
+    public static void Set<T>(this T[] self, int startIndex, IReadOnlyList<T> source)
+        => self.Set(startIndex, source.AsSegment());
+
+    public static void Set<T>(this T[] self, in Segment<T> source)
+        => self.Set(0, in source);
+
+    public static void Set<T>(this T[] self, int startIndex, in Segment<T> source)
+    {
+        if (self == null)
+            return;
+
+        var length = Math.Min(self.Length, source.Count);
+
+        for (var i = startIndex; i < length; i++)
+        {
+            self[i] = source[i];
+        }
+    }
+
+    public static void Set<T>(this T[] self, IEnumerable<T> source)
+        => self.Set(0, source);
+
+    public static void Set<T>(this T[] self, int startIndex, IEnumerable<T> source)
+    {
+        if (self == null || source == null)
+            return;
+
+        var index = startIndex;
+
+        foreach (var value in source)
+        {
+            if (!self.ValidateIndex(index))
+                break;
+
+            self[index++] = value;
         }
     }
 }
