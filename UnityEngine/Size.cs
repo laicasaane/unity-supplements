@@ -23,6 +23,12 @@ namespace UnityEngine
             height = this.Height;
         }
 
+        public Size With(float? Width = null, float? Height = null)
+            => new Size(
+                Width ?? this.Width,
+                Height ?? this.Height
+            );
+
         public override int GetHashCode()
         {
             var hashCode = 859600377;

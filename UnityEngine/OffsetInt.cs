@@ -41,6 +41,14 @@ namespace UnityEngine
             bottom = this.Bottom;
         }
 
+        public OffsetInt With(int? Left = null, int? Right = null, int? Top = null, int? Bottom = null)
+            => new OffsetInt(
+                Left ?? this.Left,
+                Right ?? this.Right,
+                Top ?? this.Top,
+                Bottom ?? this.Bottom
+            );
+
         public override string ToString()
             => $"({this.Left}, {this.Right}, {this.Top}, {this.Bottom})";
 

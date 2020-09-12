@@ -27,6 +27,14 @@
             d = this.D;
         }
 
+        public Index4 With(int? A = null, int? B = null, int? C = null, int? D = null)
+            => new Index4(
+                A ?? this.A,
+                B ?? this.B,
+                C ?? this.C,
+                D ?? this.D
+            );
+
         /// <summary>
         /// Converts to 1D index.
         /// </summary>

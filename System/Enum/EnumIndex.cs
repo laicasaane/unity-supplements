@@ -4,6 +4,8 @@ namespace System
 {
     public static class EnumIndex
     {
+        private static readonly int? _none = null;
+
         public static int ToIndex<T>(this T value) where T : struct, Enum
         {
             try
@@ -16,181 +18,234 @@ namespace System
             }
         }
 
-        public static Index2 ToIndex<T1, T2>(in this (T1 t1, T2 t2) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(value.t1.ToIndex(), value.t2.ToIndex());
+        public static Index2 ToIndex<TA, TB>(in this (TA a, TB b) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(value.a.ToIndex(), value.b.ToIndex());
 
-        public static Index3 ToIndex<T1, T2, T3>(in this (T1 t1, T2 t2, T3 t3) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            => new Index3(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex());
+        public static Index3 ToIndex<TA, TB, TC>(in this (TA a, TB b, TC c) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex());
 
-        public static Index4 ToIndex<T1, T2, T3, T4>(in this (T1 t1, T2 t2, T3 t3, T4 t4) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            => new Index4(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex(), value.t4.ToIndex());
+        public static Index4 ToIndex<TA, TB, TC, TD>(in this (TA a, TB b, TC c, TD d) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex(), value.d.ToIndex());
 
-        public static Index5 ToIndex<T1, T2, T3, T4, T5>(in this (T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            where T5 : struct, Enum
-            => new Index5(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex(), value.t4.ToIndex(), value.t5.ToIndex());
+        public static Index5 ToIndex<TA, TB, TC, TD, TE>(in this (TA a, TB b, TC c, TD d, TE e) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex(), value.d.ToIndex(), value.e.ToIndex());
 
-        public static int ToIndex1<T1, T2>(in this (T1 t1, T2 t2) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(value.t1.ToIndex(), value.t2.ToIndex()).ToIndex1(EnumValues<T1>.UnderlyingValueCount);
+        public static int ToIndex1<TA, TB>(in this (TA a, TB b) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(value.a.ToIndex(), value.b.ToIndex())
+               .ToIndex1(EnumLength.Get<TA>());
 
-        public static int ToIndex1<T1, T2, T3>(in this (T1 t1, T2 t2, T3 t3) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            => new Index3(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex())
-               .ToIndex1(EnumValues<T1>.UnderlyingValueCount, EnumValues<T2>.UnderlyingValueCount);
+        public static int ToIndex1<TA, TB, TC>(in this (TA a, TB b, TC c) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex())
+               .ToIndex1(EnumLength.Get<TA, TB>());
 
-        public static int ToIndex1<T1, T2, T3, T4>(in this (T1 t1, T2 t2, T3 t3, T4 t4) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            => new Index4(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex(), value.t4.ToIndex())
-               .ToIndex1(EnumValues<T1>.UnderlyingValueCount, EnumValues<T2>.UnderlyingValueCount,
-                         EnumValues<T3>.UnderlyingValueCount);
+        public static int ToIndex1<TA, TB, TC, TD>(in this (TA a, TB b, TC c, TD d) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex(), value.d.ToIndex())
+               .ToIndex1(EnumLength.Get<TA, TB, TC>());
 
-        public static int ToIndex1<T1, T2, T3, T4, T5>(in this (T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) value)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            where T5 : struct, Enum
-            => new Index5(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex(), value.t4.ToIndex(), value.t5.ToIndex())
-               .ToIndex1(EnumValues<T1>.UnderlyingValueCount, EnumValues<T2>.UnderlyingValueCount,
-                         EnumValues<T3>.UnderlyingValueCount, EnumValues<T4>.UnderlyingValueCount);
+        public static int ToIndex1<TA, TB, TC, TD, TE>(in this (TA a, TB b, TC c, TD d, TE e) value)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex(), value.d.ToIndex(), value.e.ToIndex())
+               .ToIndex1(EnumLength.Get<TA, TB, TC, TD>());
 
-        public static int ToIndex1<T1, T2>(in this (T1 t1, T2 t2) value, int lengthT1)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(value.t1.ToIndex(), value.t2.ToIndex()).ToIndex1(lengthT1);
+        public static int ToIndex1<TA, TB>(in this (TA a, TB b) value, int lengthTA)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(value.a.ToIndex(), value.b.ToIndex())
+               .ToIndex1(lengthTA);
 
-        public static int ToIndex1<T1, T2>(in this (T1 t1, T2 t2) value, in Length2 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(value.t1.ToIndex(), value.t2.ToIndex()).ToIndex1(length);
-
-        public static int ToIndex1<T1, T2, T3>(in this (T1 t1, T2 t2, T3 t3) value, in Length2 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            => new Index3(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex()).ToIndex1(length);
-
-        public static int ToIndex1<T1, T2, T3, T4>(in this (T1 t1, T2 t2, T3 t3, T4 t4) value, in Length3 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            => new Index4(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex(), value.t4.ToIndex()).ToIndex1(length);
-
-        public static int ToIndex1<T1, T2, T3, T4, T5>(in this (T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) value, in Length4 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            where T5 : struct, Enum
-            => new Index5(value.t1.ToIndex(), value.t2.ToIndex(), value.t3.ToIndex(), value.t4.ToIndex(), value.t5.ToIndex())
+        public static int ToIndex1<TA, TB>(in this (TA a, TB b) value, in Length2 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(value.a.ToIndex(), value.b.ToIndex())
                .ToIndex1(length);
 
-        public static Index2 ToIndex<T1, T2>(T1 t1, T2 t2)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(t1.ToIndex(), t2.ToIndex());
+        public static int ToIndex1<TA, TB, TC>(in this (TA a, TB b, TC c) value, in Length2 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex())
+               .ToIndex1(length);
 
-        public static Index3 ToIndex<T1, T2, T3>(T1 t1, T2 t2, T3 t3)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            => new Index3(t1.ToIndex(), t2.ToIndex(), t3.ToIndex());
+        public static int ToIndex1<TA, TB, TC, TD>(in this (TA a, TB b, TC c, TD d) value, in Length3 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex(), value.d.ToIndex()).ToIndex1(length);
 
-        public static Index4 ToIndex<T1, T2, T3, T4>(T1 t1, T2 t2, T3 t3, T4 t4)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            => new Index4(t1.ToIndex(), t2.ToIndex(), t3.ToIndex(), t4.ToIndex());
+        public static int ToIndex1<TA, TB, TC, TD, TE>(in this (TA a, TB b, TC c, TD d, TE e) value, in Length4 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(value.a.ToIndex(), value.b.ToIndex(), value.c.ToIndex(), value.d.ToIndex(), value.e.ToIndex())
+               .ToIndex1(length);
 
-        public static Index5 ToIndex<T1, T2, T3, T4, T5>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            where T5 : struct, Enum
-            => new Index5(t1.ToIndex(), t2.ToIndex(), t3.ToIndex(), t4.ToIndex(), t5.ToIndex());
+        public static Index2 ToIndex<TA, TB>(TA a, TB b)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(a.ToIndex(), b.ToIndex());
 
-        public static int ToIndex1<T1, T2>(T1 t1, T2 t2)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(t1.ToIndex(), t2.ToIndex()).ToIndex1(EnumValues<T1>.UnderlyingValueCount);
+        public static Index3 ToIndex<TA, TB, TC>(TA a, TB b, TC c)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(a.ToIndex(), b.ToIndex(), c.ToIndex());
 
-        public static int ToIndex1<T1, T2, T3>(T1 t1, T2 t2, T3 t3)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            => new Index3(t1.ToIndex(), t2.ToIndex(), t3.ToIndex())
-               .ToIndex1(EnumValues<T1>.UnderlyingValueCount, EnumValues<T2>.UnderlyingValueCount);
+        public static Index4 ToIndex<TA, TB, TC, TD>(TA a, TB b, TC c, TD d)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(a.ToIndex(), b.ToIndex(), c.ToIndex(), d.ToIndex());
 
-        public static int ToIndex1<T1, T2, T3, T4>(T1 t1, T2 t2, T3 t3, T4 t4)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            => new Index4(t1.ToIndex(), t2.ToIndex(), t3.ToIndex(), t4.ToIndex())
-               .ToIndex1(EnumValues<T1>.UnderlyingValueCount, EnumValues<T2>.UnderlyingValueCount,
-                         EnumValues<T3>.UnderlyingValueCount);
+        public static Index5 ToIndex<TA, TB, TC, TD, TE>(TA a, TB b, TC c, TD d, TE e)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(a.ToIndex(), b.ToIndex(), c.ToIndex(), d.ToIndex(), e.ToIndex());
 
-        public static int ToIndex1<T1, T2, T3, T4, T5>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            where T5 : struct, Enum
-            => new Index5(t1.ToIndex(), t2.ToIndex(), t3.ToIndex(), t4.ToIndex(), t5.ToIndex())
-               .ToIndex1(EnumValues<T1>.UnderlyingValueCount, EnumValues<T2>.UnderlyingValueCount,
-                         EnumValues<T3>.UnderlyingValueCount, EnumValues<T4>.UnderlyingValueCount);
+        public static int ToIndex1<TA, TB>(TA a, TB b)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(a.ToIndex(), b.ToIndex()).ToIndex1(EnumLength.Get<TA>());
 
-        public static int ToIndex1<T1, T2>(T1 t1, T2 t2, int lengthT1)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(t1.ToIndex(), t2.ToIndex()).ToIndex1(lengthT1);
+        public static int ToIndex1<TA, TB, TC>(TA a, TB b, TC c)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(a.ToIndex(), b.ToIndex(), c.ToIndex())
+               .ToIndex1(EnumLength.Get<TA, TB>());
 
-        public static int ToIndex1<T1, T2>(T1 t1, T2 t2, in Length2 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            => new Index2(t1.ToIndex(), t2.ToIndex()).ToIndex1(length);
+        public static int ToIndex1<TA, TB, TC, TD>(TA a, TB b, TC c, TD d)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(a.ToIndex(), b.ToIndex(), c.ToIndex(), d.ToIndex())
+               .ToIndex1(EnumLength.Get<TA, TB, TC>());
 
-        public static int ToIndex1<T1, T2, T3>(T1 t1, T2 t2, T3 t3, in Length2 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            => new Index3(t1.ToIndex(), t2.ToIndex(), t3.ToIndex()).ToIndex1(length);
+        public static int ToIndex1<TA, TB, TC, TD, TE>(TA a, TB b, TC c, TD d, TE e)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(a.ToIndex(), b.ToIndex(), c.ToIndex(), d.ToIndex(), e.ToIndex())
+               .ToIndex1(EnumLength.Get<TA, TB, TC, TD>());
 
-        public static int ToIndex1<T1, T2, T3, T4>(T1 t1, T2 t2, T3 t3, T4 t4, in Length3 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            => new Index4(t1.ToIndex(), t2.ToIndex(), t3.ToIndex(), t4.ToIndex()).ToIndex1(length);
+        public static int ToIndex1<TA, TB>(TA a, TB b, int lengthTA)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(a.ToIndex(), b.ToIndex())
+               .ToIndex1(lengthTA);
 
-        public static int ToIndex1<T1, T2, T3, T4, T5>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, in Length4 length)
-            where T1 : struct, Enum
-            where T2 : struct, Enum
-            where T3 : struct, Enum
-            where T4 : struct, Enum
-            where T5 : struct, Enum
-            => new Index5(t1.ToIndex(), t2.ToIndex(), t3.ToIndex(), t4.ToIndex(), t5.ToIndex()).ToIndex1(length);
+        public static int ToIndex1<TA, TB>(TA a, TB b, in Length2 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            => new Index2(a.ToIndex(), b.ToIndex())
+               .ToIndex1(length);
+
+        public static int ToIndex1<TA, TB, TC>(TA a, TB b, TC c, in Length2 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(a.ToIndex(), b.ToIndex(), c.ToIndex())
+               .ToIndex1(length);
+
+        public static int ToIndex1<TA, TB, TC, TD>(TA a, TB b, TC c, TD d, in Length3 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(a.ToIndex(), b.ToIndex(), c.ToIndex(), d.ToIndex())
+               .ToIndex1(length);
+
+        public static int ToIndex1<TA, TB, TC, TD, TE>(TA a, TB b, TC c, TD d, TE e, in Length4 length)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(a.ToIndex(), b.ToIndex(), c.ToIndex(), d.ToIndex(), e.ToIndex())
+               .ToIndex1(length);
+
+        private static int? ToIndex<T>(in this T? self) where T : struct, Enum
+            => self.HasValue ? self.Value.ToIndex() : _none;
+
+        public static Index2 With<TA, TB>(in this Index2 self, TA? A = null, TB? B = null)
+            where TA : struct, Enum
+            where TB : struct, Enum
+              => new Index2(
+                  A.ToIndex() ?? self.A,
+                  B.ToIndex() ?? self.B
+              );
+
+        public static Index3 With<TA, TB, TC>(in this Index3 self, TA? A = null, TB? B = null, TC? C = null)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            => new Index3(
+                A.ToIndex() ?? self.A,
+                B.ToIndex() ?? self.B,
+                C.ToIndex() ?? self.C
+            );
+
+        public static Index4 With<TA, TB, TC, TD>(in this Index4 self, TA? A = null, TB? B = null, TC? C = null, TD? D = null)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            => new Index4(
+                A.ToIndex() ?? self.A,
+                B.ToIndex() ?? self.B,
+                C.ToIndex() ?? self.C,
+                D.ToIndex() ?? self.D
+            );
+
+        public static Index5 With<TA, TB, TC, TD, TE>(in this Index5 self, TA? A = null, TB? B = null, TC? C = null, TD? D = null,
+                                                      TE? E = null)
+            where TA : struct, Enum
+            where TB : struct, Enum
+            where TC : struct, Enum
+            where TD : struct, Enum
+            where TE : struct, Enum
+            => new Index5(
+                A.ToIndex() ?? self.A,
+                B.ToIndex() ?? self.B,
+                C.ToIndex() ?? self.C,
+                D.ToIndex() ?? self.D,
+                E.ToIndex() ?? self.E
+            );
     }
 }

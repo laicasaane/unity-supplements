@@ -30,6 +30,15 @@
             e = this.E;
         }
 
+        public Index5 With(int? A = null, int? B = null, int? C = null, int? D = null, int? E = null)
+            => new Index5(
+                A ?? this.A,
+                B ?? this.B,
+                C ?? this.C,
+                D ?? this.D,
+                E ?? this.E
+            );
+
         /// <summary>
         /// Converts to 1D array index.
         /// </summary>

@@ -24,6 +24,13 @@
             c = this.C;
         }
 
+        public Length3 With(int? A = null, int? B = null, int? C = null)
+            => new Length3(
+                A ?? this.A,
+                B ?? this.B,
+                C ?? this.C
+            );
+
         public override bool Equals(object obj)
             => obj is Length3 other &&
                this.A == other.A &&

@@ -20,6 +20,12 @@ namespace UnityEngine
             height = this.Height;
         }
 
+        public ScreenResolution With(int? Width = null, int? Height = null)
+            => new ScreenResolution(
+                Width ?? this.Width,
+                Height ?? this.Height
+            );
+
         public override bool Equals(object obj)
             => obj is ScreenResolution other &&
                this.Width == other.Width &&

@@ -27,6 +27,14 @@
             d = this.D;
         }
 
+        public Length4 With(int? A = null, int? B = null, int? C = null, int? D = null)
+            => new Length4(
+                A ?? this.A,
+                B ?? this.B,
+                C ?? this.C,
+                D ?? this.D
+            );
+
         public override bool Equals(object obj)
             => obj is Length4 other &&
                this.A == other.A &&

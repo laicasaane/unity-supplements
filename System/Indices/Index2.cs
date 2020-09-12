@@ -21,6 +21,12 @@
             b = this.B;
         }
 
+        public Index2 With(int? A = null, int? B = null)
+            => new Index2(
+                A ?? this.A,
+                B ?? this.B
+            );
+
         /// <summary>
         /// Converts to 1D index.
         /// </summary>

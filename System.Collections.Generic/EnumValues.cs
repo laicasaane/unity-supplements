@@ -2,7 +2,7 @@
 {
     public abstract class EnumValues<T> where T : struct, Enum
     {
-        public static ReadArray1<T> Values { get; }
+        public static ReadArray1<T> Values => Enum<T>.Values;
 
         /// <summary>
         /// Total count of the underlying values
@@ -11,8 +11,6 @@
 
         static EnumValues()
         {
-            Values = Enum<T>.Values;
-
             var index = 0;
 
             foreach (var e in Values)

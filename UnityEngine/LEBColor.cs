@@ -39,7 +39,7 @@ namespace UnityEngine
         public readonly float L;
 
         /// <summary>
-        /// A* color-opponent from green to red
+        /// E* (or A*) color-opponent from green to red
         /// </summary>
         public readonly float E;
 
@@ -88,6 +88,14 @@ namespace UnityEngine
             b = this.B;
             a = this.A;
         }
+
+        public LEBColor With(float? L = null, float? E = null, float? B = null, float? A = null)
+            => new LEBColor(
+                L ?? this.L,
+                E ?? this.E,
+                B ?? this.B,
+                A ?? this.A
+            );
 
         public override string ToString()
             => ToString(null, CultureInfo.InvariantCulture.NumberFormat);

@@ -21,6 +21,12 @@
             b = this.B;
         }
 
+        public Length2 With(int? A = null, int? B = null)
+            => new Length2(
+                A ?? this.A,
+                B ?? this.B
+            );
+
         public override bool Equals(object obj)
             => obj is Length2 other &&
                this.A == other.A &&

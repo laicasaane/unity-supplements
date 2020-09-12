@@ -24,6 +24,13 @@
             c = this.C;
         }
 
+        public Index3 With(int? A = null, int? B = null, int? C = null)
+            => new Index3(
+                A ?? this.A,
+                B ?? this.B,
+                C ?? this.C
+            );
+
         /// <summary>
         /// Converts to 1D index.
         /// </summary>

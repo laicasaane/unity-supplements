@@ -30,6 +30,15 @@
             e = this.E;
         }
 
+        public Length5 With(int? A = null, int? B = null, int? C = null, int? D = null, int? E = null)
+            => new Length5(
+                A ?? this.A,
+                B ?? this.B,
+                C ?? this.C,
+                D ?? this.D,
+                E ?? this.E
+            );
+
         public override bool Equals(object obj)
             => obj is Length5 other &&
                this.A == other.A &&

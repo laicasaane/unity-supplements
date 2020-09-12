@@ -64,6 +64,11 @@ namespace UnityEngine
             this.A = a;
         }
 
+        public HSBColor(in Color rgb)
+        {
+            RGBToHSB(rgb, out this.H, out this.S, out this.B, out this.A);
+        }
+
         public void Deconstruct(out float h, out float s, out float b)
         {
             h = this.H;
@@ -79,10 +84,13 @@ namespace UnityEngine
             a = this.A;
         }
 
-        public HSBColor(in Color rgb)
-        {
-            RGBToHSB(rgb, out this.H, out this.S, out this.B, out this.A);
-        }
+        public HSBColor With(float? H = null, float? S = null, float? B = null, float? A = null)
+            => new HSBColor(
+                H ?? this.H,
+                S ?? this.S,
+                B ?? this.B,
+                A ?? this.A
+            );
 
         public override int GetHashCode()
         {
