@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 2D array length
+    /// Represent the lengths of the 2D array. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
     public readonly struct Length2 : IEquatableReadOnlyStruct<Length2>, IComparableReadOnlyStruct<Length2>
@@ -11,8 +11,8 @@
 
         public Length2(int a, int b)
         {
-            this.A = a;
-            this.B = b;
+            this.A = Math.Max(a, 0);
+            this.B = Math.Max(b, 0);
         }
 
         public void Deconstruct(out int a, out int b)

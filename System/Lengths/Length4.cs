@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 4D array length
+    /// Represent the lengths of the 4D array. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
     public readonly struct Length4 : IEquatableReadOnlyStruct<Length4>, IComparableReadOnlyStruct<Length4>
@@ -13,10 +13,10 @@
 
         public Length4(int a, int b, int c, int d)
         {
-            this.A = a;
-            this.B = b;
-            this.C = c;
-            this.D = d;
+            this.A = Math.Max(a, 0);
+            this.B = Math.Max(b, 0);
+            this.C = Math.Max(c, 0);
+            this.D = Math.Max(d, 0);
         }
 
         public void Deconstruct(out int a, out int b, out int c, out int d)

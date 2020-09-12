@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 5D array length
+    /// Represent the lengths of the 5D array. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
     public readonly struct Length5 : IEquatableReadOnlyStruct<Length5>, IComparableReadOnlyStruct<Length5>
@@ -14,11 +14,11 @@
 
         public Length5(int a, int b, int c, int d, int e)
         {
-            this.A = a;
-            this.B = b;
-            this.C = c;
-            this.D = d;
-            this.E = e;
+            this.A = Math.Max(a, 0);
+            this.B = Math.Max(b, 0);
+            this.C = Math.Max(c, 0);
+            this.D = Math.Max(d, 0);
+            this.E = Math.Max(e, 0);
         }
 
         public void Deconstruct(out int a, out int b, out int c, out int d, out int e)

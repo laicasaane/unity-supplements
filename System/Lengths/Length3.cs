@@ -1,7 +1,7 @@
 ﻿namespace System
 {
     /// <summary>
-    /// 3D array length
+    /// Represent the lengths of the 3D array. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
     public readonly struct Length3 : IEquatableReadOnlyStruct<Length3>, IComparableReadOnlyStruct<Length3>
@@ -12,9 +12,9 @@
 
         public Length3(int a, int b, int c)
         {
-            this.A = a;
-            this.B = b;
-            this.C = c;
+            this.A = Math.Max(a, 0);
+            this.B = Math.Max(b, 0);
+            this.C = Math.Max(c, 0);
         }
 
         public void Deconstruct(out int a, out int b, out int c)
