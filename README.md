@@ -41,6 +41,7 @@
 - Enum\<T>
 - EnumRandomizer\<T>
 - EnumIndex
+- EnumLength
 
 ## System.IO
 
