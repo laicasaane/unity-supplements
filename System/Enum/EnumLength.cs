@@ -4,8 +4,6 @@ namespace System
 {
     public static class EnumLength
     {
-        private static readonly int? _none = null;
-
         public static int Get<T>() where T : struct, Enum
             => EnumValues<T>.UnderlyingValueCount;
 
