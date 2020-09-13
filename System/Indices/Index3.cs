@@ -10,6 +10,20 @@
         public readonly int B;
         public readonly int C;
 
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.A;
+                    case 1: return this.B;
+                    case 2: return this.C;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public Index3(int a, int b, int c)
         {
             this.A = a;

@@ -11,6 +11,19 @@ namespace UnityEngine
         public float Area
             => this.Width * this.Height;
 
+        public float this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.Width;
+                    case 1: return this.Height;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public Size(float width, float height)
         {
             this.Width = width;
@@ -43,24 +56,10 @@ namespace UnityEngine
                Mathf.Approximately(this.Height, other.Height);
 
         public int CompareTo(Size other)
-        {
-            var comp = this.Width.CompareTo(other.Width);
-
-            if (comp == 0)
-                return this.Height.CompareTo(other.Height);
-
-            return comp;
-        }
+            => this.Area.CompareTo(other.Area);
 
         public int CompareTo(in Size other)
-        {
-            var comp = this.Width.CompareTo(other.Width);
-
-            if (comp == 0)
-                return this.Height.CompareTo(other.Height);
-
-            return comp;
-        }
+            => this.Area.CompareTo(other.Area);
 
         public bool Equals(Size other)
             => Mathf.Approximately(this.Width, other.Width) &&
@@ -127,5 +126,11 @@ namespace UnityEngine
         public static bool operator !=(in Size lhs, in Size rhs)
             => !Mathf.Approximately(lhs.Width, rhs.Width) ||
                !Mathf.Approximately(lhs.Height, rhs.Height);
+
+        public static bool operator >(in Size lhs, in Size rhs)
+            => lhs.CompareTo(in rhs) > 0;
+
+        public static bool operator <(in Size lhs, in Size rhs)
+            => lhs.CompareTo(in rhs) < 0;
     }
 }

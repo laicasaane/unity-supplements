@@ -11,6 +11,19 @@ namespace UnityEngine
         public int Area
             => this.Width * this.Height;
 
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.Width;
+                    case 1: return this.Height;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public SizeInt(int width, int height)
         {
             this.Width = width;
@@ -43,24 +56,10 @@ namespace UnityEngine
                this.Height == other.Height;
 
         public int CompareTo(SizeInt other)
-        {
-            var comp = this.Width.CompareTo(other.Width);
-
-            if (comp == 0)
-                return this.Height.CompareTo(other.Height);
-
-            return comp;
-        }
+            => this.Area.CompareTo(other.Area);
 
         public int CompareTo(in SizeInt other)
-        {
-            var comp = this.Width.CompareTo(other.Width);
-
-            if (comp == 0)
-                return this.Height.CompareTo(other.Height);
-
-            return comp;
-        }
+            => this.Area.CompareTo(other.Area);
 
         public bool Equals(SizeInt other)
             => this.Width == other.Width && this.Height == other.Height;
@@ -120,5 +119,11 @@ namespace UnityEngine
 
         public static bool operator !=(in SizeInt lhs, in SizeInt rhs)
             => lhs.Width != rhs.Width || lhs.Height != rhs.Height;
+
+        public static bool operator >(in SizeInt lhs, in SizeInt rhs)
+            => lhs.CompareTo(in rhs) > 0;
+
+        public static bool operator <(in SizeInt lhs, in SizeInt rhs)
+            => lhs.CompareTo(in rhs) < 0;
     }
 }

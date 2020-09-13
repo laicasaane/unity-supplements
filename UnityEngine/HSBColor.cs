@@ -48,6 +48,21 @@ namespace UnityEngine
         /// </summary>
         public readonly float A;
 
+        public float this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.H;
+                    case 1: return this.S;
+                    case 2: return this.B;
+                    case 3: return this.A;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public HSBColor(float h, float s, float b)
         {
             this.H = h;

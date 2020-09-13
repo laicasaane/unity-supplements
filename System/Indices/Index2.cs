@@ -9,6 +9,19 @@
         public readonly int A;
         public readonly int B;
 
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.A;
+                    case 1: return this.B;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public Index2(int a, int b)
         {
             this.A = a;

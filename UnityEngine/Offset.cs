@@ -25,6 +25,21 @@ namespace UnityEngine
         public float Vertical
             => this.Top + this.Bottom;
 
+        public float this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.Left;
+                    case 1: return this.Right;
+                    case 2: return this.Top;
+                    case 3: return this.Bottom;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public Offset(float left, float right, float top, float bottom)
         {
             this.Left = left;

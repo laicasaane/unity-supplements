@@ -12,6 +12,22 @@
         public readonly int D;
         public readonly int E;
 
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.A;
+                    case 1: return this.B;
+                    case 2: return this.C;
+                    case 3: return this.D;
+                    case 4: return this.E;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public Length5(int a, int b, int c, int d, int e)
         {
             this.A = Math.Max(a, 0);

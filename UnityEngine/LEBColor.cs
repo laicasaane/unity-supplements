@@ -53,6 +53,21 @@ namespace UnityEngine
         /// </summary>
         public readonly float A;
 
+        public float this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.L;
+                    case 1: return this.E;
+                    case 2: return this.B;
+                    case 3: return this.A;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public LEBColor(float l, float e, float b)
         {
             this.L = l;

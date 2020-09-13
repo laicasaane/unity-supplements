@@ -8,6 +8,19 @@ namespace UnityEngine
         public readonly int Width;
         public readonly int Height;
 
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.Width;
+                    case 1: return this.Height;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
+
         public ScreenResolution(int width, int height)
         {
             this.Width = width;
@@ -59,8 +72,14 @@ namespace UnityEngine
 #endif
         }
 
-        public static implicit operator ScreenResolution(in Resolution value)
+        public static implicit operator ScreenResolution(Resolution value)
             => new ScreenResolution(value.width, value.height);
+
+        public static implicit operator SizeInt(in ScreenResolution value)
+            => new SizeInt(value.Width, value.Height);
+
+        public static implicit operator ScreenResolution(in SizeInt value)
+            => new ScreenResolution(value.Width, value.Height);
 
         public static bool operator ==(in ScreenResolution lhs, ScreenResolution rhs)
             => lhs.Width == rhs.Width && lhs.Height == rhs.Height;
