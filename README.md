@@ -42,6 +42,7 @@
 - EnumRandomizer\<T>
 - EnumIndex
 - EnumLength
+- ReadRange\<T>
 
 ## System.IO
 
@@ -83,7 +84,15 @@
 
 - ObjectExtensions.FluentDelegates
 
+## System.Grid
+
+- GridIndex
+- GridValue\<T>
+- IReadOnlyGrid\<T>
+- Grid\<T>
+
 ## System.Table
+
 - IEntry
 - IGetId
 - ITable
@@ -113,6 +122,7 @@
 - RectExtensions
 - ResolutionExtensions
 - VectorExtensions
+- GridVector
 
 ## Unity.Collections
 
@@ -125,3 +135,4 @@
 ## UnityEditor
 - SingleLayerDrawer
 - SortingLayerIdDrawer
+- GridVectorDrawer
