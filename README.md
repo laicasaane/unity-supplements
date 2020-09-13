@@ -90,6 +90,7 @@
 - GridValue\<T>
 - IReadOnlyGrid\<T>
 - Grid\<T>
+- ReadGrid\<T>
 
 ## System.Table
 
