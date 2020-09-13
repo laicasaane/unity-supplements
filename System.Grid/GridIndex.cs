@@ -1,10 +1,26 @@
-﻿namespace System.Grid
+namespace System.Grid
 {
+    /// <summary>
+    /// Represent the coordinates of the 2D grid. The value of each component is greater than or equal to 0.
+    /// </summary>
     [Serializable]
-    public readonly struct GridIndex : IEquatableReadOnlyStruct<GridIndex>, IComparableReadOnlyStruct<GridIndex>
+    public readonly struct GridIndex : IEquatableReadOnlyStruct<GridIndex>
     {
         public readonly int Row;
         public readonly int Column;
+
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.Row;
+                    case 1: return this.Column;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
+        }
 
         public GridIndex(int row, int column)
         {
@@ -38,18 +54,6 @@
 
         public bool Equals(in GridIndex other)
             => this.Row == other.Row && this.Column == other.Column;
-
-        public int CompareTo(GridIndex other)
-        {
-            var comp = this.Row.CompareTo(other.Row);
-            return comp != 0 ? comp : this.Column.CompareTo(other.Column);
-        }
-
-        public int CompareTo(in GridIndex other)
-        {
-            var comp = this.Row.CompareTo(other.Row);
-            return comp != 0 ? comp : this.Column.CompareTo(other.Column);
-        }
 
         public override int GetHashCode()
         {
@@ -90,12 +94,6 @@
 
         public static bool operator !=(in GridIndex lhs, in GridIndex rhs)
             => lhs.Row != rhs.Row || lhs.Column != rhs.Column;
-
-        public static bool operator >(in GridIndex lhs, in GridIndex rhs)
-            => lhs.CompareTo(in rhs) > 0;
-
-        public static bool operator <(in GridIndex lhs, in GridIndex rhs)
-            => lhs.CompareTo(in rhs) < 0;
 
         public static GridIndex operator +(in GridIndex lhs, in GridIndex rhs)
             => new GridIndex(lhs.Row + rhs.Row, lhs.Column + rhs.Column);

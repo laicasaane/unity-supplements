@@ -1,10 +1,13 @@
-﻿using System;
+using System;
 using System.Grid;
 
 namespace UnityEngine
 {
+    /// <summary>
+    /// Represent the coordinates of the 2D grid. The value of each component is greater than or equal to 0.
+    /// </summary>
     [Serializable]
-    public struct GridVector : IEquatable<GridVector>, IComparable<GridVector>
+    public struct GridVector : IEquatable<GridVector>
     {
         [SerializeField, Min(0)]
         private int row;
@@ -57,18 +60,6 @@ namespace UnityEngine
         public bool Equals(in GridVector other)
             => this.row == other.row && this.column == other.column;
 
-        public int CompareTo(GridVector other)
-        {
-            var comp = this.row.CompareTo(other.row);
-            return comp != 0 ? comp : this.column.CompareTo(other.column);
-        }
-
-        public int CompareTo(in GridVector other)
-        {
-            var comp = this.row.CompareTo(other.row);
-            return comp != 0 ? comp : this.column.CompareTo(other.column);
-        }
-
         public override int GetHashCode()
         {
             var hashCode = -1663278630;
@@ -111,12 +102,6 @@ namespace UnityEngine
 
         public static bool operator !=(in GridVector lhs, in GridVector rhs)
             => lhs.row != rhs.row || lhs.column != rhs.column;
-
-        public static bool operator >(in GridVector lhs, in GridVector rhs)
-            => lhs.CompareTo(in rhs) > 0;
-
-        public static bool operator <(in GridVector lhs, in GridVector rhs)
-            => lhs.CompareTo(in rhs) < 0;
 
         public static GridVector operator +(in GridVector lhs, in GridVector rhs)
             => new GridVector(lhs.row + rhs.row, lhs.column + rhs.column);
