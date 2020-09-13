@@ -5,7 +5,7 @@ namespace System
 {
     [Serializable]
     public readonly struct ReadRange<T> : IEquatableReadOnlyStruct<ReadRange<T>>, ISerializable
-        where T : struct, IEquatable<T>
+        where T : unmanaged, IEquatable<T>
     {
         public readonly T Start;
         public readonly T End;
