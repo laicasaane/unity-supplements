@@ -1,14 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace System.Grid
 {
+    [DataContract, Serializable]
     public class Grid<T> : IReadOnlyGrid<T>,
                            IReadOnlyDictionary<GridIndex, T>,
                            IReadOnlyCollection<KeyValuePair<GridIndex, T>>
     {
+        [DataMember]
         public GridIndex Size { get; private set; }
 
+        [DataMember]
         private readonly Dictionary<GridIndex, T> data = new Dictionary<GridIndex, T>();
 
         public int Count => this.data.Count;

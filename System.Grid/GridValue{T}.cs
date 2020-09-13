@@ -2,6 +2,7 @@
 
 namespace System.Grid
 {
+    [Serializable]
     public readonly struct GridValue<T> : IEquatableReadOnlyStruct<GridValue<T>>
     {
         public readonly GridIndex Index;
