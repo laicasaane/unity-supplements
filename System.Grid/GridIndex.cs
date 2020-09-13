@@ -1,10 +1,12 @@
+﻿using System.Runtime.Serialization;
+
 namespace System.Grid
 {
     /// <summary>
     /// Represent the coordinates of the 2D grid. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
-    public readonly struct GridIndex : IEquatableReadOnlyStruct<GridIndex>
+    public readonly struct GridIndex : IEquatableReadOnlyStruct<GridIndex>, ISerializable
     {
         public readonly int Row;
         public readonly int Column;
@@ -66,6 +68,33 @@ namespace System.Grid
         public override string ToString()
             => $"({this.Row}, {this.Column})";
 
+        private GridIndex(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Row = Math.Max(info.GetInt32(nameof(this.Row)), 0);
+            }
+            catch
+            {
+                this.Row = default;
+            }
+
+            try
+            {
+                this.Column = Math.Max(info.GetInt32(nameof(this.Column)), 0);
+            }
+            catch
+            {
+                this.Column = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Row), this.Row);
+            info.AddValue(nameof(this.Column), this.Column);
+        }
+
         /// <summary>
         /// Shorthand for writing GridIndex(0, 0)
         /// </summary>
@@ -115,28 +144,5 @@ namespace System.Grid
                 value.Row < min.Row ? min.Row : (value.Row > max.Row ? max.Row : value.Row),
                 value.Column < min.Column ? min.Column : (value.Column > max.Column ? max.Column : value.Column)
             );
-
-        public static ReadRange<GridIndex> Range(in GridIndex pivot, int extend, in GridIndex gridSize)
-            => Range(pivot, One * extend, gridSize);
-
-        public static ReadRange<GridIndex> Range(in GridIndex pivot, in GridIndex extend, in GridIndex gridSize)
-        {
-            var lastIndex = gridSize - One;
-
-            return new ReadRange<GridIndex>(
-                Clamp(pivot - extend, Zero, lastIndex),
-                Clamp(pivot + extend, Zero, lastIndex)
-            );
-        }
-
-        public static ReadRange<GridIndex> Range(in GridIndex pivot, bool byRow, in GridIndex gridSize)
-        {
-            var lastIndex = gridSize - One;
-
-            return new ReadRange<GridIndex>(
-                new GridIndex(byRow ? pivot.Row : 0, byRow ? 0 : pivot.Column),
-                new GridIndex(byRow ? pivot.Row : lastIndex.Row, byRow ? lastIndex.Column : pivot.Column)
-            );
-        }
     }
 }

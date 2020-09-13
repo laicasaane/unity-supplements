@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Grid;
 
 namespace UnityEngine
@@ -25,6 +25,19 @@ namespace UnityEngine
         {
             get => this.column;
             set => this.column = Mathf.Max(value, 0);
+        }
+
+        public int this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0: return this.row;
+                    case 1: return this.column;
+                    default: throw new IndexOutOfRangeException();
+                }
+            }
         }
 
         public GridVector(int row, int column)
@@ -123,28 +136,5 @@ namespace UnityEngine
                 value.row < min.row ? min.row : (value.row > max.row ? max.row : value.row),
                 value.column < min.column ? min.column : (value.column > max.column ? max.column : value.column)
             );
-
-        public static ReadRange<GridVector> Range(in GridVector pivot, int extend, in GridVector gridSize)
-            => Range(pivot, One * extend, gridSize);
-
-        public static ReadRange<GridVector> Range(in GridVector pivot, in GridVector extend, in GridVector gridSize)
-        {
-            var lastIndex = gridSize - One;
-
-            return new ReadRange<GridVector>(
-                Clamp(pivot - extend, Zero, lastIndex),
-                Clamp(pivot + extend, Zero, lastIndex)
-            );
-        }
-
-        public static ReadRange<GridVector> Range(in GridVector pivot, bool byRow, in GridVector gridSize)
-        {
-            var lastIndex = gridSize - One;
-
-            return new ReadRange<GridVector>(
-                new GridVector(byRow ? pivot.row : 0, byRow ? 0 : pivot.column),
-                new GridVector(byRow ? pivot.row : lastIndex.row, byRow ? lastIndex.column : pivot.column)
-            );
-        }
     }
 }

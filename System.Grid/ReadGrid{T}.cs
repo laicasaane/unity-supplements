@@ -6,8 +6,10 @@ namespace System.Grid
 {
     public readonly struct ReadGrid<T> : IReadOnlyGrid<T>,
                                          IReadOnlyDictionary<GridIndex, T>,
-                                         IReadOnlyCollection<KeyValuePair<GridIndex, T>>
+                                         IEquatableReadOnlyStruct<ReadGrid<T>>
     {
+        public GridIndex Size => GetSource().Size;
+
         public int Count => GetSource().Count;
 
         public IEnumerable<GridIndex> Indices => GetSource().Indices;
@@ -38,29 +40,29 @@ namespace System.Grid
         public IEnumerator<KeyValuePair<GridIndex, T>> GetEnumerator()
             => GetSource().GetEnumerator();
 
-        public void GetIndices(in GridIndex pivot, int extend, ICollection<GridIndex> output)
-            => GetSource().GetIndices(pivot, extend, output);
+        public bool ValidateIndex(in GridIndex value)
+            => GetSource().ValidateIndex(value);
 
-        public void GetIndices(in GridIndex pivot, in GridIndex extend, ICollection<GridIndex> output)
-            => GetSource().GetIndices(pivot, extend, output);
+        public GridIndex LastIndex()
+            => GetSource().LastIndex();
 
-        public void GetIndices(in GridIndex pivot, bool byRow, ICollection<GridIndex> output)
-            => GetSource().GetIndices(pivot, byRow, output);
+        public GridIndex ClampIndex(in GridIndex value)
+            => GetSource().ClampIndex(value);
 
-        public void GetIndices(in ReadRange<GridIndex> range, ICollection<GridIndex> output)
-            => GetSource().GetIndices(range, output);
+        public ReadRange<GridIndex> ClampIndexRange(in GridIndex start, in GridIndex end)
+            => GetSource().ClampIndexRange(start, end);
 
-        public IEnumerable<GridIndex> GetIndices(in GridIndex pivot, int extend)
-            => GetSource().GetIndices(pivot, extend);
+        public ReadRange<GridIndex> ClampIndexRange(in ReadRange<GridIndex> range)
+            => GetSource().ClampIndexRange(range);
 
-        public IEnumerable<GridIndex> GetIndices(in GridIndex pivot, in GridIndex extend)
-            => GetSource().GetIndices(pivot, extend);
+        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, int extend)
+            => GetSource().IndexRange(pivot, extend);
 
-        public IEnumerable<GridIndex> GetIndices(in GridIndex pivot, bool byRow)
-            => GetSource().GetIndices(pivot, byRow);
+        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, in GridIndex extend)
+            => GetSource().IndexRange(pivot, extend);
 
-        public IEnumerable<GridIndex> GetIndices(ReadRange<GridIndex> range)
-            => GetSource().GetIndices(range);
+        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, bool row)
+            => GetSource().IndexRange(pivot, row);
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
             => GetSource().GetValues(pivot, extend, output);
@@ -126,8 +128,39 @@ namespace System.Grid
         bool IReadOnlyDictionary<GridIndex, T>.TryGetValue(GridIndex key, out T value)
             => GetSource().TryGetValue(key, out value);
 
+        public override int GetHashCode()
+            => GetSource().GetHashCode();
+
+        public override bool Equals(object obj)
+            => obj is ReadGrid<T> other && Equals(in other);
+
+        public bool Equals(ReadGrid<T> other)
+        {
+            var source = GetSource();
+            var otherSource = other.GetSource();
+
+            return source == otherSource;
+        }
+
+        public bool Equals(in ReadGrid<T> other)
+        {
+            var source = GetSource();
+            var otherSource = other.GetSource();
+
+            return source == otherSource;
+        }
+
         private static Grid<T> _empty { get; } = new Grid<T>();
 
         public static ReadGrid<T> Empty { get; } = new ReadGrid<T>(_empty);
+
+        public static implicit operator ReadGrid<T>(Grid<T> source)
+            => source == null ? Empty : new ReadGrid<T>(source);
+
+        public static bool operator ==(in ReadGrid<T> a, in ReadGrid<T> b)
+            => a.Equals(in b);
+
+        public static bool operator !=(in ReadGrid<T> a, in ReadGrid<T> b)
+            => !a.Equals(in b);
     }
 }
