@@ -118,6 +118,9 @@
                 value.Column < min.Column ? min.Column : (value.Column > max.Column ? max.Column : value.Column)
             );
 
+        public static ReadRange<GridIndex> Range(in GridIndex pivot, int extend, in GridIndex gridSize)
+            => Range(pivot, One * extend, gridSize);
+
         public static ReadRange<GridIndex> Range(in GridIndex pivot, in GridIndex extend, in GridIndex gridSize)
         {
             var lastIndex = gridSize - One;

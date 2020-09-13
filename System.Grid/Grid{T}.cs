@@ -80,7 +80,7 @@ namespace System.Grid
             => this.data.GetEnumerator();
 
         public void GetIndices(in GridIndex pivot, int extend, ICollection<GridIndex> output)
-            => GetIndices(pivot, GridIndex.One * extend, output);
+            => GetIndices(GridIndex.Range(pivot, extend, this.Size), output);
 
         public void GetIndices(in GridIndex pivot, in GridIndex extend, ICollection<GridIndex> output)
             => GetIndices(GridIndex.Range(pivot, extend, this.Size), output);
@@ -106,7 +106,7 @@ namespace System.Grid
         }
 
         public IEnumerable<GridIndex> GetIndices(in GridIndex pivot, int extend)
-            => GetIndices(pivot, GridIndex.One * extend);
+            => GetIndices(GridIndex.Range(pivot, extend, this.Size));
 
         public IEnumerable<GridIndex> GetIndices(in GridIndex pivot, in GridIndex extend)
             => GetIndices(GridIndex.Range(pivot, extend, this.Size));
@@ -129,7 +129,7 @@ namespace System.Grid
         }
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
-            => GetValues(pivot, GridIndex.One * extend, output);
+            => GetValues(GridIndex.Range(pivot, extend, this.Size), output);
 
         public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output)
             => GetValues(GridIndex.Range(pivot, extend, this.Size), output);
@@ -155,7 +155,7 @@ namespace System.Grid
         }
 
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
-            => GetValues(pivot, GridIndex.One * extend);
+            => GetValues(GridIndex.Range(pivot, extend, this.Size));
 
         public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend)
             => GetValues(GridIndex.Range(pivot, extend, this.Size));
@@ -192,7 +192,7 @@ namespace System.Grid
         }
 
         public void GetIndexedValues(in GridIndex pivot, int extend, ICollection<GridValue<T>> output)
-            => GetIndexedValues(pivot, GridIndex.One * extend, output);
+            => GetIndexedValues(GridIndex.Range(pivot, extend, this.Size), output);
 
         public void GetIndexedValues(in GridIndex pivot, in GridIndex extend, ICollection<GridValue<T>> output)
             => GetIndexedValues(GridIndex.Range(pivot, extend, this.Size), output);
@@ -223,7 +223,7 @@ namespace System.Grid
         }
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
-            => GetIndexedValues(pivot, GridIndex.One * extend);
+            => GetIndexedValues(GridIndex.Range(pivot, extend, this.Size));
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend)
             => GetIndexedValues(GridIndex.Range(pivot, extend, this.Size));

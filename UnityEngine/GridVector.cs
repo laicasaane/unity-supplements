@@ -139,6 +139,9 @@ namespace UnityEngine
                 value.column < min.column ? min.column : (value.column > max.column ? max.column : value.column)
             );
 
+        public static ReadRange<GridVector> Range(in GridVector pivot, int extend, in GridVector gridSize)
+            => Range(pivot, One * extend, gridSize);
+
         public static ReadRange<GridVector> Range(in GridVector pivot, in GridVector extend, in GridVector gridSize)
         {
             var lastIndex = gridSize - One;
