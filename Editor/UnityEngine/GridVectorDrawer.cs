@@ -24,6 +24,7 @@ namespace UnityEditor
             }
 
             label = EditorGUI.BeginProperty(position, label, property);
+            var labelWidth = EditorGUIUtility.labelWidth;
             Rect contentPosition = EditorGUI.PrefixLabel(position, label);
 
             if (position.height > 16f)
@@ -41,6 +42,7 @@ namespace UnityEditor
             contentPosition.x += contentPosition.width + 2f;
             contentPosition.width -= 3f;
             EditorGUI.PropertyField(contentPosition, colProperty, new GUIContent("C", nameof(GridVector.Column)));
+            EditorGUIUtility.labelWidth = labelWidth;
             EditorGUI.EndProperty();
         }
     }
