@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace System.Grid
 {
     [Serializable]
-    public readonly struct GridValue<T> : IEquatableReadOnlyStruct<GridValue<T>>
+    public readonly struct GridValue<T> : IEquatableReadOnlyStruct<GridValue<T>>, ISerializable
     {
         public readonly GridIndex Index;
         public readonly T Value;
@@ -45,6 +46,36 @@ namespace System.Grid
             hashCode = hashCode * -1521134295 + this.Index.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode(this.Value);
             return hashCode;
+        }
+
+        public override string ToString()
+            => $"[{this.Index}] = {this.Value}";
+
+        private GridValue(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Index = (GridIndex)info.GetValue(nameof(this.Index), typeof(GridIndex));
+            }
+            catch
+            {
+                this.Index = default;
+            }
+
+            try
+            {
+                this.Value = (T)info.GetValue(nameof(this.Value), typeof(T));
+            }
+            catch
+            {
+                this.Value = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Index), this.Index);
+            info.AddValue(nameof(this.Value), this.Value);
         }
 
         public static implicit operator GridValue<T>(in KeyValuePair<GridIndex, T> kvp)

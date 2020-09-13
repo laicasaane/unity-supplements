@@ -1,10 +1,12 @@
-﻿namespace System
+﻿using System.Runtime.Serialization;
+
+namespace System
 {
     /// <summary>
     /// Represents an index of the 3D variable size array
     /// </summary>
     [Serializable]
-    public readonly struct Index3 : IEquatableReadOnlyStruct<Index3>, IComparableReadOnlyStruct<Index3>
+    public readonly struct Index3 : IEquatableReadOnlyStruct<Index3>, IComparableReadOnlyStruct<Index3>, ISerializable
     {
         public readonly int A;
         public readonly int B;
@@ -123,6 +125,43 @@
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C})";
+
+        private Index3(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.A = info.GetInt32(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+
+            try
+            {
+                this.B = info.GetInt32(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.C = info.GetInt32(nameof(this.C));
+            }
+            catch
+            {
+                this.C = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.A), this.A);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.C), this.C);
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Index3"/>(0, 0, 0).

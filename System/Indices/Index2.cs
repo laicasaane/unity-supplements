@@ -1,10 +1,12 @@
-﻿namespace System
+﻿using System.Runtime.Serialization;
+
+namespace System
 {
     /// <summary>
     /// Represents an index of the 2D variable size array
     /// </summary>
     [Serializable]
-    public readonly struct Index2 : IEquatableReadOnlyStruct<Index2>, IComparableReadOnlyStruct<Index2>
+    public readonly struct Index2 : IEquatableReadOnlyStruct<Index2>, IComparableReadOnlyStruct<Index2>, ISerializable
     {
         public readonly int A;
         public readonly int B;
@@ -95,6 +97,33 @@
 
         public override string ToString()
             => $"({this.A}, {this.B})";
+
+        private Index2(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.A = info.GetInt32(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+
+            try
+            {
+                this.B = info.GetInt32(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.A), this.A);
+            info.AddValue(nameof(this.B), this.B);
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Index2"/>(0, 0).

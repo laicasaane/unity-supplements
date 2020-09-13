@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct ScreenResolution : IEquatableReadOnlyStruct<ScreenResolution>
+    public readonly struct ScreenResolution : IEquatableReadOnlyStruct<ScreenResolution>, ISerializable
     {
         public readonly int Width;
         public readonly int Height;
@@ -70,6 +71,33 @@ namespace UnityEngine
 #if !UNITY_EDITOR
             Screen.SetResolution(this.Width, this.Height, mode);
 #endif
+        }
+
+        private ScreenResolution(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Width = info.GetInt32(nameof(this.Width));
+            }
+            catch
+            {
+                this.Width = default;
+            }
+
+            try
+            {
+                this.Height = info.GetInt32(nameof(this.Height));
+            }
+            catch
+            {
+                this.Height = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Width), this.Width);
+            info.AddValue(nameof(this.Height), this.Height);
         }
 
         public static implicit operator ScreenResolution(Resolution value)

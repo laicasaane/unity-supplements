@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct HSBColor : IEquatableReadOnlyStruct<HSBColor>, IFormattable
+    public readonly struct HSBColor : IEquatableReadOnlyStruct<HSBColor>, IFormattable, ISerializable
     {
         public static HSBColor Cyan { get; } = Color.cyan;
 
@@ -153,6 +154,53 @@ namespace UnityEngine
                                     this.B.ToString(format, formatProvider),
                                     this.A.ToString(format, formatProvider)
                                 );
+        }
+
+        private HSBColor(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.H = info.GetSingle(nameof(this.H));
+            }
+            catch
+            {
+                this.H = default;
+            }
+
+            try
+            {
+                this.S = info.GetSingle(nameof(this.S));
+            }
+            catch
+            {
+                this.S = default;
+            }
+
+            try
+            {
+                this.B = info.GetSingle(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.A = info.GetSingle(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.H), this.H);
+            info.AddValue(nameof(this.S), this.S);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.A), this.A);
         }
 
         public static bool operator ==(in HSBColor lhs, in HSBColor rhs)

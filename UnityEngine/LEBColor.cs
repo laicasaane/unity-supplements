@@ -5,11 +5,12 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct LEBColor : IEquatableReadOnlyStruct<LEBColor>, IFormattable
+    public readonly struct LEBColor : IEquatableReadOnlyStruct<LEBColor>, IFormattable, ISerializable
     {
         public static LEBColor Cyan { get; } = Color.cyan;
 
@@ -160,6 +161,53 @@ namespace UnityEngine
                Mathf.Approximately(this.E, other.E) &&
                Mathf.Approximately(this.B, other.B) &&
                Mathf.Approximately(this.A, other.A);
+
+        private LEBColor(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.L = info.GetSingle(nameof(this.L));
+            }
+            catch
+            {
+                this.L = default;
+            }
+
+            try
+            {
+                this.E = info.GetSingle(nameof(this.E));
+            }
+            catch
+            {
+                this.E = default;
+            }
+
+            try
+            {
+                this.B = info.GetSingle(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.A = info.GetSingle(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.L), this.L);
+            info.AddValue(nameof(this.E), this.E);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.A), this.A);
+        }
 
         public static bool operator ==(in LEBColor lhs, in LEBColor rhs)
             => Mathf.Approximately(lhs.L, rhs.L) &&

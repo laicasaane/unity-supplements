@@ -1,10 +1,12 @@
-﻿namespace System
+﻿using System.Runtime.Serialization;
+
+namespace System
 {
     /// <summary>
     /// Represents an index of the 5D variable size array
     /// </summary>
     [Serializable]
-    public readonly struct Index5 : IEquatableReadOnlyStruct<Index5>, IComparableReadOnlyStruct<Index5>
+    public readonly struct Index5 : IEquatableReadOnlyStruct<Index5>, IComparableReadOnlyStruct<Index5>, ISerializable
     {
         public readonly int A;
         public readonly int B;
@@ -169,6 +171,63 @@
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C}, {this.D}, {this.E})";
+
+        private Index5(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.A = info.GetInt32(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+
+            try
+            {
+                this.B = info.GetInt32(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.C = info.GetInt32(nameof(this.C));
+            }
+            catch
+            {
+                this.C = default;
+            }
+
+            try
+            {
+                this.D = info.GetInt32(nameof(this.D));
+            }
+            catch
+            {
+                this.D = default;
+            }
+
+            try
+            {
+                this.E = info.GetInt32(nameof(this.E));
+            }
+            catch
+            {
+                this.E = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.A), this.A);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.C), this.C);
+            info.AddValue(nameof(this.D), this.D);
+            info.AddValue(nameof(this.E), this.E);
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Index5"/>(0, 0, 0, 0, 0).

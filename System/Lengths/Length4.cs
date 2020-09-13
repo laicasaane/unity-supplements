@@ -1,10 +1,12 @@
-﻿namespace System
+﻿using System.Runtime.Serialization;
+
+namespace System
 {
     /// <summary>
     /// Represent the lengths of the 4D array. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
-    public readonly struct Length4 : IEquatableReadOnlyStruct<Length4>, IComparableReadOnlyStruct<Length4>
+    public readonly struct Length4 : IEquatableReadOnlyStruct<Length4>, IComparableReadOnlyStruct<Length4>, ISerializable
     {
         public readonly int A;
         public readonly int B;
@@ -116,6 +118,53 @@
             hashCode = hashCode * -1521134295 + this.C.GetHashCode();
             hashCode = hashCode * -1521134295 + this.D.GetHashCode();
             return hashCode;
+        }
+
+        private Length4(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.A = info.GetInt32(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+
+            try
+            {
+                this.B = info.GetInt32(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.C = info.GetInt32(nameof(this.C));
+            }
+            catch
+            {
+                this.C = default;
+            }
+
+            try
+            {
+                this.D = info.GetInt32(nameof(this.D));
+            }
+            catch
+            {
+                this.D = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.A), this.A);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.C), this.C);
+            info.AddValue(nameof(this.D), this.D);
         }
 
         /// <summary>

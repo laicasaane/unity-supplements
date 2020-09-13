@@ -1,9 +1,10 @@
 using System;
+using System.Runtime.Serialization;
 
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct Size : IEquatableReadOnlyStruct<Size>, IComparableReadOnlyStruct<Size>
+    public readonly struct Size : IEquatableReadOnlyStruct<Size>, IComparableReadOnlyStruct<Size>, ISerializable
     {
         public readonly float Width;
         public readonly float Height;
@@ -71,6 +72,33 @@ namespace UnityEngine
 
         public override string ToString()
             => $"({this.Width}, {this.Height})";
+
+        private Size(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Width = info.GetSingle(nameof(this.Width));
+            }
+            catch
+            {
+                this.Width = default;
+            }
+
+            try
+            {
+                this.Height = info.GetSingle(nameof(this.Height));
+            }
+            catch
+            {
+                this.Height = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Width), this.Width);
+            info.AddValue(nameof(this.Height), this.Height);
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Size"/>(0, 0).

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct OffsetInt : IEquatableReadOnlyStruct<OffsetInt>
+    public readonly struct OffsetInt : IEquatableReadOnlyStruct<OffsetInt>, ISerializable
     {
         public readonly int Left;
 
@@ -89,6 +90,53 @@ namespace UnityEngine
         public bool Equals(in OffsetInt other)
             => this.Left == other.Left && this.Right == other.Right &&
                this.Top == other.Top && this.Bottom == other.Bottom;
+
+        private OffsetInt(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Left = info.GetInt32(nameof(this.Left));
+            }
+            catch
+            {
+                this.Left = default;
+            }
+
+            try
+            {
+                this.Right = info.GetInt32(nameof(this.Right));
+            }
+            catch
+            {
+                this.Right = default;
+            }
+
+            try
+            {
+                this.Top = info.GetInt32(nameof(this.Top));
+            }
+            catch
+            {
+                this.Top = default;
+            }
+
+            try
+            {
+                this.Bottom = info.GetInt32(nameof(this.Bottom));
+            }
+            catch
+            {
+                this.Bottom = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Left), this.Left);
+            info.AddValue(nameof(this.Right), this.Right);
+            info.AddValue(nameof(this.Top), this.Top);
+            info.AddValue(nameof(this.Bottom), this.Bottom);
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="OffsetInt"/>(0, 0, 0, 0).

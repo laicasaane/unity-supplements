@@ -1,10 +1,12 @@
-﻿namespace System
+﻿using System.Runtime.Serialization;
+
+namespace System
 {
     /// <summary>
     /// Represent the lengths of the 3D array. The value of each component is greater than or equal to 0.
     /// </summary>
     [Serializable]
-    public readonly struct Length3 : IEquatableReadOnlyStruct<Length3>, IComparableReadOnlyStruct<Length3>
+    public readonly struct Length3 : IEquatableReadOnlyStruct<Length3>, IComparableReadOnlyStruct<Length3>, ISerializable
     {
         public readonly int A;
         public readonly int B;
@@ -97,6 +99,43 @@
             hashCode = hashCode * -1521134295 + this.B.GetHashCode();
             hashCode = hashCode * -1521134295 + this.C.GetHashCode();
             return hashCode;
+        }
+
+        private Length3(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.A = info.GetInt32(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+
+            try
+            {
+                this.B = info.GetInt32(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.C = info.GetInt32(nameof(this.C));
+            }
+            catch
+            {
+                this.C = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.A), this.A);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.C), this.C);
         }
 
         /// <summary>

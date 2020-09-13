@@ -1,10 +1,12 @@
-﻿namespace System
+﻿using System.Runtime.Serialization;
+
+namespace System
 {
     /// <summary>
     /// Represents an index of the 4D variable size array
     /// </summary>
     [Serializable]
-    public readonly struct Index4 : IEquatableReadOnlyStruct<Index4>, IComparableReadOnlyStruct<Index4>
+    public readonly struct Index4 : IEquatableReadOnlyStruct<Index4>, IComparableReadOnlyStruct<Index4>, ISerializable
     {
         public readonly int A;
         public readonly int B;
@@ -145,6 +147,53 @@
 
         public override string ToString()
             => $"({this.A}, {this.B}, {this.C}, {this.D})";
+
+        private Index4(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.A = info.GetInt32(nameof(this.A));
+            }
+            catch
+            {
+                this.A = default;
+            }
+
+            try
+            {
+                this.B = info.GetInt32(nameof(this.B));
+            }
+            catch
+            {
+                this.B = default;
+            }
+
+            try
+            {
+                this.C = info.GetInt32(nameof(this.C));
+            }
+            catch
+            {
+                this.C = default;
+            }
+
+            try
+            {
+                this.D = info.GetInt32(nameof(this.D));
+            }
+            catch
+            {
+                this.D = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.A), this.A);
+            info.AddValue(nameof(this.B), this.B);
+            info.AddValue(nameof(this.C), this.C);
+            info.AddValue(nameof(this.D), this.D);
+        }
 
         /// <summary>
         /// Shorthand for writing <see cref="Index4"/>(0, 0, 0, 0).
