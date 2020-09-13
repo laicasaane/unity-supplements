@@ -43,6 +43,7 @@
 - EnumIndex
 - EnumLength
 - ReadRange\<T>
+- IRangeEnumerator\<T>
 
 ## System.IO
 
@@ -87,6 +88,7 @@
 ## System.Grid
 
 - GridIndex
+- GridIndexRange
 - GridValue\<T>
 - IReadOnlyGrid\<T>
 - Grid\<T>
