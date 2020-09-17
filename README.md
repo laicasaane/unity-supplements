@@ -43,6 +43,7 @@
 - EnumIndex
 - EnumLength
 - ReadRange\<T>
+- ReadRange\<TValue, TEnumerator>
 - IRangeEnumerator\<T>
 
 ## System.IO
