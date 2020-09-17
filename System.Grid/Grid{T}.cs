@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
 {
     [Serializable]
-    public class Grid<T> : IReadOnlyGrid<T>,
-                           IReadOnlyDictionary<GridIndex, T>,
-                           ISerializable
+    public class Grid<T> : IReadOnlyGrid<T>, ISerializable
     {
         public GridIndex Size { get; private set; }
 
@@ -87,29 +84,29 @@ namespace System.Grid
                 value.Column >= this.Size.Column ? this.Size.Column - 1 : value.Column
             );
 
-        public ReadRange<GridIndex> ClampIndexRange(in GridIndex start, in GridIndex end)
-            => GridIndexRange.Get(
+        public GridIndexRange ClampIndexRange(in GridIndex start, in GridIndex end)
+            => new GridIndexRange(
                 ClampIndex(start),
                 ClampIndex(end)
             );
 
-        public ReadRange<GridIndex> ClampIndexRange(in ReadRange<GridIndex> range)
-            => GridIndexRange.Get(
+        public GridIndexRange ClampIndexRange(in GridIndexRange range)
+            => new GridIndexRange(
                 ClampIndex(range.Start),
                 ClampIndex(range.End)
             );
 
-        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, int extend)
+        public GridIndexRange IndexRange(in GridIndex pivot, int extend)
             => IndexRange(pivot, GridIndex.One * extend);
 
-        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, in GridIndex extend)
-            => GridIndexRange.Get(
+        public GridIndexRange IndexRange(in GridIndex pivot, in GridIndex extend)
+            => new GridIndexRange(
                 ClampIndex(pivot - extend),
                 ClampIndex(pivot + extend)
             );
 
-        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, bool row)
-            => GridIndexRange.Get(
+        public GridIndexRange IndexRange(in GridIndex pivot, bool row)
+            => new GridIndexRange(
                 new GridIndex(row ? pivot.Row : 0, row ? 0 : pivot.Column),
                 new GridIndex(row ? pivot.Row : this.Size.Row - 1, row ? this.Size.Column - 1 : pivot.Column)
             );
@@ -132,7 +129,7 @@ namespace System.Grid
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output)
             => GetValues(IndexRange(pivot, byRow), output);
 
-        public void GetValues(in ReadRange<GridIndex> range, ICollection<T> output)
+        public void GetValues(in GridIndexRange range, ICollection<T> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
@@ -153,7 +150,7 @@ namespace System.Grid
         public IEnumerable<T> GetValues(in GridIndex pivot, bool byRow)
             => GetValues(IndexRange(pivot, byRow));
 
-        public IEnumerable<T> GetValues(ReadRange<GridIndex> range)
+        public IEnumerable<T> GetValues(GridIndexRange range)
         {
             foreach (var index in ClampIndexRange(range))
             {
@@ -185,7 +182,7 @@ namespace System.Grid
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
             => GetIndexedValues(IndexRange(pivot, byRow), output);
 
-        public void GetIndexedValues(in ReadRange<GridIndex> range, ICollection<GridValue<T>> output)
+        public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
@@ -211,7 +208,7 @@ namespace System.Grid
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow)
             => GetIndexedValues(IndexRange(pivot, byRow));
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(ReadRange<GridIndex> range)
+        public IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range)
         {
             foreach (var index in ClampIndexRange(range))
             {
@@ -219,19 +216,6 @@ namespace System.Grid
                     yield return new GridValue<T>(index, value);
             }
         }
-
-        T IReadOnlyDictionary<GridIndex, T>.this[GridIndex key] => this.data[key];
-
-        IEnumerable<GridIndex> IReadOnlyDictionary<GridIndex, T>.Keys => this.data.Keys;
-
-        bool IReadOnlyDictionary<GridIndex, T>.ContainsKey(GridIndex key)
-            => this.data.ContainsKey(key);
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => this.data.GetEnumerator();
-
-        bool IReadOnlyDictionary<GridIndex, T>.TryGetValue(GridIndex key, out T value)
-            => this.data.TryGetValue(key, out value);
 
         protected Grid(SerializationInfo info, StreamingContext context)
         {
@@ -244,20 +228,30 @@ namespace System.Grid
                 this.Size = default;
             }
 
-            try
+            this.data = new Dictionary<GridIndex, T>();
+            var range = new GridIndexRange(GridIndex.Zero, this.Size);
+
+            foreach (var index in range)
             {
-                this.data = (Dictionary<GridIndex, T>)info.GetValue(nameof(this.data), typeof(Dictionary<GridIndex, T>));
-            }
-            catch
-            {
-                this.data = new Dictionary<GridIndex, T>();
+                try
+                {
+                    var value = (T)info.GetValue(index.ToString(), typeof(T));
+                    this.data[index] = value;
+                }
+                catch
+                {
+                }
             }
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue(nameof(this.Size), this.Size);
-            info.AddValue(nameof(this.data), this.data);
+
+            foreach (var kv in this.data)
+            {
+                info.AddValue(kv.Key.ToString(), kv.Value);
+            }
         }
     }
 }

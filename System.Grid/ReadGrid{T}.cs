@@ -4,9 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Grid
 {
-    public readonly struct ReadGrid<T> : IReadOnlyGrid<T>,
-                                         IReadOnlyDictionary<GridIndex, T>,
-                                         IEquatableReadOnlyStruct<ReadGrid<T>>
+    public readonly struct ReadGrid<T> : IReadOnlyGrid<T>, IEquatableReadOnlyStruct<ReadGrid<T>>
     {
         public GridIndex Size => GetSource().Size;
 
@@ -49,19 +47,19 @@ namespace System.Grid
         public GridIndex ClampIndex(in GridIndex value)
             => GetSource().ClampIndex(value);
 
-        public ReadRange<GridIndex> ClampIndexRange(in GridIndex start, in GridIndex end)
+        public GridIndexRange ClampIndexRange(in GridIndex start, in GridIndex end)
             => GetSource().ClampIndexRange(start, end);
 
-        public ReadRange<GridIndex> ClampIndexRange(in ReadRange<GridIndex> range)
+        public GridIndexRange ClampIndexRange(in GridIndexRange range)
             => GetSource().ClampIndexRange(range);
 
-        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, int extend)
+        public GridIndexRange IndexRange(in GridIndex pivot, int extend)
             => GetSource().IndexRange(pivot, extend);
 
-        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, in GridIndex extend)
+        public GridIndexRange IndexRange(in GridIndex pivot, in GridIndex extend)
             => GetSource().IndexRange(pivot, extend);
 
-        public ReadRange<GridIndex> IndexRange(in GridIndex pivot, bool row)
+        public GridIndexRange IndexRange(in GridIndex pivot, bool row)
             => GetSource().IndexRange(pivot, row);
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
@@ -73,7 +71,7 @@ namespace System.Grid
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output)
             => GetSource().GetValues(pivot, byRow, output);
 
-        public void GetValues(in ReadRange<GridIndex> range, ICollection<T> output)
+        public void GetValues(in GridIndexRange range, ICollection<T> output)
             => GetSource().GetValues(range, output);
 
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
@@ -85,7 +83,7 @@ namespace System.Grid
         public IEnumerable<T> GetValues(in GridIndex pivot, bool byRow)
             => GetSource().GetValues(pivot, byRow);
 
-        public IEnumerable<T> GetValues(ReadRange<GridIndex> range)
+        public IEnumerable<T> GetValues(GridIndexRange range)
             => GetSource().GetValues(range);
 
         public void GetIndexedValues(ICollection<GridValue<T>> output)
@@ -100,7 +98,7 @@ namespace System.Grid
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(pivot, byRow, output);
 
-        public void GetIndexedValues(in ReadRange<GridIndex> range, ICollection<GridValue<T>> output)
+        public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(range, output);
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
@@ -112,21 +110,8 @@ namespace System.Grid
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow)
             => GetSource().GetIndexedValues(pivot, byRow);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(ReadRange<GridIndex> range)
+        public IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range)
             => GetSource().GetIndexedValues(range);
-
-        T IReadOnlyDictionary<GridIndex, T>.this[GridIndex key] => GetSource()[in key];
-
-        IEnumerable<GridIndex> IReadOnlyDictionary<GridIndex, T>.Keys => GetSource().Indices;
-
-        bool IReadOnlyDictionary<GridIndex, T>.ContainsKey(GridIndex key)
-            => GetSource().ContainsIndex(key);
-
-        IEnumerator IEnumerable.GetEnumerator()
-            => GetSource().GetEnumerator();
-
-        bool IReadOnlyDictionary<GridIndex, T>.TryGetValue(GridIndex key, out T value)
-            => GetSource().TryGetValue(key, out value);
 
         public override int GetHashCode()
             => GetSource().GetHashCode();
