@@ -20,7 +20,10 @@ namespace System
         internal T[] GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
 
-        public T this[int index]
+        public ref T this[int index]
+            => ref GetSource()[index];
+
+        T IReadOnlyList<T>.this[int index]
             => GetSource()[index];
 
         public int Length { get; }

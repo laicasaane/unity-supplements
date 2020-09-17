@@ -10,7 +10,18 @@
 
         public int Count { get; }
 
-        public T this[int index]
+        public ref T this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= this.Count)
+                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+                return ref this.source[this.Offset + index];
+            }
+        }
+
+        T IReadOnlyList<T>.this[int index]
         {
             get
             {
