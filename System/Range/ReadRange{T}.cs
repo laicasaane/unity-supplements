@@ -66,20 +66,11 @@ namespace System
         public static implicit operator ReadRange<T>(in (T start, T end) value)
             => new ReadRange<T>(value.start, value.end);
 
-        public static bool operator ==(in ReadRange<T> a, in ReadRange<T> b)
-            => a.Equals(in b);
+        public static bool operator ==(in ReadRange<T> lhs, in ReadRange<T> rhs)
+            => lhs.Equals(in rhs);
 
-        public static bool operator !=(in ReadRange<T> a, in ReadRange<T> b)
-            => !a.Equals(in b);
-
-        private struct Enumerator : IRangeEnumerator<T>
-        {
-            public IEnumerator<T> Enumerate(T start, T end)
-            {
-                yield return start;
-                yield return end;
-            }
-        }
+        public static bool operator !=(in ReadRange<T> lhs, in ReadRange<T> rhs)
+            => !lhs.Equals(in rhs);
 
         private ReadRange(SerializationInfo info, StreamingContext context)
         {
@@ -108,6 +99,15 @@ namespace System
         {
             info.AddValue(nameof(this.Start), this.Start);
             info.AddValue(nameof(this.End), this.End);
+        }
+
+        private struct Enumerator : IRangeEnumerator<T>
+        {
+            public IEnumerator<T> Enumerate(T start, T end)
+            {
+                yield return start;
+                yield return end;
+            }
         }
     }
 }
