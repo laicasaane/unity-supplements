@@ -259,7 +259,7 @@ namespace System.Grid
 
             this.data = new Dictionary<GridIndex, T>();
 
-            foreach (var index in GridIndexRange.Size(this.Size))
+            foreach (var index in GridIndexRange.Count(this.Size))
             {
                 try
                 {

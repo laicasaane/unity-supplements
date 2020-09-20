@@ -90,7 +90,7 @@ namespace System.Grid
         public static UIntRange Auto(uint a, uint b)
             => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
 
-        public static UIntRange Size(uint size)
+        public static UIntRange Count(uint size)
             => new UIntRange(0, size - 1);
 
         public static implicit operator UIntRange(in (uint start, uint end) value)

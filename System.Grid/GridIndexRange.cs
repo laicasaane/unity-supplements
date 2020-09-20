@@ -96,8 +96,8 @@ namespace System.Grid
         public static GridIndexRange Auto(in GridIndex a, in GridIndex b, IComparer<GridIndex> comparer)
             => comparer.Compare(a, b) > 0 ? new GridIndexRange(b, a) : new GridIndexRange(a, b);
 
-        public static GridIndexRange Size(in GridIndex size)
-            => new GridIndexRange(GridIndex.Zero, size - GridIndex.One);
+        public static GridIndexRange Count(in GridIndex value)
+            => new GridIndexRange(GridIndex.Zero, value - GridIndex.One);
 
         public static implicit operator GridIndexRange(in (GridIndex start, GridIndex end) value)
             => new GridIndexRange(value.start, value.end);

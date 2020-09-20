@@ -90,8 +90,8 @@ namespace System.Grid
         public static IntRange Auto(int a, int b)
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
 
-        public static IntRange Size(int size)
-            => new IntRange(0, Math.Abs(size - 1));
+        public static IntRange Count(int value)
+            => new IntRange(0, Math.Abs(value - 1));
 
         public static implicit operator IntRange(in (int start, int end) value)
             => new IntRange(value.start, value.end);
