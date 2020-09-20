@@ -45,6 +45,8 @@
 - ReadRange\<T>
 - ReadRange\<TValue, TEnumerator>
 - IRangeEnumerator\<T>
+- IntRange
+- UIntRange
 
 ## System.IO
 
