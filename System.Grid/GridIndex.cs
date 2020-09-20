@@ -59,7 +59,7 @@ namespace System.Grid
 
         public override int GetHashCode()
         {
-            var hashCode = -1663278630;
+            var hashCode = 240067226;
             hashCode = hashCode * -1521134295 + this.Row.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Column.GetHashCode();
             return hashCode;

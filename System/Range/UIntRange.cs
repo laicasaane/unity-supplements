@@ -5,31 +5,25 @@ using System.Runtime.Serialization;
 namespace System.Grid
 {
     [Serializable]
-    public readonly struct GridIndexRange : IEquatableReadOnlyStruct<GridIndexRange>, ISerializable
+    public readonly struct UIntRange : IEquatableReadOnlyStruct<UIntRange>, ISerializable
     {
-        public readonly GridIndex Start;
-        public readonly GridIndex End;
+        public readonly uint Start;
+        public readonly uint End;
 
-        public GridIndexRange(in GridIndex start, in GridIndex end)
+        public UIntRange(uint start, uint end)
         {
-            this.Start = start;
-            this.End = end;
-        }
-
-        public GridIndexRange(in GridIndex start, in GridIndex end, IComparer<GridIndex> comparer)
-        {
-            if (comparer.Compare(end, start) < 0)
+            if (end < start)
                 throw new InvalidOperationException($"{nameof(end)} must be greater than or equal to {nameof(start)}");
 
             this.Start = start;
             this.End = end;
         }
 
-        private GridIndexRange(SerializationInfo info, StreamingContext context)
+        private UIntRange(SerializationInfo info, StreamingContext context)
         {
             try
             {
-                this.Start = (GridIndex)info.GetValue(nameof(this.Start), typeof(GridIndex));
+                this.Start = info.GetUInt32(nameof(this.Start));
             }
             catch
             {
@@ -38,7 +32,7 @@ namespace System.Grid
 
             try
             {
-                this.End = (GridIndex)info.GetValue(nameof(this.End), typeof(GridIndex));
+                this.End = info.GetUInt32(nameof(this.End));
             }
             catch
             {
@@ -52,28 +46,28 @@ namespace System.Grid
             info.AddValue(nameof(this.End), this.End);
         }
 
-        public void Deconstruct(out GridIndex start, out GridIndex end)
+        public void Deconstruct(out uint start, out uint end)
         {
             start = this.Start;
             end = this.End;
         }
 
-        public GridIndexRange With(in GridIndex? Start = null, in GridIndex? End = null)
-            => new GridIndexRange(
+        public UIntRange With(in uint? Start = null, in uint? End = null)
+            => new UIntRange(
                 Start ?? this.Start,
                 End ?? this.End
             );
 
         public override bool Equals(object obj)
-            => obj is GridIndexRange other &&
+            => obj is UIntRange other &&
                this.Start.Equals(other.Start) &&
                this.End.Equals(other.End);
 
-        public bool Equals(in GridIndexRange other)
+        public bool Equals(in UIntRange other)
             => this.Start.Equals(other.Start) &&
                this.End.Equals(other.End);
 
-        public bool Equals(GridIndexRange other)
+        public bool Equals(UIntRange other)
             => this.Start.Equals(other.Start) &&
                this.End.Equals(other.End);
 
@@ -93,41 +87,41 @@ namespace System.Grid
         /// If a <= b, then a is the start value, and b is the end value.
         /// Otherwise, they are swapped.
         /// </summary>
-        public static GridIndexRange Auto(in GridIndex a, in GridIndex b, IComparer<GridIndex> comparer)
-            => comparer.Compare(a, b) > 0 ? new GridIndexRange(b, a) : new GridIndexRange(a, b);
+        public static UIntRange Auto(uint a, uint b)
+            => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
 
-        public static GridIndexRange Size(in GridIndex size)
-            => new GridIndexRange(GridIndex.Zero, size - GridIndex.One);
+        public static UIntRange Size(uint size)
+            => new UIntRange(0, size - 1);
 
-        public static implicit operator GridIndexRange(in (GridIndex start, GridIndex end) value)
-            => new GridIndexRange(value.start, value.end);
+        public static implicit operator UIntRange(in (uint start, uint end) value)
+            => new UIntRange(value.start, value.end);
 
-        public static implicit operator ReadRange<GridIndex, Enumerator>(in GridIndexRange value)
-            => new ReadRange<GridIndex, Enumerator>(value.Start, value.End);
+        public static implicit operator ReadRange<uint, Enumerator>(in UIntRange value)
+            => new ReadRange<uint, Enumerator>(value.Start, value.End);
 
-        public static implicit operator ReadRange<GridIndex>(in GridIndexRange value)
-            => new ReadRange<GridIndex>(value.Start, value.End, new Enumerator());
+        public static implicit operator ReadRange<uint>(in UIntRange value)
+            => new ReadRange<uint>(value.Start, value.End, new Enumerator());
 
-        public static implicit operator GridIndexRange(in ReadRange<GridIndex> value)
-            => new GridIndexRange(value.Start, value.End);
+        public static implicit operator UIntRange(in ReadRange<uint> value)
+            => new UIntRange(value.Start, value.End);
 
-        public static implicit operator GridIndexRange(in ReadRange<GridIndex, Enumerator> value)
-            => new GridIndexRange(value.Start, value.End);
+        public static implicit operator UIntRange(in ReadRange<uint, Enumerator> value)
+            => new UIntRange(value.Start, value.End);
 
-        public static bool operator ==(in GridIndexRange lhs, in GridIndexRange rhs)
+        public static bool operator ==(in UIntRange lhs, in UIntRange rhs)
             => lhs.Equals(in rhs);
 
-        public static bool operator !=(in GridIndexRange lhs, in GridIndexRange rhs)
+        public static bool operator !=(in UIntRange lhs, in UIntRange rhs)
             => !lhs.Equals(in rhs);
 
-        public struct Enumerator : IEnumerator<GridIndex>, IRangeEnumerator<GridIndex>
+        public struct Enumerator : IEnumerator<uint>, IRangeEnumerator<uint>
         {
-            private readonly GridIndexRange range;
+            private readonly UIntRange range;
 
-            private GridIndex current;
+            private uint current;
             private sbyte flag;
 
-            public Enumerator(in GridIndexRange range)
+            public Enumerator(in UIntRange range)
             {
                 this.range = range;
                 this.current = range.Start;
@@ -151,20 +145,11 @@ namespace System.Grid
                     return false;
                 }
 
-                var col = this.current.Column + 1;
-                var row = this.current.Row;
-
-                if (col > this.range.End.Column)
-                {
-                    row += 1;
-                    col = this.range.Start.Column;
-                }
-
-                this.current = new GridIndex(row, col);
+                this.current += 1;
                 return true;
             }
 
-            public GridIndex Current
+            public uint Current
             {
                 get
                 {
@@ -191,14 +176,11 @@ namespace System.Grid
                 this.flag = -1;
             }
 
-            public IEnumerator<GridIndex> Enumerate(GridIndex start, GridIndex end)
+            public IEnumerator<uint> Enumerate(uint start, uint end)
             {
-                for (var r = start.Row; r <= end.Row; r++)
+                for (var i = start; i <= end; i++)
                 {
-                    for (var c = start.Column; c <= end.Column; c++)
-                    {
-                        yield return new GridIndex(r, c);
-                    }
+                    yield return i;
                 }
             }
         }

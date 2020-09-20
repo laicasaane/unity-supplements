@@ -20,41 +20,15 @@ namespace System
             this.enumerator = default;
         }
 
-        public void Deconstruct(out TValue start, out TValue end)
+        public ReadRange(TValue start, TValue end, IComparer<TValue> comparer)
         {
-            start = this.Start;
-            end = this.End;
+            if (comparer.Compare(end, start) < 0)
+                throw new InvalidOperationException($"{nameof(end)} must be greater than or equal to {nameof(start)}");
+
+            this.Start = start;
+            this.End = end;
+            this.enumerator = default;
         }
-
-        public ReadRange<TValue> With(in TValue? Start = null, in TValue? End = null)
-            => new ReadRange<TValue>(
-                Start ?? this.Start,
-                End ?? this.End
-            );
-
-        public override bool Equals(object obj)
-            => obj is ReadRange<TValue, TEnumerator> other &&
-               this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End);
-
-        public bool Equals(in ReadRange<TValue, TEnumerator> other)
-            => this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End);
-
-        public bool Equals(ReadRange<TValue, TEnumerator> other)
-            => this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End);
-
-        public override int GetHashCode()
-        {
-            var hashCode = -1676728671;
-            hashCode = hashCode * -1521134295 + this.Start.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.End.GetHashCode();
-            return hashCode;
-        }
-
-        public IEnumerator<TValue> GetEnumerator()
-            => this.enumerator.Enumerate(this.Start, this.End);
 
         private ReadRange(SerializationInfo info, StreamingContext context)
         {
@@ -84,6 +58,51 @@ namespace System
             info.AddValue(nameof(this.Start), this.Start);
             info.AddValue(nameof(this.End), this.End);
         }
+
+        public void Deconstruct(out TValue start, out TValue end)
+        {
+            start = this.Start;
+            end = this.End;
+        }
+
+        public ReadRange<TValue> With(in TValue? Start = null, in TValue? End = null)
+            => new ReadRange<TValue>(
+                Start ?? this.Start,
+                End ?? this.End
+            );
+
+        public override bool Equals(object obj)
+            => obj is ReadRange<TValue, TEnumerator> other &&
+               this.Start.Equals(other.Start) &&
+               this.End.Equals(other.End);
+
+        public bool Equals(in ReadRange<TValue, TEnumerator> other)
+            => this.Start.Equals(other.Start) &&
+               this.End.Equals(other.End);
+
+        public bool Equals(ReadRange<TValue, TEnumerator> other)
+            => this.Start.Equals(other.Start) &&
+               this.End.Equals(other.End);
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1005511336;
+            hashCode = hashCode * -1521134295 + this.Start.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.End.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.enumerator.GetHashCode();
+            return hashCode;
+        }
+
+        public IEnumerator<TValue> GetEnumerator()
+            => this.enumerator.Enumerate(this.Start, this.End);
+
+        /// <summary>
+        /// Automatically create a range from (a, b).
+        /// If a <= b, then a is the start value, and b is the end value.
+        /// Otherwise, they are swapped.
+        /// </summary>
+        public static ReadRange<TValue, TEnumerator> Auto(TValue a, TValue b, IComparer<TValue> comparer)
+            => comparer.Compare(a, b) > 0 ? new ReadRange<TValue, TEnumerator>(b, a) : new ReadRange<TValue, TEnumerator>(a, b);
 
         public static implicit operator ReadRange<TValue, TEnumerator>(in (TValue start, TValue end) value)
             => new ReadRange<TValue, TEnumerator>(value.start, value.end);

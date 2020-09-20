@@ -26,6 +26,55 @@ namespace System
             this.enumerator = enumerator;
         }
 
+        public ReadRange(T start, T end, IComparer<T> comparer)
+        {
+            if (comparer.Compare(end, start) < 0)
+                throw new InvalidOperationException($"{nameof(end)} must be greater than or equal to {nameof(start)}");
+
+            this.Start = start;
+            this.End = end;
+            this.enumerator = null;
+        }
+
+        public ReadRange(T start, T end, IRangeEnumerator<T> enumerator, IComparer<T> comparer)
+        {
+            if (comparer.Compare(end, start) < 0)
+                throw new InvalidOperationException($"{nameof(end)} must be greater than or equal to {nameof(start)}");
+
+            this.Start = start;
+            this.End = end;
+            this.enumerator = enumerator;
+        }
+
+        private ReadRange(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Start = (T)info.GetValue(nameof(this.Start), typeof(T));
+            }
+            catch
+            {
+                this.Start = default;
+            }
+
+            try
+            {
+                this.End = (T)info.GetValue(nameof(this.End), typeof(T));
+            }
+            catch
+            {
+                this.End = default;
+            }
+
+            this.enumerator = null;
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Start), this.Start);
+            info.AddValue(nameof(this.End), this.End);
+        }
+
         public void Deconstruct(out T start, out T end)
         {
             start = this.Start;
@@ -63,6 +112,17 @@ namespace System
         public IEnumerator<T> GetEnumerator()
             => (this.enumerator ?? new Enumerator()).Enumerate(this.Start, this.End);
 
+        /// <summary>
+        /// Automatically create a range from (a, b).
+        /// If a <= b, then a is the start value, and b is the end value.
+        /// Otherwise, they are swapped.
+        /// </summary>
+        public static ReadRange<T> Auto(T a, T b, IComparer<T> comparer)
+            => comparer.Compare(a, b) > 0 ? new ReadRange<T>(b, a) : new ReadRange<T>(a, b);
+
+        public static ReadRange<T> Auto(T a, T b, IRangeEnumerator<T> enumerator, IComparer<T> comparer)
+            => comparer.Compare(a, b) > 0 ? new ReadRange<T>(b, a, enumerator) : new ReadRange<T>(a, b, enumerator);
+
         public static implicit operator ReadRange<T>(in (T start, T end) value)
             => new ReadRange<T>(value.start, value.end);
 
@@ -71,35 +131,6 @@ namespace System
 
         public static bool operator !=(in ReadRange<T> lhs, in ReadRange<T> rhs)
             => !lhs.Equals(in rhs);
-
-        private ReadRange(SerializationInfo info, StreamingContext context)
-        {
-            try
-            {
-                this.Start = (T)info.GetValue(nameof(this.Start), typeof(T));
-            }
-            catch
-            {
-                this.Start = default;
-            }
-
-            try
-            {
-                this.End = (T)info.GetValue(nameof(this.End), typeof(T));
-            }
-            catch
-            {
-                this.End = default;
-            }
-
-            this.enumerator = null;
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue(nameof(this.Start), this.Start);
-            info.AddValue(nameof(this.End), this.End);
-        }
 
         private struct Enumerator : IRangeEnumerator<T>
         {

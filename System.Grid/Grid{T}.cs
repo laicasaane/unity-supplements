@@ -258,9 +258,8 @@ namespace System.Grid
             }
 
             this.data = new Dictionary<GridIndex, T>();
-            var range = new GridIndexRange(GridIndex.Zero, this.Size);
 
-            foreach (var index in range)
+            foreach (var index in GridIndexRange.Size(this.Size))
             {
                 try
                 {
