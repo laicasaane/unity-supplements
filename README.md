@@ -81,6 +81,9 @@
 - Pool\<T>
 - ListPool\<T>
 - DictionaryPool\<TKey, TValue>
+- HashSetPool\<T>
+- QueuePool\<T>
+- StackPool\<T>
 
 ## System.Fluent
 
@@ -92,6 +95,7 @@
 - GridIndexRange
 - GridValue\<T>
 - IReadOnlyGrid\<T>
+- IGrid\<T>
 - Grid\<T>
 - ReadGrid\<T>
 
