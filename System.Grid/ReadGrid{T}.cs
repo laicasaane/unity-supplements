@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace System.Grid
@@ -32,6 +31,9 @@ namespace System.Grid
         public bool ContainsIndex(in GridIndex index)
             => GetSource().ContainsIndex(index);
 
+        public bool ContainsValue(T value)
+            => GetSource().ContainsValue(value);
+
         public bool TryGetValue(in GridIndex index, out T value)
             => GetSource().TryGetValue(index, out value);
 
@@ -61,6 +63,12 @@ namespace System.Grid
 
         public GridIndexRange IndexRange(in GridIndex pivot, bool row)
             => GetSource().IndexRange(pivot, row);
+
+        public GridIndexRange IndexRange()
+            => GetSource().IndexRange();
+
+        public void GetValues(ICollection<T> output)
+            => GetSource().GetValues(output);
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
             => GetSource().GetValues(pivot, extend, output);
@@ -100,6 +108,9 @@ namespace System.Grid
 
         public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(range, output);
+
+        public IEnumerable<GridValue<T>> GetIndexedValues()
+            => GetSource().GetIndexedValues();
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
             => GetSource().GetIndexedValues(pivot, extend);

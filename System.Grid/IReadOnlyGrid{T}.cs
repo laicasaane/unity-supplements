@@ -10,6 +10,8 @@ namespace System.Grid
 
         IEnumerable<GridIndex> Indices { get; }
 
+        IEnumerable<T> Values { get; }
+
         bool ValidateIndex(in GridIndex value);
 
         GridIndex LastIndex();
@@ -26,7 +28,13 @@ namespace System.Grid
 
         GridIndexRange IndexRange(in GridIndex pivot, bool row);
 
+        GridIndexRange IndexRange();
+
         bool ContainsIndex(in GridIndex index);
+
+        bool ContainsValue(T value);
+
+        void GetValues(ICollection<T> output);
 
         void GetValues(in GridIndex pivot, int extend, ICollection<T> output);
 
@@ -53,6 +61,8 @@ namespace System.Grid
         void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output);
 
         void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output);
+
+        IEnumerable<GridValue<T>> GetIndexedValues();
 
         IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend);
 

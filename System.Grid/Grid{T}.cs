@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace System.Grid
 {
     [Serializable]
-    public class Grid<T> : IReadOnlyGrid<T>, ISerializable
+    public class Grid<T> : IGrid<T>, ISerializable
     {
         public GridIndex Size { get; private set; }
 
@@ -111,14 +111,35 @@ namespace System.Grid
                 new GridIndex(row ? pivot.Row : this.Size.Row - 1, row ? this.Size.Column - 1 : pivot.Column)
             );
 
+        public GridIndexRange IndexRange()
+            => new GridIndexRange(
+                GridIndex.Zero,
+                this.Size - GridIndex.One
+            );
+
         public bool ContainsIndex(in GridIndex index)
             => this.data.ContainsKey(index);
+
+        public bool ContainsValue(T value)
+            => this.data.ContainsValue(value);
 
         public bool TryGetValue(in GridIndex index, out T value)
             => this.data.TryGetValue(index, out value);
 
         public IEnumerator<KeyValuePair<GridIndex, T>> GetEnumerator()
             => this.data.GetEnumerator();
+
+        public void GetValues(ICollection<T> output)
+        {
+            if (output == null)
+                throw new ArgumentNullException(nameof(output));
+
+            foreach (var value in this.data.Values)
+            {
+                if (!output.Contains(value))
+                    output.Add(value);
+            }
+        }
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
             => GetValues(IndexRange(pivot, extend), output);
@@ -196,6 +217,14 @@ namespace System.Grid
 
                 if (!output.Contains(data))
                     output.Add(data);
+            }
+        }
+
+        public IEnumerable<GridValue<T>> GetIndexedValues()
+        {
+            foreach (var kv in this.data)
+            {
+                yield return kv;
             }
         }
 
