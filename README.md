@@ -60,6 +60,7 @@
 ## System.Collection.Generics
 
 - IReadOnlyStructEqualityComparer\<T>
+- IReadOnlyStructComparer\<T>
 - EnumerableTExtensions
 - CollectionTExtensions
 - ListTExtensions
