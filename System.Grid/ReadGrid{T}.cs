@@ -49,22 +49,25 @@ namespace System.Grid
         public GridIndex ClampIndex(in GridIndex value)
             => GetSource().ClampIndex(value);
 
-        public GridIndexRange ClampIndexRange(in GridIndex start, in GridIndex end)
+        public GridRange ClampIndexRange(in GridIndex start, in GridIndex end)
             => GetSource().ClampIndexRange(start, end);
 
-        public GridIndexRange ClampIndexRange(in GridIndexRange range)
+        public GridRange ClampIndexRange(in GridIndexRange range)
             => GetSource().ClampIndexRange(range);
 
-        public GridIndexRange IndexRange(in GridIndex pivot, int extend)
+        public GridRange ClampIndexRange(in GridRange range)
+            => GetSource().ClampIndexRange(range);
+
+        public GridRange IndexRange(in GridIndex pivot, int extend)
             => GetSource().IndexRange(pivot, extend);
 
-        public GridIndexRange IndexRange(in GridIndex pivot, in GridIndex extend)
+        public GridRange IndexRange(in GridIndex pivot, in GridIndex extend)
             => GetSource().IndexRange(pivot, extend);
 
-        public GridIndexRange IndexRange(in GridIndex pivot, bool row)
+        public GridRange IndexRange(in GridIndex pivot, bool row)
             => GetSource().IndexRange(pivot, row);
 
-        public GridIndexRange IndexRange()
+        public GridRange IndexRange()
             => GetSource().IndexRange();
 
         public void GetValues(ICollection<T> output)
@@ -82,6 +85,12 @@ namespace System.Grid
         public void GetValues(in GridIndexRange range, ICollection<T> output)
             => GetSource().GetValues(range, output);
 
+        public void GetValues(in GridRange range, ICollection<T> output)
+            => GetSource().GetValues(range, output);
+
+        public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output)
+            => GetSource().GetValues(indices, output);
+
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
             => GetSource().GetValues(pivot, extend);
 
@@ -93,6 +102,12 @@ namespace System.Grid
 
         public IEnumerable<T> GetValues(GridIndexRange range)
             => GetSource().GetValues(range);
+
+        public IEnumerable<T> GetValues(GridRange range)
+            => GetSource().GetValues(range);
+
+        public IEnumerable<T> GetValues(IEnumerable<GridIndex> indices)
+            => GetSource().GetValues(indices);
 
         public void GetIndexedValues(ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(output);
@@ -109,6 +124,12 @@ namespace System.Grid
         public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(range, output);
 
+        public void GetIndexedValues(in GridRange range, ICollection<GridValue<T>> output)
+            => GetSource().GetIndexedValues(range, output);
+
+        public void GetIndexedValues(IEnumerable<GridIndex> indices, ICollection<GridValue<T>> output)
+            => GetSource().GetIndexedValues(indices, output);
+
         public IEnumerable<GridValue<T>> GetIndexedValues()
             => GetSource().GetIndexedValues();
 
@@ -123,6 +144,12 @@ namespace System.Grid
 
         public IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range)
             => GetSource().GetIndexedValues(range);
+
+        public IEnumerable<GridValue<T>> GetIndexedValues(GridRange range)
+            => GetSource().GetIndexedValues(range);
+
+        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerable<GridIndex> indices)
+            => GetSource().GetIndexedValues(indices);
 
         public override int GetHashCode()
             => GetSource().GetHashCode();
