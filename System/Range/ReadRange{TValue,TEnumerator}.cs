@@ -10,6 +10,7 @@ namespace System
     {
         public readonly TValue Start;
         public readonly TValue End;
+        public readonly bool IsFromEnd;
 
         private readonly TEnumerator enumerator;
 
@@ -17,16 +18,15 @@ namespace System
         {
             this.Start = start;
             this.End = end;
+            this.IsFromEnd = false;
             this.enumerator = default;
         }
 
-        public ReadRange(TValue start, TValue end, IComparer<TValue> comparer)
+        public ReadRange(TValue start, TValue end, bool fromEnd)
         {
-            if (comparer.Compare(end, start) < 0)
-                throw new InvalidOperationException($"{nameof(end)} must be greater than or equal to {nameof(start)}");
-
             this.Start = start;
             this.End = end;
+            this.IsFromEnd = fromEnd;
             this.enumerator = default;
         }
 
@@ -50,6 +50,15 @@ namespace System
                 this.End = default;
             }
 
+            try
+            {
+                this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
+            }
+            catch
+            {
+                this.IsFromEnd = default;
+            }
+
             this.enumerator = default;
         }
 
@@ -57,6 +66,7 @@ namespace System
         {
             info.AddValue(nameof(this.Start), this.Start);
             info.AddValue(nameof(this.End), this.End);
+            info.AddValue(nameof(this.IsFromEnd), this.IsFromEnd);
         }
 
         public void Deconstruct(out TValue start, out TValue end)
@@ -65,36 +75,50 @@ namespace System
             end = this.End;
         }
 
-        public ReadRange<TValue> With(in TValue? Start = null, in TValue? End = null)
+        public void Deconstruct(out TValue start, out TValue end, out bool fromEnd)
+        {
+            start = this.Start;
+            end = this.End;
+            fromEnd = this.IsFromEnd;
+        }
+
+        public ReadRange<TValue> With(in TValue? Start = null, in TValue? End = null, in bool? IsFromEnd = null)
             => new ReadRange<TValue>(
                 Start ?? this.Start,
-                End ?? this.End
+                End ?? this.End,
+                IsFromEnd ?? this.IsFromEnd
             );
 
         public override bool Equals(object obj)
             => obj is ReadRange<TValue, TEnumerator> other &&
                this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End);
+               this.End.Equals(other.End) &&
+               this.IsFromEnd == other.IsFromEnd;
 
         public bool Equals(in ReadRange<TValue, TEnumerator> other)
             => this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End);
+               this.End.Equals(other.End) &&
+               this.IsFromEnd == other.IsFromEnd;
 
         public bool Equals(ReadRange<TValue, TEnumerator> other)
             => this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End);
+               this.End.Equals(other.End) &&
+               this.IsFromEnd == other.IsFromEnd;
 
         public override int GetHashCode()
         {
-            var hashCode = 1005511336;
+            var hashCode = -1418356749;
             hashCode = hashCode * -1521134295 + this.Start.GetHashCode();
             hashCode = hashCode * -1521134295 + this.End.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.enumerator.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.IsFromEnd.GetHashCode();
             return hashCode;
         }
 
+        public override string ToString()
+            => $"{{ {nameof(this.Start)}={this.Start}, {nameof(this.End)}={this.End}, {nameof(this.IsFromEnd)}={this.IsFromEnd} }}";
+
         public IEnumerator<TValue> GetEnumerator()
-            => this.enumerator.Enumerate(this.Start, this.End);
+            => this.enumerator.Enumerate(this.Start, this.End, this.IsFromEnd);
 
         /// <summary>
         /// Automatically create a range from (a, b).
@@ -102,16 +126,30 @@ namespace System
         /// Otherwise, they are swapped.
         /// </summary>
         public static ReadRange<TValue, TEnumerator> Auto(TValue a, TValue b, IComparer<TValue> comparer)
-            => comparer.Compare(a, b) > 0 ? new ReadRange<TValue, TEnumerator>(b, a) : new ReadRange<TValue, TEnumerator>(a, b);
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            return comparer.Compare(a, b) > 0 ? new ReadRange<TValue, TEnumerator>(b, a) : new ReadRange<TValue, TEnumerator>(a, b);
+        }
+
+        public static ReadRange<TValue, TEnumerator> FromStart(in TValue start, in TValue end)
+            => new ReadRange<TValue, TEnumerator>(start, end, false);
+
+        public static ReadRange<TValue, TEnumerator> FromEnd(in TValue start, in TValue end)
+            => new ReadRange<TValue, TEnumerator>(start, end, true);
 
         public static implicit operator ReadRange<TValue, TEnumerator>(in (TValue start, TValue end) value)
             => new ReadRange<TValue, TEnumerator>(value.start, value.end);
 
+        public static implicit operator ReadRange<TValue, TEnumerator>(in (TValue start, TValue end, bool fromEnd) value)
+            => new ReadRange<TValue, TEnumerator>(value.start, value.end, value.fromEnd);
+
         public static implicit operator ReadRange<TValue, TEnumerator>(in ReadRange<TValue> value)
-            => new ReadRange<TValue, TEnumerator>(value.Start, value.End);
+            => new ReadRange<TValue, TEnumerator>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<TValue>(in ReadRange<TValue, TEnumerator> value)
-            => new ReadRange<TValue>(value.Start, value.End, value.enumerator);
+            => new ReadRange<TValue>(value.Start, value.End, value.IsFromEnd, value.enumerator);
 
         public static bool operator ==(in ReadRange<TValue, TEnumerator> lhs, in ReadRange<TValue, TEnumerator> rhs)
             => lhs.Equals(in rhs);
