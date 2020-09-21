@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace System.Grid
 {
@@ -144,5 +145,11 @@ namespace System.Grid
                 value.Row < min.Row ? min.Row : (value.Row > max.Row ? max.Row : value.Row),
                 value.Column < min.Column ? min.Column : (value.Column > max.Column ? max.Column : value.Column)
             );
+
+        public static GridIndex Convert(int index1, int columnCount)
+            => columnCount <= 0 ? Zero : new GridIndex(index1 / columnCount, index1 % columnCount);
+
+        public static GridIndex Convert(int index1, in GridIndex size)
+            => size.Column <= 0 ? Zero : new GridIndex(index1 / size.Column, index1 % size.Column);
     }
 }
