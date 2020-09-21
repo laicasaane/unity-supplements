@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace System.Grid
+namespace System
 {
     [Serializable]
     public readonly struct UIntRange : IEquatableReadOnlyStruct<UIntRange>, ISerializable
