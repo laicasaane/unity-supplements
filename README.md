@@ -95,6 +95,7 @@
 
 - GridIndex
 - GridIndexRange
+- GridRange
 - GridValue\<T>
 - IReadOnlyGrid\<T>
 - IGrid\<T>
