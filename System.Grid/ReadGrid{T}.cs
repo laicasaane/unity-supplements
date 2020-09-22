@@ -64,6 +64,9 @@ namespace System.Grid
         public GridRange IndexRange(in GridIndex pivot, in GridIndex extend)
             => GetSource().IndexRange(pivot, extend);
 
+        public GridRange IndexRange(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetSource().IndexRange(pivot, lowerExtend, upperExtend);
+
         public GridRange IndexRange(in GridIndex pivot, bool row)
             => GetSource().IndexRange(pivot, row);
 
@@ -91,6 +94,9 @@ namespace System.Grid
         public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output)
             => GetSource().GetValues(indices, output);
 
+        public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output)
+            => GetSource().GetValues(enumerator, output);
+
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
             => GetSource().GetValues(pivot, extend);
 
@@ -108,6 +114,9 @@ namespace System.Grid
 
         public IEnumerable<T> GetValues(IEnumerable<GridIndex> indices)
             => GetSource().GetValues(indices);
+
+        public IEnumerable<T> GetValues(IEnumerator<GridIndex> enumrator)
+            => GetSource().GetValues(enumrator);
 
         public void GetIndexedValues(ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(output);
@@ -130,6 +139,9 @@ namespace System.Grid
         public void GetIndexedValues(IEnumerable<GridIndex> indices, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(indices, output);
 
+        public void GetIndexedValues(IEnumerator<GridIndex> enumerator, ICollection<GridValue<T>> output)
+            => GetSource().GetIndexedValues(enumerator, output);
+
         public IEnumerable<GridValue<T>> GetIndexedValues()
             => GetSource().GetIndexedValues();
 
@@ -150,6 +162,9 @@ namespace System.Grid
 
         public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerable<GridIndex> indices)
             => GetSource().GetIndexedValues(indices);
+
+        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerator<GridIndex> enumerator)
+            => GetSource().GetIndexedValues(enumerator);
 
         public override int GetHashCode()
             => GetSource().GetHashCode();

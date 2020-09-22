@@ -35,6 +35,42 @@ namespace System.Grid
             Initialize(size, data);
         }
 
+        protected Grid(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Size = (GridIndex)info.GetValue(nameof(this.Size), typeof(GridIndex));
+            }
+            catch
+            {
+                this.Size = default;
+            }
+
+            this.data = new Dictionary<GridIndex, T>();
+
+            foreach (var index in GridIndexRange.Count(this.Size))
+            {
+                try
+                {
+                    var value = (T)info.GetValue(index.ToString(), typeof(T));
+                    this.data[index] = value;
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Size), this.Size);
+
+            foreach (var kv in this.data)
+            {
+                info.AddValue(kv.Key.ToString(), kv.Value);
+            }
+        }
+
         public void Initialize(in GridIndex size, IEnumerable<KeyValuePair<GridIndex, T>> data)
         {
             if (data == null)
@@ -116,6 +152,13 @@ namespace System.Grid
                 this.Size,
                 ClampIndex(pivot - extend),
                 ClampIndex(pivot + extend)
+            );
+
+        public GridRange IndexRange(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => new GridRange(
+                this.Size,
+                ClampIndex(pivot - lowerExtend),
+                ClampIndex(pivot + upperExtend)
             );
 
         public GridRange IndexRange(in GridIndex pivot, bool row)
@@ -204,6 +247,21 @@ namespace System.Grid
             }
         }
 
+        public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output)
+        {
+            if (enumerator == null)
+                throw new ArgumentNullException(nameof(enumerator));
+
+            if (output == null)
+                throw new ArgumentNullException(nameof(output));
+
+            while (enumerator.MoveNext())
+            {
+                if (this.data.TryGetValue(enumerator.Current, out var value) && !output.Contains(value))
+                    output.Add(value);
+            }
+        }
+
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
             => GetValues(IndexRange(pivot, extend));
 
@@ -239,6 +297,18 @@ namespace System.Grid
             foreach (var index in indices)
             {
                 if (this.data.TryGetValue(index, out var value))
+                    yield return value;
+            }
+        }
+
+        public IEnumerable<T> GetValues(IEnumerator<GridIndex> enumerator)
+        {
+            if (enumerator == null)
+                throw new ArgumentNullException(nameof(enumerator));
+
+            while (enumerator.MoveNext())
+            {
+                if (this.data.TryGetValue(enumerator.Current, out var value))
                     yield return value;
             }
         }
@@ -320,6 +390,28 @@ namespace System.Grid
             }
         }
 
+        public void GetIndexedValues(IEnumerator<GridIndex> enumerator, ICollection<GridValue<T>> output)
+        {
+            if (enumerator == null)
+                throw new ArgumentNullException(nameof(enumerator));
+
+            if (output == null)
+                throw new ArgumentNullException(nameof(output));
+
+            while (enumerator.MoveNext())
+            {
+                var index = enumerator.Current;
+
+                if (!this.data.TryGetValue(index, out var value))
+                    continue;
+
+                var data = new GridValue<T>(index, value);
+
+                if (!output.Contains(data))
+                    output.Add(data);
+            }
+        }
+
         public IEnumerable<GridValue<T>> GetIndexedValues()
         {
             foreach (var kv in this.data)
@@ -367,39 +459,17 @@ namespace System.Grid
             }
         }
 
-        protected Grid(SerializationInfo info, StreamingContext context)
+        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerator<GridIndex> enumerator)
         {
-            try
-            {
-                this.Size = (GridIndex)info.GetValue(nameof(this.Size), typeof(GridIndex));
-            }
-            catch
-            {
-                this.Size = default;
-            }
+            if (enumerator == null)
+                throw new ArgumentNullException(nameof(enumerator));
 
-            this.data = new Dictionary<GridIndex, T>();
-
-            foreach (var index in GridIndexRange.Count(this.Size))
+            while (enumerator.MoveNext())
             {
-                try
-                {
-                    var value = (T)info.GetValue(index.ToString(), typeof(T));
-                    this.data[index] = value;
-                }
-                catch
-                {
-                }
-            }
-        }
+                var index = enumerator.Current;
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue(nameof(this.Size), this.Size);
-
-            foreach (var kv in this.data)
-            {
-                info.AddValue(kv.Key.ToString(), kv.Value);
+                if (this.data.TryGetValue(index, out var value))
+                    yield return new GridValue<T>(index, value);
             }
         }
     }
