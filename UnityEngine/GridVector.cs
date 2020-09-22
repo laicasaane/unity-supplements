@@ -110,6 +110,9 @@ namespace UnityEngine
         public static implicit operator GridIndex(in GridVector value)
             => new GridIndex(value.row, value.column);
 
+        public static implicit operator GridVector( in GridIndex value)
+            => new GridVector(value.Row, value.Column);
+
         public static bool operator ==(in GridVector lhs, in GridVector rhs)
             => lhs.row == rhs.row && lhs.column == rhs.column;
 
