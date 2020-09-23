@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -109,6 +109,16 @@ namespace System.Grid
                 if (ValidateIndex(kv.Index))
                     this.data[kv.Index] = kv.Value;
             }
+        }
+
+        public void Initialize(Grid<T> grid)
+        {
+            if (grid == null)
+                throw new ArgumentNullException(nameof(grid));
+
+            Clear();
+            this.Size = grid.Size;
+            this.data.AddRange(grid.data);
         }
 
         public void Clear()
