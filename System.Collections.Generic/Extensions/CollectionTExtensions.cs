@@ -34,8 +34,8 @@
             self.Add(itemT);
         }
 
-        public static void AddRange<T>(this ICollection<T> self, IEnumerable<T> collection, bool allowNull = false)
-            => self.AddRange(collection, true, allowNull);
+        public static void AddRange<T>(this ICollection<T> self, IEnumerable<T> collection)
+            => self.AddRange(collection, true);
 
         public static void AddRange<T>(this ICollection<T> self, IEnumerable<T> collection, bool allowDuplicate, bool allowNull = false)
             => self.AddRange(collection?.GetEnumerator(), allowDuplicate, allowNull);
@@ -173,21 +173,32 @@
             if (self == null || output == null || count == 0)
                 return;
 
-            offset = Math.Max(offset, 0);
-
-            if (offset > self.Count)
-                throw new IndexOutOfRangeException(nameof(offset));
-
-            if (count < 0)
-                count = self.Count - offset;
-            else
-                count += offset;
-
-            if (count > self.Count)
-                throw new IndexOutOfRangeException(nameof(count));
+            Validate(self.Count, ref offset, ref count);
 
             var o = 0;
             var c = 0;
+
+            if (allowDuplicate)
+            {
+                foreach (var item in self)
+                {
+                    if (o < offset)
+                    {
+                        o += 1;
+                        continue;
+                    }
+
+                    if (c >= count)
+                        break;
+
+                    if (allowNull || item != null)
+                        output.Add(item);
+
+                    c += 1;
+                }
+
+                return;
+            }
 
             foreach (var item in self)
             {
@@ -200,7 +211,9 @@
                 if (c >= count)
                     break;
 
-                output.Add(item);
+                if ((allowNull || item != null) && !output.Contains(item))
+                    output.Add(item);
+
                 c += 1;
             }
         }
@@ -221,21 +234,32 @@
             if (self == null || output == null || count == 0)
                 return;
 
-            offset = Math.Max(offset, 0);
-
-            if (offset > self.Count)
-                throw new IndexOutOfRangeException(nameof(offset));
-
-            if (count < 0)
-                count = self.Count - offset;
-            else
-                count += offset;
-
-            if (count > self.Count)
-                throw new IndexOutOfRangeException(nameof(count));
+            Validate(self.Count, ref offset, ref count);
 
             var o = 0;
             var c = 0;
+
+            if (allowDuplicate)
+            {
+                foreach (var item in self)
+                {
+                    if (o < offset)
+                    {
+                        o += 1;
+                        continue;
+                    }
+
+                    if (c >= count)
+                        break;
+
+                    if (allowNull || item != null)
+                        output.Add(item);
+
+                    c += 1;
+                }
+
+                return;
+            }
 
             foreach (var item in self)
             {
@@ -248,9 +272,27 @@
                 if (c >= count)
                     break;
 
-                output.Add(item);
+                if ((allowNull || item != null) && !output.Contains(item))
+                    output.Add(item);
+
                 c += 1;
             }
+        }
+
+        private static void Validate(int collectionCount, ref int offset, ref int count)
+        {
+            offset = Math.Max(offset, 0);
+
+            if (offset > collectionCount)
+                throw new IndexOutOfRangeException(nameof(offset));
+
+            if (count < 0)
+                count = collectionCount - offset;
+            else
+                count += offset;
+
+            if (count > collectionCount)
+                throw new IndexOutOfRangeException(nameof(count));
         }
     }
 }

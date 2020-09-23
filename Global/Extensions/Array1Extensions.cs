@@ -170,9 +170,25 @@ public static class Array1Extensions
         if (count > self.Length)
             throw new IndexOutOfRangeException(nameof(count));
 
+        if (allowDuplicate)
+        {
+            for (var i = offset; i < count; i++)
+            {
+                ref var item = ref self[i];
+
+                if (allowNull || item != null)
+                    output.Add(item);
+            }
+
+            return;
+        }
+
         for (var i = offset; i < count; i++)
         {
-            output.Add(self[i]);
+            ref var item = ref self[i];
+
+            if ((allowNull || item != null) && !output.Contains(item))
+                output.Add(item);
         }
     }
 }
