@@ -8,7 +8,11 @@ namespace System.Grid
 
         void Initialize(in GridIndex size, IEnumerable<GridValue<T>> data);
 
-        void Initialize(Grid<T> grid);
+        void Initialize(in GridIndex size, IEnumerator<KeyValuePair<GridIndex, T>> data);
+
+        void Initialize(in GridIndex size, IEnumerator<GridValue<T>> data);
+
+        void Initialize(Grid<T> data);
 
         void Clear();
     }

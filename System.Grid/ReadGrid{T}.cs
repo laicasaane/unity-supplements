@@ -82,6 +82,9 @@ namespace System.Grid
         public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output)
             => GetSource().GetValues(pivot, extend, output);
 
+        public void GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<T> output)
+            => GetSource().GetValues(pivot, lowerExtend, upperExtend, output);
+
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output)
             => GetSource().GetValues(pivot, byRow, output);
 
@@ -102,6 +105,9 @@ namespace System.Grid
 
         public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend)
             => GetSource().GetValues(pivot, extend);
+
+        public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetSource().GetValues(pivot, lowerExtend, upperExtend);
 
         public IEnumerable<T> GetValues(in GridIndex pivot, bool byRow)
             => GetSource().GetValues(pivot, byRow);
@@ -127,6 +133,9 @@ namespace System.Grid
         public void GetIndexedValues(in GridIndex pivot, in GridIndex extend, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(pivot, extend, output);
 
+        public void GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<GridValue<T>> output)
+            => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend, output);
+
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(pivot, byRow, output);
 
@@ -150,6 +159,9 @@ namespace System.Grid
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend)
             => GetSource().GetIndexedValues(pivot, extend);
+
+        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend);
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow)
             => GetSource().GetIndexedValues(pivot, byRow);
