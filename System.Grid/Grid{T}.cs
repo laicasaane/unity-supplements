@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -33,6 +33,15 @@ namespace System.Grid
         {
             this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
+        }
+
+        public Grid(Grid<T> grid)
+        {
+            if (grid == null)
+                throw new ArgumentNullException(nameof(grid));
+
+            this.Size = grid.Size;
+            this.data = new Dictionary<GridIndex, T>(grid.data);
         }
 
         protected Grid(SerializationInfo info, StreamingContext context)
