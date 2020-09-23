@@ -140,4 +140,39 @@ public static class Array1Extensions
             self[index++] = value;
         }
     }
+
+    public static void GetRange<T>(this T[] self, in ReadRange<int> range, ICollection<T> output)
+    {
+        var start = Math.Min(range.Start, range.End);
+        var end = Math.Max(range.Start, range.End);
+
+        self.GetRange(start + 1, end - start, output);
+    }
+
+    public static void GetRange<T>(this T[] self, int offset, ICollection<T> output)
+        => self.GetRange(offset, -1, output);
+
+    public static void GetRange<T>(this T[] self, int offset, int count, ICollection<T> output)
+    {
+        if (self == null || output == null || count == 0)
+            return;
+
+        offset = Math.Max(offset, 0);
+
+        if (offset > self.Length)
+            throw new IndexOutOfRangeException(nameof(offset));
+
+        if (count < 0)
+            count = self.Length - offset;
+        else
+            count += offset;
+
+        if (count > self.Length)
+            throw new IndexOutOfRangeException(nameof(count));
+
+        for (var i = offset; i < count; i++)
+        {
+            output.Add(self[i]);
+        }
+    }
 }
