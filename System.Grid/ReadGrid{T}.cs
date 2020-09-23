@@ -5,7 +5,7 @@ namespace System.Grid
 {
     public readonly struct ReadGrid<T> : IReadOnlyGrid<T>, IEquatableReadOnlyStruct<ReadGrid<T>>
     {
-        public GridIndex Size => GetSource().Size;
+        public GridSize Size => GetSource().Size;
 
         public int Count => GetSource().Count;
 
@@ -40,44 +40,14 @@ namespace System.Grid
         public IEnumerator<KeyValuePair<GridIndex, T>> GetEnumerator()
             => GetSource().GetEnumerator();
 
-        public bool ValidateIndex(in GridIndex value)
-            => GetSource().ValidateIndex(value);
-
-        public GridIndex LastIndex()
-            => GetSource().LastIndex();
-
-        public GridIndex ClampIndex(in GridIndex value)
-            => GetSource().ClampIndex(value);
-
-        public GridRange ClampIndexRange(in GridIndex start, in GridIndex end)
-            => GetSource().ClampIndexRange(start, end);
-
-        public GridRange ClampIndexRange(in GridIndexRange range)
-            => GetSource().ClampIndexRange(range);
-
-        public GridRange ClampIndexRange(in GridRange range)
-            => GetSource().ClampIndexRange(range);
-
-        public GridRange IndexRange(in GridIndex pivot, int extend)
-            => GetSource().IndexRange(pivot, extend);
-
-        public GridRange IndexRange(in GridIndex pivot, in GridIndex extend)
-            => GetSource().IndexRange(pivot, extend);
-
-        public GridRange IndexRange(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
-            => GetSource().IndexRange(pivot, lowerExtend, upperExtend);
-
-        public GridRange IndexRange(in GridIndex pivot, bool row)
-            => GetSource().IndexRange(pivot, row);
-
-        public GridRange IndexRange()
-            => GetSource().IndexRange();
-
         public void GetValues(ICollection<T> output)
             => GetSource().GetValues(output);
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
             => GetSource().GetValues(pivot, extend, output);
+
+        public void GetValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<T> output)
+            => GetSource().GetValues(pivot, lowerExtend, upperExtend, output);
 
         public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output)
             => GetSource().GetValues(pivot, extend, output);
@@ -102,6 +72,9 @@ namespace System.Grid
 
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
             => GetSource().GetValues(pivot, extend);
+
+        public IEnumerable<T> GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetSource().GetValues(pivot, lowerExtend, upperExtend);
 
         public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend)
             => GetSource().GetValues(pivot, extend);
@@ -130,6 +103,9 @@ namespace System.Grid
         public void GetIndexedValues(in GridIndex pivot, int extend, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(pivot, extend, output);
 
+        public void GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<GridValue<T>> output)
+            => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend, output);
+
         public void GetIndexedValues(in GridIndex pivot, in GridIndex extend, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(pivot, extend, output);
 
@@ -156,6 +132,9 @@ namespace System.Grid
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
             => GetSource().GetIndexedValues(pivot, extend);
+
+        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend);
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend)
             => GetSource().GetIndexedValues(pivot, extend);

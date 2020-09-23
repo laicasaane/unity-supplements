@@ -30,6 +30,33 @@ namespace System.Grid
             this.Column = Math.Max(column, 0);
         }
 
+        private GridIndex(SerializationInfo info, StreamingContext context)
+        {
+            try
+            {
+                this.Row = Math.Max(info.GetInt32(nameof(this.Row)), 0);
+            }
+            catch
+            {
+                this.Row = default;
+            }
+
+            try
+            {
+                this.Column = Math.Max(info.GetInt32(nameof(this.Column)), 0);
+            }
+            catch
+            {
+                this.Column = default;
+            }
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue(nameof(this.Row), this.Row);
+            info.AddValue(nameof(this.Column), this.Column);
+        }
+
         public void Deconstruct(out int row, out int column)
         {
             row = this.Row;
@@ -67,33 +94,6 @@ namespace System.Grid
 
         public override string ToString()
             => $"({this.Row}, {this.Column})";
-
-        private GridIndex(SerializationInfo info, StreamingContext context)
-        {
-            try
-            {
-                this.Row = Math.Max(info.GetInt32(nameof(this.Row)), 0);
-            }
-            catch
-            {
-                this.Row = default;
-            }
-
-            try
-            {
-                this.Column = Math.Max(info.GetInt32(nameof(this.Column)), 0);
-            }
-            catch
-            {
-                this.Column = default;
-            }
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue(nameof(this.Row), this.Row);
-            info.AddValue(nameof(this.Column), this.Column);
-        }
 
         /// <summary>
         /// Shorthand for writing GridIndex(0, 0)

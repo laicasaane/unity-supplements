@@ -6,7 +6,7 @@ namespace System.Grid
     [Serializable]
     public class Grid<T> : IGrid<T>, ISerializable
     {
-        public GridIndex Size { get; private set; }
+        public GridSize Size { get; private set; }
 
         public int Count => this.data.Count;
 
@@ -23,25 +23,25 @@ namespace System.Grid
             this.data = new Dictionary<GridIndex, T>();
         }
 
-        public Grid(in GridIndex size, IEnumerable<KeyValuePair<GridIndex, T>> data)
+        public Grid(in GridSize size, IEnumerable<KeyValuePair<GridIndex, T>> data)
         {
             this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(in GridIndex size, IEnumerable<GridValue<T>> data)
+        public Grid(in GridSize size, IEnumerable<GridValue<T>> data)
         {
             this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(in GridIndex size, IEnumerator<KeyValuePair<GridIndex, T>> data)
+        public Grid(in GridSize size, IEnumerator<KeyValuePair<GridIndex, T>> data)
         {
             this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(in GridIndex size, IEnumerator<GridValue<T>> data)
+        public Grid(in GridSize size, IEnumerator<GridValue<T>> data)
         {
             this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
@@ -60,7 +60,7 @@ namespace System.Grid
         {
             try
             {
-                this.Size = (GridIndex)info.GetValue(nameof(this.Size), typeof(GridIndex));
+                this.Size = (GridSize)info.GetValue(nameof(this.Size), typeof(GridSize));
             }
             catch
             {
@@ -92,7 +92,7 @@ namespace System.Grid
             }
         }
 
-        public void Initialize(in GridIndex size, IEnumerable<KeyValuePair<GridIndex, T>> data)
+        public void Initialize(in GridSize size, IEnumerable<KeyValuePair<GridIndex, T>> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -102,12 +102,12 @@ namespace System.Grid
 
             foreach (var kv in data)
             {
-                if (ValidateIndex(kv.Key))
+                if (this.Size.ValidateIndex(kv.Key))
                     this.data[kv.Key] = kv.Value;
             }
         }
 
-        public void Initialize(in GridIndex size, IEnumerable<GridValue<T>> data)
+        public void Initialize(in GridSize size, IEnumerable<GridValue<T>> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -118,12 +118,12 @@ namespace System.Grid
 
             foreach (var kv in data)
             {
-                if (ValidateIndex(kv.Index))
+                if (this.Size.ValidateIndex(kv.Index))
                     this.data[kv.Index] = kv.Value;
             }
         }
 
-        public void Initialize(in GridIndex size, IEnumerator<KeyValuePair<GridIndex, T>> data)
+        public void Initialize(in GridSize size, IEnumerator<KeyValuePair<GridIndex, T>> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -135,12 +135,12 @@ namespace System.Grid
             {
                 var kv = data.Current;
 
-                if (ValidateIndex(kv.Key))
+                if (this.Size.ValidateIndex(kv.Key))
                     this.data[kv.Key] = kv.Value;
             }
         }
 
-        public void Initialize(in GridIndex size, IEnumerator<GridValue<T>> data)
+        public void Initialize(in GridSize size, IEnumerator<GridValue<T>> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -153,7 +153,7 @@ namespace System.Grid
             {
                 var kv = data.Current;
 
-                if (ValidateIndex(kv.Index))
+                if (this.Size.ValidateIndex(kv.Index))
                     this.data[kv.Index] = kv.Value;
             }
         }
@@ -170,76 +170,9 @@ namespace System.Grid
 
         public void Clear()
         {
-            this.Size = GridIndex.Zero;
+            this.Size = GridSize.Zero;
             this.data.Clear();
         }
-
-        public bool ValidateIndex(in GridIndex value)
-            => value.Row < this.Size.Row && value.Column < this.Size.Column;
-
-        public GridIndex LastIndex()
-            => this.Size - GridIndex.One;
-
-        public GridIndex ClampIndex(in GridIndex value)
-            => new GridIndex(
-                value.Row >= this.Size.Row ? this.Size.Row - 1 : value.Row,
-                value.Column >= this.Size.Column ? this.Size.Column - 1 : value.Column
-            );
-
-        public GridRange ClampIndexRange(in GridIndex start, in GridIndex end)
-            => new GridRange(
-                this.Size,
-                ClampIndex(start),
-                ClampIndex(end)
-            );
-
-        public GridRange ClampIndexRange(in GridIndexRange range)
-            => new GridRange(
-                this.Size,
-                ClampIndex(range.Start),
-                ClampIndex(range.End),
-                range.IsFromEnd
-            );
-
-        public GridRange ClampIndexRange(in GridRange range)
-            => new GridRange(
-                this.Size,
-                range.Clamped,
-                ClampIndex(range.Start),
-                ClampIndex(range.End),
-                range.IsFromEnd
-            );
-
-        public GridRange IndexRange(in GridIndex pivot, int extend)
-            => IndexRange(pivot, GridIndex.One * extend);
-
-        public GridRange IndexRange(in GridIndex pivot, in GridIndex extend)
-            => new GridRange(
-                this.Size,
-                ClampIndex(pivot - extend),
-                ClampIndex(pivot + extend)
-            );
-
-        public GridRange IndexRange(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
-            => new GridRange(
-                this.Size,
-                ClampIndex(pivot - lowerExtend),
-                ClampIndex(pivot + upperExtend)
-            );
-
-        public GridRange IndexRange(in GridIndex pivot, bool row)
-            => new GridRange(
-                this.Size,
-                new GridIndex(row ? pivot.Row : 0, row ? 0 : pivot.Column),
-                new GridIndex(row ? pivot.Row : this.Size.Row - 1, row ? this.Size.Column - 1 : pivot.Column)
-            );
-
-        public GridRange IndexRange()
-            => new GridRange(
-                this.Size,
-                GridIndex.Zero,
-                this.Size - GridIndex.One
-            );
 
         public bool ContainsIndex(in GridIndex index)
             => this.data.ContainsKey(index);
@@ -266,23 +199,26 @@ namespace System.Grid
         }
 
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
-            => GetValues(IndexRange(pivot, extend), output);
+            => GetValues(this.Size.IndexRange(pivot, extend), output);
+
+        public void GetValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<T> output)
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
 
         public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output)
-            => GetValues(IndexRange(pivot, extend), output);
+            => GetValues(this.Size.IndexRange(pivot, extend), output);
 
         public void GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<T> output)
-            => GetValues(IndexRange(pivot, lowerExtend, upperExtend), output);
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
 
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output)
-            => GetValues(IndexRange(pivot, byRow), output);
+            => GetValues(this.Size.IndexRange(pivot, byRow), output);
 
         public void GetValues(in GridIndexRange range, ICollection<T> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
                     output.Add(value);
@@ -294,7 +230,7 @@ namespace System.Grid
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
                     output.Add(value);
@@ -332,20 +268,23 @@ namespace System.Grid
         }
 
         public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
-            => GetValues(IndexRange(pivot, extend));
+            => GetValues(this.Size.IndexRange(pivot, extend));
+
+        public IEnumerable<T> GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
         public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend)
-            => GetValues(IndexRange(pivot, extend));
+            => GetValues(this.Size.IndexRange(pivot, extend));
 
         public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
-            => GetValues(IndexRange(pivot, lowerExtend, upperExtend));
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
         public IEnumerable<T> GetValues(in GridIndex pivot, bool byRow)
-            => GetValues(IndexRange(pivot, byRow));
+            => GetValues(this.Size.IndexRange(pivot, byRow));
 
         public IEnumerable<T> GetValues(GridIndexRange range)
         {
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (this.data.TryGetValue(index, out var value))
                     yield return value;
@@ -354,7 +293,7 @@ namespace System.Grid
 
         public IEnumerable<T> GetValues(GridRange range)
         {
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (this.data.TryGetValue(index, out var value))
                     yield return value;
@@ -400,23 +339,26 @@ namespace System.Grid
         }
 
         public void GetIndexedValues(in GridIndex pivot, int extend, ICollection<GridValue<T>> output)
-            => GetIndexedValues(IndexRange(pivot, extend), output);
+            => GetIndexedValues(this.Size.IndexRange(pivot, extend), output);
+
+        public void GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<GridValue<T>> output)
+            => GetIndexedValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
 
         public void GetIndexedValues(in GridIndex pivot, in GridIndex extend, ICollection<GridValue<T>> output)
-            => GetIndexedValues(IndexRange(pivot, extend), output);
+            => GetIndexedValues(this.Size.IndexRange(pivot, extend), output);
 
         public void GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<GridValue<T>> output)
-            => GetIndexedValues(IndexRange(pivot, lowerExtend, upperExtend), output);
+            => GetIndexedValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
 
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
-            => GetIndexedValues(IndexRange(pivot, byRow), output);
+            => GetIndexedValues(this.Size.IndexRange(pivot, byRow), output);
 
         public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
@@ -433,7 +375,7 @@ namespace System.Grid
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
@@ -496,20 +438,23 @@ namespace System.Grid
         }
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
-            => GetIndexedValues(IndexRange(pivot, extend));
+            => GetIndexedValues(this.Size.IndexRange(pivot, extend));
+
+        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetIndexedValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend)
-            => GetIndexedValues(IndexRange(pivot, extend));
+            => GetIndexedValues(this.Size.IndexRange(pivot, extend));
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
-            => GetIndexedValues(IndexRange(pivot, lowerExtend, upperExtend));
+            => GetIndexedValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
         public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow)
-            => GetIndexedValues(IndexRange(pivot, byRow));
+            => GetIndexedValues(this.Size.IndexRange(pivot, byRow));
 
         public IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range)
         {
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (this.data.TryGetValue(index, out var value))
                     yield return new GridValue<T>(index, value);
@@ -518,7 +463,7 @@ namespace System.Grid
 
         public IEnumerable<GridValue<T>> GetIndexedValues(GridRange range)
         {
-            foreach (var index in ClampIndexRange(range))
+            foreach (var index in this.Size.ClampIndexRange(range))
             {
                 if (this.data.TryGetValue(index, out var value))
                     yield return new GridValue<T>(index, value);
