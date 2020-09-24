@@ -4,13 +4,17 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
-    public readonly struct ReadRange<TValue, TEnumerator> : IEquatableReadOnlyStruct<ReadRange<TValue, TEnumerator>>, ISerializable
+    public readonly struct ReadRange<TValue, TEnumerator> : IRange<TValue>,
+                                                            IEquatableReadOnlyStruct<ReadRange<TValue, TEnumerator>>,
+                                                            ISerializable
         where TValue : unmanaged, IEquatable<TValue>
         where TEnumerator : unmanaged, IRangeEnumerator<TValue>
     {
-        public readonly TValue Start;
-        public readonly TValue End;
-        public readonly bool IsFromEnd;
+        public TValue Start { get; }
+
+        public TValue End { get; }
+
+        public bool IsFromEnd { get; }
 
         private readonly TEnumerator enumerator;
 
@@ -89,6 +93,18 @@ namespace System
                 IsFromEnd ?? this.IsFromEnd
             );
 
+        public ReadRange<TValue, TEnumerator> FromStart()
+            => new ReadRange<TValue, TEnumerator>(this.Start, this.End, false);
+
+        public ReadRange<TValue, TEnumerator> FromEnd()
+            => new ReadRange<TValue, TEnumerator>(this.Start, this.End, true);
+
+        IRange<TValue> IRange<TValue>.FromStart()
+            => FromStart();
+
+        IRange<TValue> IRange<TValue>.FromEnd()
+            => FromEnd();
+
         public override bool Equals(object obj)
             => obj is ReadRange<TValue, TEnumerator> other &&
                this.Start.Equals(other.Start) &&
@@ -119,6 +135,9 @@ namespace System
 
         public IEnumerator<TValue> GetEnumerator()
             => this.enumerator.Enumerate(this.Start, this.End, this.IsFromEnd);
+
+        public IEnumerator<TValue> Range()
+            => GetEnumerator();
 
         /// <summary>
         /// Automatically create a range from (a, b).

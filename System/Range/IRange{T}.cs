@@ -16,11 +16,4 @@ namespace System
 
         IEnumerator<T> Range();
     }
-
-    public interface IRange<out TValue, out TEnumerator> : IRange<TValue>
-        where TValue : unmanaged, IEquatable<TValue>
-        where TEnumerator : IEnumerator<TValue>
-    {
-        new TEnumerator Range();
-    }
 }
