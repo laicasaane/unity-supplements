@@ -5,11 +5,13 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
-    public readonly struct UIntRange : IEquatableReadOnlyStruct<UIntRange>, ISerializable
+    public readonly struct UIntRange : IRange<uint, UIntRange.Enumerator>, IEquatableReadOnlyStruct<UIntRange>, ISerializable
     {
-        public readonly uint Start;
-        public readonly uint End;
-        public readonly bool IsFromEnd;
+        public uint Start { get; }
+
+        public uint End { get; }
+
+        public bool IsFromEnd { get; }
 
         public UIntRange(uint start, uint end)
         {
@@ -82,6 +84,18 @@ namespace System
                 IsFromEnd ?? this.IsFromEnd
             );
 
+        public UIntRange FromStart()
+            => new UIntRange(this.Start, this.End, false);
+
+        public UIntRange FromEnd()
+            => new UIntRange(this.Start, this.End, true);
+
+        IRange<uint> IRange<uint>.FromStart()
+            => FromStart();
+
+        IRange<uint> IRange<uint>.FromEnd()
+            => FromEnd();
+
         public override bool Equals(object obj)
             => obj is UIntRange other &&
                this.Start.Equals(other.Start) &&
@@ -113,6 +127,12 @@ namespace System
         public Enumerator GetEnumerator()
             => new Enumerator(this);
 
+        public Enumerator Range()
+            => GetEnumerator();
+
+        IEnumerator<uint> IRange<uint>.Range()
+            => GetEnumerator();
+
         /// <summary>
         /// Automatically create a range from (a, b).
         /// If a <= b, then a is the start value, and b is the end value.
@@ -121,8 +141,8 @@ namespace System
         public static UIntRange Auto(uint a, uint b)
             => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
 
-        public static UIntRange Count(uint value)
-            => new UIntRange(0, value > 0 ? value - 1 : value);
+        public static UIntRange Count(uint value, bool fromEnd = false)
+            => new UIntRange(0, value > 0 ? value - 1 : value, fromEnd);
 
         public static UIntRange FromStart(uint start, uint end)
             => new UIntRange(start, end, false);

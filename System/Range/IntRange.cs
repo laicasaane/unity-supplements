@@ -5,11 +5,13 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
-    public readonly struct IntRange : IEquatableReadOnlyStruct<IntRange>, ISerializable
+    public readonly struct IntRange : IRange<int, IntRange.Enumerator>, IEquatableReadOnlyStruct<IntRange>, ISerializable
     {
-        public readonly int Start;
-        public readonly int End;
-        public readonly bool IsFromEnd;
+        public int Start { get; }
+
+        public int End { get; }
+
+        public bool IsFromEnd { get; }
 
         public IntRange(int start, int end)
         {
@@ -82,6 +84,18 @@ namespace System
                 IsFromEnd ?? this.IsFromEnd
             );
 
+        public IntRange FromStart()
+            => new IntRange(this.Start, this.End, false);
+
+        public IntRange FromEnd()
+            => new IntRange(this.Start, this.End, true);
+
+        IRange<int> IRange<int>.FromStart()
+            => FromStart();
+
+        IRange<int> IRange<int>.FromEnd()
+            => FromEnd();
+
         public override bool Equals(object obj)
             => obj is IntRange other &&
                this.Start.Equals(other.Start) &&
@@ -113,6 +127,12 @@ namespace System
         public Enumerator GetEnumerator()
             => new Enumerator(this);
 
+        public Enumerator Range()
+            => GetEnumerator();
+
+        IEnumerator<int> IRange<int>.Range()
+            => GetEnumerator();
+
         /// <summary>
         /// Automatically create a range from (a, b).
         /// If a <= b, then a is the start value, and b is the end value.
@@ -121,8 +141,8 @@ namespace System
         public static IntRange Auto(int a, int b)
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
 
-        public static IntRange Count(int value)
-            => new IntRange(0, Math.Abs(value - 1));
+        public static IntRange Count(int value, bool fromEnd = false)
+            => new IntRange(0, Math.Abs(value - 1), fromEnd);
 
         public static IntRange FromStart(int start, int end)
             => new IntRange(start, end, false);

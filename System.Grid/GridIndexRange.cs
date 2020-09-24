@@ -5,113 +5,138 @@ using System.Runtime.Serialization;
 namespace System.Grid
 {
     [Serializable]
-    public readonly struct GridIndexRange : IEquatableReadOnlyStruct<GridIndexRange>, ISerializable
+    public readonly struct GridIndexRange : IRange<GridIndex, GridIndexRange.Enumerator>,
+                                            IEquatableReadOnlyStruct<GridIndexRange>, ISerializable
     {
-        public readonly GridIndex Start;
-        public readonly GridIndex End;
-        public readonly bool IsFromEnd;
+        public GridIndex Start => this.start;
+
+        public GridIndex End => this.end;
+
+        public bool IsFromEnd => this.isFromEnd;
+
+        private readonly GridIndex start;
+        private readonly GridIndex end;
+        private readonly bool isFromEnd;
 
         public GridIndexRange(in GridIndex start, in GridIndex end)
         {
-            this.Start = start;
-            this.End = end;
-            this.IsFromEnd = false;
+            this.start = start;
+            this.end = end;
+            this.isFromEnd = false;
         }
 
         public GridIndexRange(in GridIndex start, in GridIndex end, bool fromEnd)
         {
-            this.Start = start;
-            this.End = end;
-            this.IsFromEnd = fromEnd;
+            this.start = start;
+            this.end = end;
+            this.isFromEnd = fromEnd;
         }
 
         private GridIndexRange(SerializationInfo info, StreamingContext context)
         {
             try
             {
-                this.Start = (GridIndex)info.GetValue(nameof(this.Start), typeof(GridIndex));
+                this.start = (GridIndex)info.GetValue(nameof(this.Start), typeof(GridIndex));
             }
             catch
             {
-                this.Start = default;
+                this.start = default;
             }
 
             try
             {
-                this.End = (GridIndex)info.GetValue(nameof(this.End), typeof(GridIndex));
+                this.end = (GridIndex)info.GetValue(nameof(this.End), typeof(GridIndex));
             }
             catch
             {
-                this.End = default;
+                this.end = default;
             }
 
             try
             {
-                this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
+                this.isFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
             }
             catch
             {
-                this.IsFromEnd = default;
+                this.isFromEnd = default;
             }
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue(nameof(this.Start), this.Start);
-            info.AddValue(nameof(this.End), this.End);
-            info.AddValue(nameof(this.IsFromEnd), this.IsFromEnd);
+            info.AddValue(nameof(this.Start), this.start);
+            info.AddValue(nameof(this.End), this.end);
+            info.AddValue(nameof(this.IsFromEnd), this.isFromEnd);
         }
 
         public void Deconstruct(out GridIndex start, out GridIndex end)
         {
-            start = this.Start;
-            end = this.End;
+            start = this.start;
+            end = this.end;
         }
 
         public void Deconstruct(out GridIndex start, out GridIndex end, out bool fromEnd)
         {
-            start = this.Start;
-            end = this.End;
-            fromEnd = this.IsFromEnd;
+            start = this.start;
+            end = this.end;
+            fromEnd = this.isFromEnd;
         }
 
         public GridIndexRange With(in GridIndex? Start = null, in GridIndex? End = null, in bool? IsFromEnd = null)
             => new GridIndexRange(
-                Start ?? this.Start,
-                End ?? this.End,
-                IsFromEnd ?? this.IsFromEnd
+                Start ?? this.start,
+                End ?? this.end,
+                IsFromEnd ?? this.isFromEnd
             );
+
+        public GridIndexRange FromStart()
+            => new GridIndexRange(this.start, this.end, false);
+
+        public GridIndexRange FromEnd()
+            => new GridIndexRange(this.start, this.end, true);
+
+        IRange<GridIndex> IRange<GridIndex>.FromStart()
+            => FromStart();
+
+        IRange<GridIndex> IRange<GridIndex>.FromEnd()
+            => FromEnd();
 
         public override bool Equals(object obj)
             => obj is GridIndexRange other &&
-               this.Start.Equals(in other.Start) &&
-               this.End.Equals(in other.End) &&
-               this.IsFromEnd == other.IsFromEnd;
+               this.start.Equals(in other.start) &&
+               this.end.Equals(in other.end) &&
+               this.isFromEnd == other.isFromEnd;
 
         public bool Equals(in GridIndexRange other)
-            => this.Start.Equals(in other.Start) &&
-               this.End.Equals(in other.End) &&
-               this.IsFromEnd == other.IsFromEnd;
+            => this.start.Equals(in other.start) &&
+               this.end.Equals(in other.end) &&
+               this.isFromEnd == other.isFromEnd;
 
         public bool Equals(GridIndexRange other)
-            => this.Start.Equals(in other.Start) &&
-               this.End.Equals(in other.End) &&
-               this.IsFromEnd == other.IsFromEnd;
+            => this.start.Equals(in other.start) &&
+               this.end.Equals(in other.end) &&
+               this.isFromEnd == other.isFromEnd;
 
         public override int GetHashCode()
         {
             var hashCode = -1418356749;
-            hashCode = hashCode * -1521134295 + this.Start.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.End.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.IsFromEnd.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.start.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.end.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.isFromEnd.GetHashCode();
             return hashCode;
         }
 
         public override string ToString()
-            => $"{{ {nameof(this.Start)}={this.Start}, {nameof(this.End)}={this.End}, {nameof(this.IsFromEnd)}={this.IsFromEnd} }}";
+            => $"{{ {nameof(this.Start)}={this.start}, {nameof(this.End)}={this.end}, {nameof(this.IsFromEnd)}={this.isFromEnd} }}";
 
         public Enumerator GetEnumerator()
             => new Enumerator(this);
+
+        public Enumerator Range()
+            => GetEnumerator();
+
+        IEnumerator<GridIndex> IRange<GridIndex>.Range()
+            => GetEnumerator();
 
         /// <summary>
         /// Automatically create a range from (a, b).
@@ -135,8 +160,8 @@ namespace System.Grid
             return new GridIndexRange(start, end);
         }
 
-        public static GridIndexRange Count(in GridIndex value)
-            => new GridIndexRange(GridIndex.Zero, value - GridIndex.One);
+        public static GridIndexRange Count(in GridIndex value, bool fromEnd = false)
+            => new GridIndexRange(GridIndex.Zero, value - GridIndex.One, fromEnd);
 
         public static GridIndexRange FromStart(in GridIndex start, in GridIndex end)
             => new GridIndexRange(start, end, false);
@@ -151,10 +176,10 @@ namespace System.Grid
             => new GridIndexRange(value.start, value.end, value.fromEnd);
 
         public static implicit operator ReadRange<GridIndex, Enumerator>(in GridIndexRange value)
-            => new ReadRange<GridIndex, Enumerator>(value.Start, value.End, value.IsFromEnd);
+            => new ReadRange<GridIndex, Enumerator>(value.start, value.end, value.isFromEnd);
 
         public static implicit operator ReadRange<GridIndex>(in GridIndexRange value)
-            => new ReadRange<GridIndex>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<GridIndex>(value.start, value.end, value.isFromEnd, new Enumerator());
 
         public static implicit operator GridIndexRange(in ReadRange<GridIndex> value)
             => new GridIndexRange(value.Start, value.End, value.IsFromEnd);
@@ -179,20 +204,20 @@ namespace System.Grid
 
             public Enumerator(in GridIndexRange range)
             {
-                var rowIsIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
-                var colIsIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
+                var rowIsIncreasing = range.start.Row.CompareTo(range.end.Row) <= 0;
+                var colIsIncreasing = range.start.Column.CompareTo(range.end.Column) <= 0;
 
                 this.start = new GridIndex(
-                    rowIsIncreasing ? range.Start.Row : range.End.Row,
-                    colIsIncreasing ? range.Start.Column : range.End.Column
+                    rowIsIncreasing ? range.start.Row : range.end.Row,
+                    colIsIncreasing ? range.start.Column : range.end.Column
                 );
 
                 this.end = new GridIndex(
-                    rowIsIncreasing ? range.End.Row : range.Start.Row,
-                    colIsIncreasing ? range.End.Column : range.Start.Column
+                    rowIsIncreasing ? range.end.Row : range.start.Row,
+                    colIsIncreasing ? range.end.Column : range.start.Column
                 );
 
-                this.fromEnd = range.IsFromEnd;
+                this.fromEnd = range.isFromEnd;
                 this.current = this.fromEnd ? this.end : this.start;
                 this.flag = -1;
             }
