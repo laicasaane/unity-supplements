@@ -1,13 +1,5 @@
 # Unity Supplements
 
-## Changelog
-
-### 2.3.1
-- `ReadArray` is renamed `ReadArray1`
-- `ArraySegment` is renamed `Array1Segment`
-- `ArrayExtensions` is renamed `Array1Extensions`
-- `IStringFormatter` is renamed `ITextFormatter` and moved to `System.Runtime.Serialization.Formatters.Text` namespace
-
 ## Global
 
 - Array1Extensions
@@ -31,6 +23,7 @@
 - Length5
 - Converter
 - ReadArray1\<T>
+- ReadArray1TExtensions
 - Singleton
 - Singleton\<T>
 - PseudoProbability
@@ -42,6 +35,8 @@
 - EnumRandomizer\<T>
 - EnumIndex
 - EnumLength
+- IRange\<T>
+- IRange\<TValue, TEnumerator>
 - ReadRange\<T>
 - ReadRange\<TValue, TEnumerator>
 - IRangeEnumerator\<T>
@@ -64,6 +59,11 @@
 - EnumerableTExtensions
 - CollectionTExtensions
 - ListTExtensions
+- DictionaryTKeyTValueExtensions
+- IEnumerableTExtensions
+- IEnumeratorTExtensions
+- QueueTExtensions
+- StackTExtensions
 - Segment\<T>
 - Segment1\<T>
 - Array1Segment\<T>
@@ -77,6 +77,8 @@
 - ReadCollection\<T>
 - ReadDictionary\<TKey, TValue>
 - ReadList\<T>
+- ReadCollectionTExtensions
+- ReadListTExtensions
 - Randomizer
 - Randomizer.IRandom
 - Randomizer.ICache\<T>
@@ -102,6 +104,7 @@
 - IGrid\<T>
 - Grid\<T>
 - ReadGrid\<T>
+- GridSize
 
 ## System.Table
 
