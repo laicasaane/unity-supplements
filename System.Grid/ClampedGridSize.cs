@@ -211,6 +211,12 @@ namespace System.Grid
         public static implicit operator GridIndex(in ClampedGridSize value)
             => value.value;
 
+        public static implicit operator ClampedGridSize(in GridSize value)
+            => new ClampedGridSize(value.Row, value.Column);
+
+        public static implicit operator GridSize(in ClampedGridSize value)
+            => new GridSize(value.value);
+
         public static bool operator ==(in ClampedGridSize lhs, in ClampedGridSize rhs)
             => lhs.value.Equals(in rhs.value);
 
