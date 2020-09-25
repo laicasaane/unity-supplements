@@ -196,7 +196,11 @@ namespace System
         {
             public IEnumerator<T> Enumerate(T start, T end, bool fromEnd)
             {
-                if (fromEnd)
+                if (start.Equals(end))
+                {
+                    yield return start;
+                }
+                else if (fromEnd)
                 {
                     yield return end;
                     yield return start;
