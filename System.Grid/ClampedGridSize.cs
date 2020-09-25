@@ -159,12 +159,18 @@ namespace System.Grid
                 step.Row > this.value.Row || step.Column > this.value.Column)
                 return;
 
-            var count = this.value / step;
+            var (rowCount, colCount) = this.value / step;
             var extend = rangeSize - GridIndex.One;
 
-            for (var r = 0; r < count.Row; r++)
+            if ((rowCount - 1) * step.Row + extend.Row >= this.value.Row)
+                rowCount -= 1;
+
+            if ((colCount - 1) * step.Column + extend.Column >= this.value.Column)
+                colCount -= 1;
+
+            for (var r = 0; r < rowCount; r++)
             {
-                for (var c = 0; c < count.Column; c++)
+                for (var c = 0; c < colCount; c++)
                 {
                     var pivot = new GridIndex(r, c) * step;
                     output.Add(IndexRange(pivot, GridIndex.Zero, extend));
@@ -202,12 +208,18 @@ namespace System.Grid
                 step.Row > this.value.Row || step.Column > this.value.Column)
                 yield break;
 
-            var count = this.value / step;
+            var (rowCount, colCount) = this.value / step;
             var extend = rangeSize - GridIndex.One;
 
-            for (var r = 0; r < count.Row; r++)
+            if ((rowCount - 1) * step.Row + extend.Row >= this.value.Row)
+                rowCount -= 1;
+
+            if ((colCount - 1) * step.Column + extend.Column >= this.value.Column)
+                colCount -= 1;
+
+            for (var r = 0; r < rowCount; r++)
             {
-                for (var c = 0; c < count.Column; c++)
+                for (var c = 0; c < colCount; c++)
                 {
                     var pivot = new GridIndex(r, c) * step;
                     yield return IndexRange(pivot, GridIndex.Zero, extend);
