@@ -135,6 +135,7 @@
 - [ReadGrid\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/ReadGrid%7BT%7D.cs)
 - [GridValue\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridValue%7BT%7D.cs)
 - [GridSize](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridSize.cs)
+- [ClampedGridSize](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/ClampedGridSize.cs)
 
 ## System.Table
 
