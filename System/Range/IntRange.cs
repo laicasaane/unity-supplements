@@ -96,6 +96,11 @@ namespace System
         IRange<int> IRange<int>.FromEnd()
             => FromEnd();
 
+        public bool Contains(int value)
+            => this.Start < this.End
+               ? value >= this.Start && value <= this.End
+               : value >= this.End && value <= this.Start;
+
         public override bool Equals(object obj)
             => obj is IntRange other &&
                this.Start == other.Start && this.End == other.End &&

@@ -174,6 +174,30 @@ namespace System.Grid
         public GridRange Unclamp()
             => new GridRange(this.Size, false, this.start, this.end, this.isFromEnd);
 
+        public bool Contains(in GridIndex value)
+        {
+            if (this.Clamped)
+            {
+                var containsRow = this.start.Row.CompareTo(this.end.Row) <= 0
+                                  ? value.Row >= this.start.Row && value.Row <= this.end.Row
+                                  : value.Row >= this.end.Row && value.Row <= this.start.Row;
+
+                var containsCol = this.start.Column.CompareTo(this.end.Column) <= 0
+                                  ? value.Column >= this.start.Column && value.Column <= this.end.Column
+                                  : value.Column >= this.end.Column && value.Column <= this.start.Column;
+
+                return containsRow && containsCol;
+            }
+
+            var index = value.ToIndex1(this.Size);
+            var startIndex = value.ToIndex1(this.Size);
+            var endIndex = value.ToIndex1(this.Size);
+
+            return startIndex <= endIndex
+                   ? index >= startIndex && index <= endIndex
+                   : index >= endIndex && index <= startIndex;
+        }
+
         public override bool Equals(object obj)
             => obj is GridRange other &&
                this.Size.Equals(in other.Size) &&

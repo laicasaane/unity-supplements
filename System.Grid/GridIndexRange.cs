@@ -101,6 +101,19 @@ namespace System.Grid
         IRange<GridIndex> IRange<GridIndex>.FromEnd()
             => FromEnd();
 
+        public bool Contains(in GridIndex value)
+        {
+            var containsRow = this.start.Row.CompareTo(this.end.Row) <= 0
+                              ? value.Row >= this.start.Row && value.Row <= this.end.Row
+                              : value.Row >= this.end.Row && value.Row <= this.start.Row;
+
+            var containsCol = this.start.Column.CompareTo(this.end.Column) <= 0
+                              ? value.Column >= this.start.Column && value.Column <= this.end.Column
+                              : value.Column >= this.end.Column && value.Column <= this.start.Column;
+
+            return containsRow && containsCol;
+        }
+
         public override bool Equals(object obj)
             => obj is GridIndexRange other &&
                this.start.Equals(in other.start) &&
