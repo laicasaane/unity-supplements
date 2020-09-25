@@ -168,6 +168,12 @@ namespace System.Grid
         IRange<GridIndex> IRange<GridIndex>.FromEnd()
             => FromEnd();
 
+        public GridRange Clamp()
+            => new GridRange(this.Size, true, this.start, this.end, this.isFromEnd);
+
+        public GridRange Unclamp()
+            => new GridRange(this.Size, false, this.start, this.end, this.isFromEnd);
+
         public override bool Equals(object obj)
             => obj is GridRange other &&
                this.Size.Equals(in other.Size) &&
