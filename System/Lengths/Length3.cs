@@ -161,6 +161,9 @@ namespace System
         public static Length3 operator *(int lhs, in Length3 rhs)
             => new Length3(lhs * rhs.A, lhs * rhs.B, lhs * rhs.C);
 
+        public static Length3 operator *(in Length3 lhs, in Length3 rhs)
+            => new Length3(lhs.A * rhs.A, lhs.B * rhs.B, lhs.C * rhs.C);
+
         public static Length3 operator /(in Length3 lhs, int rhs)
             => new Length3(lhs.A / rhs, lhs.B / rhs, lhs.C / rhs);
 

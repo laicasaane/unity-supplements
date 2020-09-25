@@ -131,6 +131,9 @@ namespace UnityEngine
         public static GridVector operator *(int lhs, in GridVector rhs)
             => new GridVector(rhs.row * lhs, rhs.column * lhs);
 
+        public static GridVector operator *(in GridVector lhs, in GridVector rhs)
+            => new GridVector(lhs.row * rhs.Row, lhs.column * rhs.Column);
+
         public static GridVector operator /(in GridVector lhs, int rhs)
             => new GridVector(lhs.row / rhs, lhs.column / rhs);
 

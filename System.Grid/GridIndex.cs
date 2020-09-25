@@ -136,6 +136,9 @@ namespace System.Grid
         public static GridIndex operator *(int lhs, in GridIndex rhs)
             => new GridIndex(rhs.Row * lhs, rhs.Column * lhs);
 
+        public static GridIndex operator *(in GridIndex lhs, in GridIndex rhs)
+            => new GridIndex(lhs.Row * rhs.Row, lhs.Column * rhs.Column);
+
         public static GridIndex operator /(in GridIndex lhs, int rhs)
             => new GridIndex(lhs.Row / rhs, lhs.Column / rhs);
 

@@ -252,6 +252,9 @@ namespace System
         public static Index5 operator *(int lhs, in Index5 rhs)
             => new Index5(lhs * rhs.A, lhs * rhs.B, lhs * rhs.C, lhs * rhs.D, lhs * rhs.E);
 
+        public static Index5 operator *(in Index5 lhs, in Index5 rhs)
+            => new Index5(lhs.A * rhs.A, lhs.B * rhs.B, lhs.C * rhs.C, lhs.D * rhs.D, lhs.E * rhs.E);
+
         public static Index5 operator /(in Index5 lhs, int rhs)
             => new Index5(lhs.A / rhs, lhs.B / rhs, lhs.C / rhs, lhs.D / rhs, lhs.E / rhs);
 

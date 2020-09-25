@@ -130,8 +130,20 @@ namespace UnityEngine
         public static SizeInt operator *(int lhs, in SizeInt rhs)
             => new SizeInt(lhs * rhs.Width, lhs * rhs.Height);
 
+        public static SizeInt operator *(in SizeInt lhs, in Vector2Int rhs)
+            => new SizeInt(lhs.Width * rhs.x, lhs.Height * rhs.y);
+
+        public static SizeInt operator *(in Vector2Int lhs, in SizeInt rhs)
+            => new SizeInt(rhs.Width * lhs.x, rhs.Height * lhs.y);
+
+        public static SizeInt operator *(in SizeInt lhs, in SizeInt rhs)
+            => new SizeInt(lhs.Width * rhs.Width, lhs.Height * rhs.Height);
+
         public static SizeInt operator /(in SizeInt lhs, int rhs)
             => new SizeInt(lhs.Width / rhs, lhs.Height / rhs);
+
+        public static SizeInt operator /(in SizeInt lhs, in Vector2Int rhs)
+            => new SizeInt(lhs.Width / rhs.x, lhs.Height / rhs.y);
 
         public static SizeInt operator /(in SizeInt lhs, in SizeInt rhs)
             => new SizeInt(lhs.Width / rhs.Width, lhs.Height / rhs.Height);

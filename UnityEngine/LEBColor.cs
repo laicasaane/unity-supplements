@@ -248,8 +248,20 @@ namespace UnityEngine
         public static LEBColor operator *(float lhs, in LEBColor rhs)
             => new LEBColor(lhs * rhs.L, lhs * rhs.E, lhs * rhs.B, lhs * rhs.A);
 
+        public static LEBColor operator *(in LEBColor lhs, in Vector4 rhs)
+            => new LEBColor(lhs.L * rhs.x, lhs.E * rhs.y, lhs.B * rhs.z, lhs.A * rhs.w);
+
+        public static LEBColor operator *(in Vector4 lhs, in LEBColor rhs)
+            => new LEBColor(rhs.L * lhs.x, rhs.E * lhs.y, rhs.B * lhs.z, rhs.A * lhs.w);
+
         public static LEBColor operator /(in LEBColor lhs, float rhs)
             => new LEBColor(lhs.L / rhs, lhs.E / rhs, lhs.B / rhs, lhs.A / rhs);
+
+        public static LEBColor operator /(in LEBColor lhs, in Vector4 rhs)
+            => new LEBColor(lhs.L / rhs.x, lhs.E / rhs.y, lhs.B / rhs.z, lhs.A / rhs.w);
+
+        public static LEBColor operator /(in LEBColor lhs, in LEBColor rhs)
+            => new LEBColor(lhs.L / rhs.L, lhs.E / rhs.E, lhs.B / rhs.B, lhs.A / rhs.A);
 
         public static LEBColor Lerp(in LEBColor a, in LEBColor b, float t)
             => new LEBColor(Mathf.Lerp(a.L, b.L, t),

@@ -148,6 +148,9 @@ namespace System
         public static Index2 operator *(int lhs, in Index2 rhs)
             => new Index2(lhs * rhs.A, lhs * rhs.B);
 
+        public static Index2 operator *(in Index2 lhs, in Index2 rhs)
+            => new Index2(lhs.A * rhs.A, lhs.B * rhs.B);
+
         public static Index2 operator /(in Index2 lhs, int rhs)
             => new Index2(lhs.A / rhs, lhs.B / rhs);
 

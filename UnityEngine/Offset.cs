@@ -173,8 +173,20 @@ namespace UnityEngine
         public static Offset operator *(int lhs, in Offset rhs)
             => new Offset(lhs * rhs.Left, lhs * rhs.Right, lhs * rhs.Top, lhs * rhs.Bottom);
 
+        public static Offset operator *(in Offset lhs, in Vector4 rhs)
+            => new Offset(lhs.Left * rhs.x, lhs.Right * rhs.y, lhs.Top * rhs.z, lhs.Bottom * rhs.w);
+
+        public static Offset operator *(in Vector4 lhs, in Offset rhs)
+            => new Offset(rhs.Left * lhs.x, rhs.Right * lhs.y, rhs.Top * lhs.z, rhs.Bottom * lhs.w);
+
+        public static Offset operator *(in Offset lhs, in Offset rhs)
+            => new Offset(lhs.Left * rhs.Left, lhs.Right * rhs.Right, lhs.Top * rhs.Top, lhs.Bottom * rhs.Bottom);
+
         public static Offset operator /(in Offset lhs, int rhs)
             => new Offset(lhs.Left / rhs, lhs.Right / rhs, lhs.Top / rhs, lhs.Bottom / rhs);
+
+        public static Offset operator /(in Offset lhs, in Vector4 rhs)
+            => new Offset(lhs.Left / rhs.x, lhs.Right / rhs.y, lhs.Top / rhs.z, lhs.Bottom / rhs.w);
 
         public static Offset operator /(in Offset lhs, in Offset rhs)
             => new Offset(lhs.Left / rhs.Left, lhs.Right / rhs.Right, lhs.Top / rhs.Top, lhs.Bottom / rhs.Bottom);

@@ -135,8 +135,20 @@ namespace UnityEngine
         public static Size operator *(float lhs, in Size rhs)
             => new Size(lhs * rhs.Width, lhs * rhs.Height);
 
+        public static Size operator *(in Size lhs, in Vector2 rhs)
+            => new Size(lhs.Width * rhs.x, lhs.Height * rhs.y);
+
+        public static Size operator *(in Vector2 lhs, in Size rhs)
+            => new Size(rhs.Width * lhs.x, rhs.Height * lhs.y);
+
+        public static Size operator *(in Size lhs, in Size rhs)
+            => new Size(lhs.Width * rhs.Width, lhs.Height * rhs.Height);
+
         public static Size operator /(in Size lhs, float rhs)
             => new Size(lhs.Width / rhs, lhs.Height / rhs);
+
+        public static Size operator /(in Size lhs, in Vector2 rhs)
+            => new Size(lhs.Width / rhs.x, lhs.Height / rhs.y);
 
         public static Size operator /(in Size lhs, in Size rhs)
             => new Size(lhs.Width / rhs.Width, lhs.Height / rhs.Height);

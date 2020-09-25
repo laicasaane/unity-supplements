@@ -218,6 +218,9 @@ namespace System
         public static Index4 operator *(int lhs, in Index4 rhs)
             => new Index4(lhs * rhs.A, lhs * rhs.B, lhs * rhs.C, lhs * rhs.D);
 
+        public static Index4 operator *(in Index4 lhs, in Index4 rhs)
+            => new Index4(lhs.A * rhs.A, lhs.B * rhs.B, lhs.C * rhs.C, lhs.D * rhs.D);
+
         public static Index4 operator /(in Index4 lhs, int rhs)
             => new Index4(lhs.A / rhs, lhs.B / rhs, lhs.C / rhs, lhs.D / rhs);
 

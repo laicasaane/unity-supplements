@@ -242,8 +242,20 @@ namespace UnityEngine
         public static HSBColor operator *(float lhs, in HSBColor rhs)
             => new HSBColor(lhs * rhs.H, lhs * rhs.S, lhs * rhs.B, lhs * rhs.A);
 
+        public static HSBColor operator *(in HSBColor lhs, in Vector4 rhs)
+            => new HSBColor(lhs.H * rhs.x, lhs.S * rhs.y, lhs.B * rhs.z, lhs.A * rhs.w);
+
+        public static HSBColor operator *(in Vector4 lhs, in HSBColor rhs)
+            => new HSBColor(rhs.H * lhs.x, rhs.S * lhs.y, rhs.B * lhs.z, rhs.A * lhs.w);
+
         public static HSBColor operator /(in HSBColor lhs, float rhs)
             => new HSBColor(lhs.H / rhs, lhs.S / rhs, lhs.B / rhs, lhs.A / rhs);
+
+        public static HSBColor operator /(in HSBColor lhs, in Vector4 rhs)
+            => new HSBColor(lhs.H / rhs.x, lhs.S / rhs.y, lhs.B / rhs.z, lhs.A / rhs.w);
+
+        public static HSBColor operator /(in HSBColor lhs, in HSBColor rhs)
+            => new HSBColor(lhs.H / rhs.H, lhs.S / rhs.S, lhs.B / rhs.B, lhs.A / rhs.A);
 
         private const float N1_d_N360 = 1f / 360f;
 

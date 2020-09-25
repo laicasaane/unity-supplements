@@ -134,6 +134,9 @@ namespace System
         public static Length2 operator *(int lhs, in Length2 rhs)
             => new Length2(lhs * rhs.A, lhs * rhs.B);
 
+        public static Length2 operator *(in Length2 lhs, in Length2 rhs)
+            => new Length2(lhs.A * rhs.A, lhs.B * rhs.B);
+
         public static Length2 operator /(in Length2 lhs, int rhs)
             => new Length2(lhs.A / rhs, lhs.B / rhs);
 
