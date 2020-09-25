@@ -20,19 +20,34 @@ namespace System.Grid
 
         private GridSize(SerializationInfo info, StreamingContext context)
         {
+            int row;
+            int col;
+
             try
             {
-                this.value = (GridIndex)info.GetValue(nameof(this.value), typeof(GridIndex));
+                row = info.GetInt32(nameof(GridIndex.Row));
             }
             catch
             {
-                this.value = default;
+                row = default;
             }
+
+            try
+            {
+                col = info.GetInt32(nameof(GridIndex.Column));
+            }
+            catch
+            {
+                col = default;
+            }
+
+            this.value = new GridIndex(row, col);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            info.AddValue(nameof(this.value), this.value);
+            info.AddValue(nameof(GridIndex.Row), this.value.Row);
+            info.AddValue(nameof(GridIndex.Column), this.value.Column);
         }
 
         public override int GetHashCode()
