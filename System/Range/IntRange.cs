@@ -98,18 +98,15 @@ namespace System
 
         public override bool Equals(object obj)
             => obj is IntRange other &&
-               this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End) &&
+               this.Start == other.Start && this.End == other.End &&
                this.IsFromEnd == other.IsFromEnd;
 
         public bool Equals(in IntRange other)
-            => this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End) &&
+            => this.Start == other.Start && this.End == other.End &&
                this.IsFromEnd == other.IsFromEnd;
 
         public bool Equals(IntRange other)
-            => this.Start.Equals(other.Start) &&
-               this.End.Equals(other.End) &&
+            => this.Start == other.Start && this.End == other.End &&
                this.IsFromEnd == other.IsFromEnd;
 
         public override int GetHashCode()
@@ -169,10 +166,12 @@ namespace System
             => new IntRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in IntRange lhs, in IntRange rhs)
-            => lhs.Equals(in rhs);
+            => lhs.Start == rhs.Start && lhs.End == rhs.End &&
+               lhs.IsFromEnd == rhs.IsFromEnd;
 
         public static bool operator !=(in IntRange lhs, in IntRange rhs)
-            => !lhs.Equals(in rhs);
+            => lhs.Start != rhs.Start || lhs.End != rhs.End ||
+               lhs.IsFromEnd != rhs.IsFromEnd;
 
         public struct Enumerator : IEnumerator<int>, IRangeEnumerator<int>
         {

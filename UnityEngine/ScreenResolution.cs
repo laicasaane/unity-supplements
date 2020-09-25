@@ -109,10 +109,22 @@ namespace UnityEngine
         public static implicit operator ScreenResolution(in SizeInt value)
             => new ScreenResolution(value.Width, value.Height);
 
-        public static bool operator ==(in ScreenResolution lhs, ScreenResolution rhs)
+        public static implicit operator ScreenResolution(Vector2 value)
+            => new ScreenResolution((int)value.x, (int)value.y);
+
+        public static implicit operator ScreenResolution(Vector2Int value)
+            => new ScreenResolution(value.x, value.y);
+
+        public static implicit operator Vector2(in ScreenResolution value)
+            => new Vector2(value.Width, value.Height);
+
+        public static implicit operator Vector2Int(in ScreenResolution value)
+            => new Vector2Int(value.Width, value.Height);
+
+        public static bool operator ==(in ScreenResolution lhs, in ScreenResolution rhs)
             => lhs.Width == rhs.Width && lhs.Height == rhs.Height;
 
-        public static bool operator !=(in ScreenResolution lhs, ScreenResolution rhs)
+        public static bool operator !=(in ScreenResolution lhs, in ScreenResolution rhs)
             => lhs.Width != rhs.Width || lhs.Height != rhs.Height;
     }
 }

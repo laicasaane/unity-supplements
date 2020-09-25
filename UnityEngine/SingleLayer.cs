@@ -75,7 +75,7 @@ namespace UnityEngine
         public override string ToString()
             => LayerMask.LayerToName(this.value);
 
-        public static implicit operator int(SingleLayer value)
+        public static implicit operator int(in SingleLayer value)
             => value.value;
 
         public static implicit operator SingleLayer(int value)
@@ -84,10 +84,10 @@ namespace UnityEngine
         public static implicit operator SingleLayer(string name)
             => new SingleLayer(name);
 
-        public static bool operator ==(SingleLayer lhs, SingleLayer rhs)
+        public static bool operator ==(in SingleLayer lhs, in SingleLayer rhs)
             => lhs.value == rhs.value;
 
-        public static bool operator !=(SingleLayer lhs, SingleLayer rhs)
+        public static bool operator !=(in SingleLayer lhs, in SingleLayer rhs)
             => lhs.value != rhs.value;
     }
 }

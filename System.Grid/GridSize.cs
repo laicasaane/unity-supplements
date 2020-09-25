@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace System.Grid
 {
@@ -113,7 +114,7 @@ namespace System.Grid
                 this.value - GridIndex.One
             );
 
-        public static GridSize Zero { get; } = GridIndex.Zero;
+        public static GridSize Zero { get; } = new GridSize(GridIndex.Zero);
 
         public static implicit operator GridIndex(in GridSize value)
             => value.value;
@@ -133,13 +134,19 @@ namespace System.Grid
         public static GridSize operator -(in GridSize lhs, in GridSize rhs)
             => new GridSize(lhs.value - rhs.value);
 
-        public static GridSize operator *(in GridSize lhs, int scale)
-            => new GridSize(lhs.value * scale);
+        public static GridSize operator *(in GridSize lhs, int rhs)
+            => new GridSize(lhs.value * rhs);
 
-        public static GridSize operator *(int scale, in GridSize rhs)
-            => new GridSize(rhs.value * scale);
+        public static GridSize operator *(int lhs, in GridSize rhs)
+            => new GridSize(rhs.value * lhs);
 
-        public static GridSize operator /(in GridSize lhs, int scale)
-            => new GridSize(lhs.value / scale);
+        public static GridSize operator /(in GridSize lhs, int rhs)
+            => new GridSize(lhs.value / rhs);
+
+        public static GridSize operator /(in GridSize lhs, in GridIndex rhs)
+            => new GridSize(lhs.value / rhs);
+
+        public static GridSize operator /(in GridSize lhs, in GridSize rhs)
+            => new GridSize(lhs.value / rhs.value);
     }
 }

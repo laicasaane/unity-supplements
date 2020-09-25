@@ -227,6 +227,12 @@ namespace UnityEngine
         public static implicit operator LEBColor(in Color rgb)
             => RGBToLEB(rgb);
 
+        public static implicit operator LEBColor(in Vector4 v)
+            => new LEBColor(v.x, v.y, v.z, v.w);
+
+        public static implicit operator Vector4(in LEBColor c)
+            => new Vector4(c.L, c.E, c.B, c.A);
+
         public static LEBColor operator +(in LEBColor lhs, in LEBColor rhs)
             => new LEBColor(lhs.L + rhs.L, lhs.E + rhs.E, lhs.B + rhs.B, lhs.A + rhs.A);
 

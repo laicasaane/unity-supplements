@@ -4,13 +4,10 @@ using System.Runtime.Serialization;
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct Size : IEquatableReadOnlyStruct<Size>, IComparableReadOnlyStruct<Size>, ISerializable
+    public readonly struct Size : IEquatableReadOnlyStruct<Size>, ISerializable
     {
         public readonly float Width;
         public readonly float Height;
-
-        public float Area
-            => this.Width * this.Height;
 
         public float this[int index]
         {
@@ -55,12 +52,6 @@ namespace UnityEngine
             => obj is Size other &&
                Mathf.Approximately(this.Width, other.Width) &&
                Mathf.Approximately(this.Height, other.Height);
-
-        public int CompareTo(Size other)
-            => this.Area.CompareTo(other.Area);
-
-        public int CompareTo(in Size other)
-            => this.Area.CompareTo(other.Area);
 
         public bool Equals(Size other)
             => Mathf.Approximately(this.Width, other.Width) &&
@@ -108,10 +99,10 @@ namespace UnityEngine
         public static implicit operator Size(in (float, float) value)
             => new Size(value.Item1, value.Item2);
 
-        public static implicit operator Size(in Vector2 value)
+        public static implicit operator Size(Vector2 value)
             => new Size(value.x, value.y);
 
-        public static implicit operator Size(in Vector2Int value)
+        public static implicit operator Size(Vector2Int value)
             => new Size(value.x, value.y);
 
         public static implicit operator Vector2(in Size value)
@@ -120,7 +111,7 @@ namespace UnityEngine
         public static explicit operator Vector2Int(in Size value)
             => new Vector2Int((int)value.Width, (int)value.Height);
 
-        public static implicit operator Size(in Rect value)
+        public static implicit operator Size(Rect value)
             => new Size(value.width, value.height);
 
         public static explicit operator Rect(in Size value)
@@ -147,6 +138,9 @@ namespace UnityEngine
         public static Size operator /(in Size lhs, float rhs)
             => new Size(lhs.Width / rhs, lhs.Height / rhs);
 
+        public static Size operator /(in Size lhs, in Size rhs)
+            => new Size(lhs.Width / rhs.Width, lhs.Height / rhs.Height);
+
         public static bool operator ==(in Size lhs, in Size rhs)
             => Mathf.Approximately(lhs.Width, rhs.Width) &&
                Mathf.Approximately(lhs.Height, rhs.Height);
@@ -154,11 +148,5 @@ namespace UnityEngine
         public static bool operator !=(in Size lhs, in Size rhs)
             => !Mathf.Approximately(lhs.Width, rhs.Width) ||
                !Mathf.Approximately(lhs.Height, rhs.Height);
-
-        public static bool operator >(in Size lhs, in Size rhs)
-            => lhs.CompareTo(in rhs) > 0;
-
-        public static bool operator <(in Size lhs, in Size rhs)
-            => lhs.CompareTo(in rhs) < 0;
     }
 }

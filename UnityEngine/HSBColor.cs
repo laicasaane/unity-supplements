@@ -221,6 +221,12 @@ namespace UnityEngine
         public static implicit operator HSBColor(in Color rgb)
             => RGBToHSB(rgb);
 
+        public static implicit operator HSBColor(in Vector4 v)
+            => new HSBColor(v.x, v.y, v.z, v.w);
+
+        public static implicit operator Vector4(in HSBColor c)
+            => new Vector4(c.H, c.S, c.B, c.A);
+
         public static HSBColor operator +(in HSBColor lhs, in HSBColor rhs)
             => new HSBColor(lhs.H + rhs.H, lhs.S + rhs.S, lhs.B + rhs.B, lhs.A + rhs.A);
 

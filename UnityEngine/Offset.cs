@@ -152,6 +152,12 @@ namespace UnityEngine
         public static explicit operator RectOffset(in Offset value)
             => new RectOffset((int)value.Left, (int)value.Right, (int)value.Top, (int)value.Bottom);
 
+        public static implicit operator Offset(in Vector4 v)
+            => new Offset(v.x, v.y, v.z, v.w);
+
+        public static implicit operator Vector4(in Offset c)
+            => new Vector4(c.Left, c.Right, c.Top, c.Bottom);
+
         public static Offset operator +(in Offset lhs, in Offset rhs)
             => new Offset(lhs.Left + rhs.Left, lhs.Right + rhs.Right, lhs.Top + rhs.Top, lhs.Bottom + rhs.Bottom);
 
@@ -169,5 +175,20 @@ namespace UnityEngine
 
         public static Offset operator /(in Offset lhs, int rhs)
             => new Offset(lhs.Left / rhs, lhs.Right / rhs, lhs.Top / rhs, lhs.Bottom / rhs);
+
+        public static Offset operator /(in Offset lhs, in Offset rhs)
+            => new Offset(lhs.Left / rhs.Left, lhs.Right / rhs.Right, lhs.Top / rhs.Top, lhs.Bottom / rhs.Bottom);
+
+        public static bool operator ==(in Offset lhs, in Offset rhs)
+            => Mathf.Approximately(lhs.Left, rhs.Left) &&
+               Mathf.Approximately(lhs.Right, rhs.Right) &&
+               Mathf.Approximately(lhs.Top, rhs.Top) &&
+               Mathf.Approximately(lhs.Bottom, rhs.Bottom);
+
+        public static bool operator !=(in Offset lhs, in Offset rhs)
+            => !Mathf.Approximately(lhs.Left, rhs.Left) ||
+               !Mathf.Approximately(lhs.Right, rhs.Right) ||
+               !Mathf.Approximately(lhs.Top, rhs.Top) ||
+               !Mathf.Approximately(lhs.Bottom, rhs.Bottom);
     }
 }

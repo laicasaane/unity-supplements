@@ -152,6 +152,12 @@ namespace UnityEngine
         public static explicit operator RectOffset(in OffsetInt value)
             => new RectOffset(value.Left, value.Right, value.Top, value.Bottom);
 
+        public static implicit operator OffsetInt(in Vector4 v)
+            => new OffsetInt((int)v.x, (int)v.y, (int)v.z, (int)v.w);
+
+        public static implicit operator Vector4(in OffsetInt c)
+            => new Vector4(c.Left, c.Right, c.Top, c.Bottom);
+
         public static OffsetInt operator +(in OffsetInt lhs, in OffsetInt rhs)
             => new OffsetInt(lhs.Left + rhs.Left, lhs.Right + rhs.Right, lhs.Top + rhs.Top, lhs.Bottom + rhs.Bottom);
 
@@ -169,5 +175,16 @@ namespace UnityEngine
 
         public static OffsetInt operator /(in OffsetInt lhs, int rhs)
             => new OffsetInt(lhs.Left / rhs, lhs.Right / rhs, lhs.Top / rhs, lhs.Bottom / rhs);
+
+        public static OffsetInt operator /(in OffsetInt lhs, in OffsetInt rhs)
+            => new OffsetInt(lhs.Left / rhs.Left, lhs.Right / rhs.Right, lhs.Top / rhs.Top, lhs.Bottom / rhs.Bottom);
+
+        public static bool operator ==(in OffsetInt lhs, in OffsetInt rhs)
+            => lhs.Left == rhs.Left && lhs.Right == rhs.Right &&
+               lhs.Top == rhs.Top && lhs.Bottom == rhs.Bottom;
+
+        public static bool operator !=(in OffsetInt lhs, in OffsetInt rhs)
+            => lhs.Left != rhs.Left && lhs.Right != rhs.Right &&
+               lhs.Top != rhs.Top && lhs.Bottom != rhs.Bottom;
     }
 }

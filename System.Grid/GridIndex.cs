@@ -130,14 +130,17 @@ namespace System.Grid
         public static GridIndex operator -(in GridIndex lhs, in GridIndex rhs)
             => new GridIndex(lhs.Row - rhs.Row, lhs.Column - rhs.Column);
 
-        public static GridIndex operator *(in GridIndex lhs, int scale)
-            => new GridIndex(lhs.Row * scale, lhs.Column * scale);
+        public static GridIndex operator *(in GridIndex lhs, int rhs)
+            => new GridIndex(lhs.Row * rhs, lhs.Column * rhs);
 
-        public static GridIndex operator *(int scale, in GridIndex rhs)
-            => new GridIndex(rhs.Row * scale, rhs.Column * scale);
+        public static GridIndex operator *(int lhs, in GridIndex rhs)
+            => new GridIndex(rhs.Row * lhs, rhs.Column * lhs);
 
-        public static GridIndex operator /(in GridIndex lhs, int scale)
-            => new GridIndex(lhs.Row / scale, lhs.Column / scale);
+        public static GridIndex operator /(in GridIndex lhs, int rhs)
+            => new GridIndex(lhs.Row / rhs, lhs.Column / rhs);
+
+        public static GridIndex operator /(in GridIndex lhs, in GridIndex rhs)
+            => new GridIndex(lhs.Row / rhs.Row, lhs.Column / rhs.Column);
 
         public static GridIndex Clamp(in GridIndex value, in GridIndex min, in GridIndex max)
             => new GridIndex(

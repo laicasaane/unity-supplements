@@ -151,6 +151,9 @@ namespace System
         public static Index2 operator /(in Index2 lhs, int rhs)
             => new Index2(lhs.A / rhs, lhs.B / rhs);
 
+        public static Index2 operator /(in Index2 lhs, in Index2 rhs)
+            => new Index2(lhs.A / rhs.A, lhs.B / rhs.B);
+
         public static bool operator ==(in Index2 lhs, in Index2 rhs)
             => lhs.A == rhs.A && lhs.B == rhs.B;
 

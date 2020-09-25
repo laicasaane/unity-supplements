@@ -4,13 +4,10 @@ using System.Runtime.Serialization;
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct SizeInt : IEquatableReadOnlyStruct<SizeInt>, IComparableReadOnlyStruct<SizeInt>, ISerializable
+    public readonly struct SizeInt : IEquatableReadOnlyStruct<SizeInt>, ISerializable
     {
         public readonly int Width;
         public readonly int Height;
-
-        public int Area
-            => this.Width * this.Height;
 
         public int this[int index]
         {
@@ -56,12 +53,6 @@ namespace UnityEngine
                this.Width == other.Width &&
                this.Height == other.Height;
 
-        public int CompareTo(SizeInt other)
-            => this.Area.CompareTo(other.Area);
-
-        public int CompareTo(in SizeInt other)
-            => this.Area.CompareTo(other.Area);
-
         public bool Equals(SizeInt other)
             => this.Width == other.Width && this.Height == other.Height;
 
@@ -106,7 +97,7 @@ namespace UnityEngine
         public static implicit operator SizeInt(in (int, int) value)
             => new SizeInt(value.Item1, value.Item2);
 
-        public static implicit operator SizeInt(in Vector2Int value)
+        public static implicit operator SizeInt(Vector2Int value)
             => new SizeInt(value.x, value.y);
 
         public static implicit operator Vector2Int(in SizeInt value)
@@ -115,7 +106,7 @@ namespace UnityEngine
         public static implicit operator Vector2(in SizeInt value)
             => new Vector2(value.Width, value.Height);
 
-        public static implicit operator SizeInt(in RectInt value)
+        public static implicit operator SizeInt(RectInt value)
             => new SizeInt(value.width, value.height);
 
         public static explicit operator RectInt(in SizeInt value)
@@ -142,16 +133,13 @@ namespace UnityEngine
         public static SizeInt operator /(in SizeInt lhs, int rhs)
             => new SizeInt(lhs.Width / rhs, lhs.Height / rhs);
 
+        public static SizeInt operator /(in SizeInt lhs, in SizeInt rhs)
+            => new SizeInt(lhs.Width / rhs.Width, lhs.Height / rhs.Height);
+
         public static bool operator ==(in SizeInt lhs, in SizeInt rhs)
             => lhs.Width == rhs.Width && lhs.Height == rhs.Height;
 
         public static bool operator !=(in SizeInt lhs, in SizeInt rhs)
             => lhs.Width != rhs.Width || lhs.Height != rhs.Height;
-
-        public static bool operator >(in SizeInt lhs, in SizeInt rhs)
-            => lhs.CompareTo(in rhs) > 0;
-
-        public static bool operator <(in SizeInt lhs, in SizeInt rhs)
-            => lhs.CompareTo(in rhs) < 0;
     }
 }

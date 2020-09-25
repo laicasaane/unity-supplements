@@ -193,6 +193,9 @@ namespace System
         public static Length4 operator /(in Length4 lhs, int rhs)
             => new Length4(lhs.A / rhs, lhs.B / rhs, lhs.C / rhs, lhs.D / rhs);
 
+        public static Length4 operator /(in Length4 lhs, in Length4 rhs)
+            => new Length4(lhs.A / rhs.A, lhs.B / rhs.B, lhs.C / rhs.C, lhs.D / rhs.D);
+
         public static bool operator ==(in Length4 lhs, in Length4 rhs)
             => lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C && lhs.D == rhs.D;
 
