@@ -86,7 +86,7 @@ namespace System
             fromEnd = this.IsFromEnd;
         }
 
-        public ReadRange<TValue> With(in TValue? Start = null, in TValue? End = null, in bool? IsFromEnd = null)
+        public ReadRange<TValue> With(TValue? Start = null, TValue? End = null, bool? IsFromEnd = null)
             => new ReadRange<TValue>(
                 Start ?? this.Start,
                 End ?? this.End,

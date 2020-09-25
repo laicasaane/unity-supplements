@@ -77,7 +77,7 @@ namespace System
             fromEnd = this.IsFromEnd;
         }
 
-        public UIntRange With(in uint? Start = null, in uint? End = null, in bool? IsFromEnd = null)
+        public UIntRange With(in uint? Start = null, in uint? End = null, bool? IsFromEnd = null)
             => new UIntRange(
                 Start ?? this.Start,
                 End ?? this.End,

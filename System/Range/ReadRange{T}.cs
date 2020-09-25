@@ -99,7 +99,7 @@ namespace System
             fromEnd = this.IsFromEnd;
         }
 
-        public ReadRange<T> With(in T? Start = null, in T? End = null, in bool? IsFromEnd = null, IRangeEnumerator<T> Enumerator = null)
+        public ReadRange<T> With(T? Start = null, T? End = null, bool? IsFromEnd = null, IRangeEnumerator<T> Enumerator = null)
             => new ReadRange<T>(
                 Start ?? this.Start,
                 End ?? this.End,

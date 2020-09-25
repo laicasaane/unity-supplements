@@ -82,7 +82,7 @@ namespace System.Grid
             fromEnd = this.isFromEnd;
         }
 
-        public GridIndexRange With(in GridIndex? Start = null, in GridIndex? End = null, in bool? IsFromEnd = null)
+        public GridIndexRange With(in GridIndex? Start = null, in GridIndex? End = null, bool? IsFromEnd = null)
             => new GridIndexRange(
                 Start ?? this.start,
                 End ?? this.end,

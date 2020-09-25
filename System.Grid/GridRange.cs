@@ -146,8 +146,8 @@ namespace System.Grid
             fromEnd = this.isFromEnd;
         }
 
-        public GridRange With(in GridIndex? Size = null, in bool? Clamped = null, in GridIndex? Start = null,
-                              in GridIndex? End = null, in bool? IsFromEnd = null)
+        public GridRange With(in GridIndex? Size = null, bool? Clamped = null, in GridIndex? Start = null,
+                              in GridIndex? End = null, bool? IsFromEnd = null)
             => new GridRange(
                 Size ?? this.Size,
                 Clamped ?? this.Clamped,
