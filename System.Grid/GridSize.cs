@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -11,6 +11,9 @@ namespace System.Grid
         public int Column => this.value.Column;
 
         private readonly GridIndex value;
+
+        public GridSize(int row, int column)
+            => this.value = new GridIndex(row, column);
 
         public GridSize(in GridIndex value)
             => this.value = value;
@@ -44,8 +47,17 @@ namespace System.Grid
         public bool Equals(GridSize other)
             => this.value.Equals(in other.value);
 
+        public bool Contains(in GridIndex value)
+            => value.Row <= this.value.Row && value.Column <= this.value.Column;
+
+        public bool Contains(in GridSize other)
+            => other.value.Row <= this.value.Row && other.value.Column <= this.value.Column;
+
         public bool ValidateIndex(in GridIndex value)
-        => value.Row < this.value.Row && value.Column < this.value.Column;
+            => value.Row < this.value.Row && value.Column < this.value.Column;
+
+        public int Index1Of(in GridIndex value)
+            => value.ToIndex1(this.value);
 
         public GridIndex LastIndex()
             => this.value - GridIndex.One;
@@ -114,13 +126,105 @@ namespace System.Grid
                 this.value - GridIndex.One
             );
 
+        public void IndexRanges(int rangeSize, ICollection<GridRange> output)
+            => IndexRanges(rangeSize, rangeSize, output);
+
+        public void IndexRanges(in GridIndex rangeSize, ICollection<GridRange> output)
+            => IndexRanges(rangeSize, rangeSize, output);
+
+        public void IndexRanges(int rangeSize, int step, ICollection<GridRange> output)
+            => IndexRanges(GridIndex.One* rangeSize, step, output);
+
+        public void IndexRanges(int rangeSize, in GridIndex step, ICollection<GridRange> output)
+            => IndexRanges(GridIndex.One * rangeSize, step, output);
+
+        public void IndexRanges(in GridIndex rangeSize, int step, ICollection<GridRange> output)
+        {
+            if (step < 1)
+                throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
+
+            IndexRanges(rangeSize, GridIndex.One * step, output);
+        }
+
+        public void IndexRanges(in GridIndex rangeSize, in GridIndex step, ICollection<GridRange> output)
+        {
+            if (output == null)
+                throw new ArgumentNullException(nameof(output));
+
+            if (step.Row < 1 || step.Column < 1)
+                throw new ArgumentException($"Must be greater than or equal to {nameof(GridIndex)}.{nameof(GridIndex.One)}",
+                                            nameof(step));
+
+            if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
+                step.Row > this.value.Row || step.Column > this.value.Column)
+                return;
+
+            var count = this.value / step;
+            var extend = rangeSize - GridIndex.One;
+
+            for (var r = 0; r < count.Row; r++)
+            {
+                for (var c = 0; c < count.Column; c++)
+                {
+                    var pivot = new GridIndex(r, c) * step;
+                    output.Add(IndexRange(pivot, GridIndex.Zero, extend));
+                }
+            }
+        }
+
+        public IEnumerable<GridRange> IndexRanges(int rangeSize)
+           => IndexRanges(rangeSize, rangeSize);
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndex rangeSize)
+            => IndexRanges(rangeSize, rangeSize);
+
+        public IEnumerable<GridRange> IndexRanges(int rangeSize, int step)
+            => IndexRanges(GridIndex.One * rangeSize, step);
+
+        public IEnumerable<GridRange> IndexRanges(int rangeSize, in GridIndex step)
+            => IndexRanges(GridIndex.One * rangeSize, step);
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndex rangeSize, int step)
+        {
+            if (step < 1)
+                throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
+
+            return IndexRanges(rangeSize, GridIndex.One * step);
+        }
+
+        public IEnumerable<GridRange> IndexRanges(GridIndex rangeSize, GridIndex step)
+        {
+            if (step.Row < 1 || step.Column < 1)
+                throw new ArgumentException($"Must be greater than or equal to {nameof(GridIndex)}.{nameof(GridIndex.One)}",
+                                            nameof(step));
+
+            if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
+                step.Row > this.value.Row || step.Column > this.value.Column)
+                yield break;
+
+            var count = this.value / step;
+            var extend = rangeSize - GridIndex.One;
+
+            for (var r = 0; r < count.Row; r++)
+            {
+                for (var c = 0; c < count.Column; c++)
+                {
+                    var pivot = new GridIndex(r, c) * step;
+                    yield return IndexRange(pivot, GridIndex.Zero, extend);
+                }
+            }
+        }
+
         public static GridSize Zero { get; } = new GridSize(GridIndex.Zero);
 
-        public static implicit operator GridIndex(in GridSize value)
-            => value.value;
+        public static implicit operator GridSize(in (int row, int column) value)
+            => new GridSize(value.row, value.column);
 
         public static implicit operator GridSize(in GridIndex value)
             => new GridSize(value);
+
+        public static implicit operator GridIndex(in GridSize value)
+            => value.value;
 
         public static bool operator ==(in GridSize lhs, in GridSize rhs)
             => lhs.value.Equals(in rhs.value);
