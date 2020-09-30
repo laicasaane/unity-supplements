@@ -206,6 +206,20 @@ namespace System.Grid
         public static bool operator !=(in GridIndexRange lhs, in GridIndexRange rhs)
             => !lhs.Equals(in rhs);
 
+        public static GridIndexRange operator +(in GridIndexRange lhs, in GridIndex rhs)
+            => new GridIndexRange(
+                lhs.Start + rhs,
+                lhs.End + rhs,
+                lhs.IsFromEnd
+            );
+
+        public static GridIndexRange operator -(in GridIndexRange lhs, in GridIndex rhs)
+            => new GridIndexRange(
+                lhs.Start - rhs,
+                lhs.End - rhs,
+                lhs.IsFromEnd
+            );
+
         public struct Enumerator : IEnumerator<GridIndex>, IRangeEnumerator<GridIndex>
         {
             private readonly GridIndex start;
