@@ -18,6 +18,16 @@ namespace System.Grid
         public GridSize(in GridIndex value)
             => this.value = value;
 
+        public GridSize(in GridIndexRange range)
+        {
+            var normal = range.Normalize();
+
+            this.value = new GridIndex(
+                normal.End.Row - normal.Start.Row + 1,
+                normal.End.Column - normal.Start.Column + 1
+            );
+        }
+
         private GridSize(SerializationInfo info, StreamingContext context)
         {
             int row;
@@ -93,6 +103,7 @@ namespace System.Grid
         public GridRange ClampIndexRange(in GridIndexRange range)
             => new GridRange(
                 this.value,
+                true,
                 ClampIndex(range.Start),
                 ClampIndex(range.End),
                 range.IsFromEnd
@@ -114,11 +125,7 @@ namespace System.Grid
             => IndexRange(pivot, GridIndex.One * lowerExtend, GridIndex.One * upperExtend);
 
         public GridRange IndexRange(in GridIndex pivot, in GridIndex extend)
-            => new GridRange(
-                this.value,
-                ClampIndex(pivot - extend),
-                ClampIndex(pivot + extend)
-            );
+            => IndexRange(pivot, extend, extend);
 
         public GridRange IndexRange(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
             => new GridRange(
@@ -140,6 +147,37 @@ namespace System.Grid
                 GridIndex.Zero,
                 this.value - GridIndex.One
             );
+
+        public GridRange IndexRange(in GridRange pivot, int extend)
+            => IndexRange(pivot, GridIndex.One * extend);
+
+        public GridRange IndexRange(in GridRange pivot, int lowerExtend, int upperExtend)
+            => IndexRange(pivot, GridIndex.One * lowerExtend, GridIndex.One * upperExtend);
+
+        public GridRange IndexRange(in GridRange pivot, bool row)
+        {
+            var normal = pivot.Normalize();
+
+            return new GridRange(
+                this.value,
+                new GridIndex(row ? normal.Start.Row : 0, row ? 0 : normal.Start.Column),
+                new GridIndex(row ? normal.End.Row : this.value.Row - 1, row ? this.value.Column - 1 : normal.End.Column)
+            );
+        }
+
+        public GridRange IndexRange(in GridRange pivot, in GridIndex extend)
+            => IndexRange(pivot, extend, extend);
+
+        public GridRange IndexRange(in GridRange pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+        {
+            var normal = pivot.Normalize();
+
+            return new GridRange(
+                this.value,
+                ClampIndex(normal.Start - lowerExtend),
+                ClampIndex(normal.End + upperExtend)
+            );
+        }
 
         public void IndexRanges(int rangeSize, ICollection<GridRange> output)
             => IndexRanges(rangeSize, rangeSize, output);
