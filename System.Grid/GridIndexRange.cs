@@ -147,11 +147,15 @@ namespace System.Grid
         IEnumerator<GridIndex> IRange<GridIndex>.Range()
             => GetEnumerator();
 
+        public GridIndexRange Normalize()
+            => Normal(this.Start, this.End);
+
         /// <summary>
-        /// Automatically create a range from (a, b).
-        /// The components of a and b are compared, the lowest value will be the start, the highest value will be the end.
+        /// Create a normal range from (a, b).
+        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
+        /// Otherwise, they are swapped.
         /// </summary>
-        public static GridIndexRange Auto(in GridIndex a, in GridIndex b)
+        public static GridIndexRange Normal(in GridIndex a, in GridIndex b)
         {
             var rowIncreasing = a.Row.CompareTo(b.Row) <= 0;
             var colIncreasing = a.Column.CompareTo(b.Column) <= 0;

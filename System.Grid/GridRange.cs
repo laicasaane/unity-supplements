@@ -240,12 +240,15 @@ namespace System.Grid
         IEnumerator<GridIndex> IRange<GridIndex>.Range()
             => GetEnumerator();
 
+        public GridRange Normalize()
+            => Normal(this.Size, this.Clamped, this.Start, this.End);
+
         /// <summary>
-        /// Automatically create a range from (a, b).
-        /// If a <= b, then a is the start value, and b is the end value.
+        /// Create a normal range from (a, b).
+        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
         /// Otherwise, they are swapped.
         /// </summary>
-        public static GridRange Auto(in GridIndex size, bool clamped, in GridIndex a, in GridIndex b)
+        public static GridRange Normal(in GridIndex size, bool clamped, in GridIndex a, in GridIndex b)
         {
             GridIndex start, end;
 

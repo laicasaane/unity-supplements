@@ -135,12 +135,15 @@ namespace System
         IEnumerator<uint> IRange<uint>.Range()
             => GetEnumerator();
 
+        public UIntRange Normalize()
+            => Normal(this.Start, this.End);
+
         /// <summary>
-        /// Automatically create a range from (a, b).
-        /// If a <= b, then a is the start value, and b is the end value.
+        /// Create a normal range from (a, b).
+        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
         /// Otherwise, they are swapped.
         /// </summary>
-        public static UIntRange Auto(uint a, uint b)
+        public static UIntRange Normal(uint a, uint b)
             => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
 
         public static UIntRange Count(uint value, bool fromEnd = false)

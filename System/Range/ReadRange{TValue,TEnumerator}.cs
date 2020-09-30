@@ -139,12 +139,15 @@ namespace System
         public IEnumerator<TValue> Range()
             => GetEnumerator();
 
+        public ReadRange<TValue, TEnumerator> Normalize(IComparer<TValue> comparer)
+            => Normal(this.Start, this.End, comparer);
+
         /// <summary>
-        /// Automatically create a range from (a, b).
-        /// If a <= b, then a is the start value, and b is the end value.
+        /// Create a normal range from (a, b).
+        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
         /// Otherwise, they are swapped.
         /// </summary>
-        public static ReadRange<TValue, TEnumerator> Auto(TValue a, TValue b, IComparer<TValue> comparer)
+        public static ReadRange<TValue, TEnumerator> Normal(TValue a, TValue b, IComparer<TValue> comparer)
         {
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));

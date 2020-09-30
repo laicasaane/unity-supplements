@@ -153,12 +153,15 @@ namespace System
         public IEnumerator<T> Range()
             => GetEnumerator();
 
+        public ReadRange<T> Normalize(IComparer<T> comparer)
+            => Normal(this.Start, this.End, this.enumerator, comparer);
+
         /// <summary>
-        /// Automatically create a range from (a, b).
-        /// If a <= b, then a is the start value, and b is the end value.
+        /// Create a normal range from (a, b).
+        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
         /// Otherwise, they are swapped.
         /// </summary>
-        public static ReadRange<T> Auto(T a, T b, IComparer<T> comparer)
+        public static ReadRange<T> Normal(T a, T b, IComparer<T> comparer)
         {
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
@@ -166,7 +169,7 @@ namespace System
             return comparer.Compare(a, b) > 0 ? new ReadRange<T>(b, a) : new ReadRange<T>(a, b);
         }
 
-        public static ReadRange<T> Auto(T a, T b, IRangeEnumerator<T> enumerator, IComparer<T> comparer)
+        public static ReadRange<T> Normal(T a, T b, IRangeEnumerator<T> enumerator, IComparer<T> comparer)
         {
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
