@@ -213,7 +213,7 @@ namespace System.Grid
             {
                 for (var c = 0; c < colCount; c++)
                 {
-                    var pivot = new GridIndex(r, c) * step;
+                    var pivot = new GridIndex(r * step.Row, c * step.Column);
                     output.Add(IndexRange(pivot, GridIndex.Zero, extend));
                 }
             }
@@ -269,8 +269,10 @@ namespace System.Grid
             {
                 for (var c = 0; c < colCount; c++)
                 {
-                    var pivot = new GridIndex(r, c) * step;
-                    output.Add(inner.IndexRange(pivot, GridIndex.Zero, extend) + normalSlice.Start);
+                    var row = r * step.Row + normalSlice.Start.Row;
+                    var col = c * step.Column + normalSlice.Start.Column;
+
+                    output.Add(IndexRange(new GridIndex(row, col), GridIndex.Zero, extend));
                 }
             }
         }
@@ -318,7 +320,7 @@ namespace System.Grid
             {
                 for (var c = 0; c < colCount; c++)
                 {
-                    var pivot = new GridIndex(r, c) * step;
+                    var pivot = new GridIndex(r * step.Row, c * step.Column);
                     yield return IndexRange(pivot, GridIndex.Zero, extend);
                 }
             }
@@ -376,8 +378,10 @@ namespace System.Grid
             {
                 for (var c = 0; c < colCount; c++)
                 {
-                    var pivot = new GridIndex(r, c) * step;
-                    yield return inner.IndexRange(pivot, GridIndex.Zero, extend) + normalSlice.Start;
+                    var row = r * step.Row + normalSlice.Start.Row;
+                    var col = c * step.Column + normalSlice.Start.Column;
+
+                    yield return IndexRange(new GridIndex(row, col), GridIndex.Zero, extend);
                 }
             }
         }
