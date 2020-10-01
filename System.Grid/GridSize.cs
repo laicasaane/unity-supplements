@@ -199,7 +199,7 @@ namespace System.Grid
             IndexRanges(rangeSize, GridIndex.One * step, output);
         }
 
-        public void IndexRanges(in GridIndex rangeSize, in GridIndex step, ICollection<GridRange> output)
+        private void ValidateIndexRanges(in GridIndex step, ICollection<GridRange> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
@@ -207,6 +207,11 @@ namespace System.Grid
             if (step.Row < 1 || step.Column < 1)
                 throw new ArgumentException($"Must be greater than or equal to {nameof(GridIndex)}.{nameof(GridIndex.One)}",
                                             nameof(step));
+        }
+
+        public void IndexRanges(in GridIndex rangeSize, in GridIndex step, ICollection<GridRange> output)
+        {
+            ValidateIndexRanges(step, output);
 
             if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
                 step.Row > this.value.Row || step.Column > this.value.Column)
@@ -227,6 +232,62 @@ namespace System.Grid
                 {
                     var pivot = new GridIndex(r, c) * step;
                     output.Add(IndexRange(pivot, GridIndex.Zero, extend));
+                }
+            }
+        }
+
+        public void IndexRanges(in GridIndexRange slice, int rangeSize, ICollection<GridRange> output)
+            => IndexRanges(slice, rangeSize, rangeSize, output);
+
+        public void IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, ICollection<GridRange> output)
+            => IndexRanges(slice, rangeSize, rangeSize, output);
+
+        public void IndexRanges(in GridIndexRange slice, int rangeSize, int step, ICollection<GridRange> output)
+            => IndexRanges(slice, GridIndex.One * rangeSize, step, output);
+
+        public void IndexRanges(in GridIndexRange slice, int rangeSize, in GridIndex step, ICollection<GridRange> output)
+            => IndexRanges(slice, GridIndex.One * rangeSize, step, output);
+
+        public void IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, int step, ICollection<GridRange> output)
+        {
+            if (step < 1)
+                throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
+
+            IndexRanges(slice, rangeSize, GridIndex.One * step, output);
+        }
+
+        public void IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, in GridIndex step, ICollection<GridRange> output)
+        {
+            ValidateIndexRanges(step, output);
+
+            var normalSlice = slice.Normalize();
+            var inner = new GridSize(
+                normalSlice.End.Row - normalSlice.Start.Row + 1,
+                normalSlice.End.Column - normalSlice.Start.Column + 1
+            );
+
+            if (inner.Row > this.value.Row || inner.Column > this.value.Column)
+                throw new ArgumentOutOfRangeException("Must be slice the grid size", nameof(slice));
+
+            if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
+                step.Row > inner.value.Row || step.Column > inner.value.Column)
+                return;
+
+            var (rowCount, colCount) = inner.value / step;
+            var extend = rangeSize - GridIndex.One;
+
+            if ((rowCount - 1) * step.Row + extend.Row >= inner.value.Row)
+                rowCount -= 1;
+
+            if ((colCount - 1) * step.Column + extend.Column >= inner.value.Column)
+                colCount -= 1;
+
+            for (var r = 0; r < rowCount; r++)
+            {
+                for (var c = 0; c < colCount; c++)
+                {
+                    var pivot = new GridIndex(r, c) * step;
+                    output.Add(inner.IndexRange(pivot, GridIndex.Zero, extend) + normalSlice.Start);
                 }
             }
         }
@@ -276,6 +337,64 @@ namespace System.Grid
                 {
                     var pivot = new GridIndex(r, c) * step;
                     yield return IndexRange(pivot, GridIndex.Zero, extend);
+                }
+            }
+        }
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndexRange slice, int rangeSize)
+            => IndexRanges(slice, rangeSize, rangeSize);
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndexRange slice, in GridIndex rangeSize)
+            => IndexRanges(slice, rangeSize, rangeSize);
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndexRange slice, int rangeSize, int step)
+            => IndexRanges(slice, GridIndex.One * rangeSize, step);
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndexRange slice, int rangeSize, in GridIndex step)
+            => IndexRanges(slice, GridIndex.One * rangeSize, step);
+
+        public IEnumerable<GridRange> IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, int step)
+        {
+            if (step < 1)
+                throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
+
+            return IndexRanges(slice, rangeSize, GridIndex.One * step);
+        }
+
+        public IEnumerable<GridRange> IndexRanges(GridIndexRange slice, GridIndex rangeSize, GridIndex step)
+        {
+            if (step.Row < 1 || step.Column < 1)
+                throw new ArgumentException($"Must be greater than or equal to {nameof(GridIndex)}.{nameof(GridIndex.One)}",
+                                            nameof(step));
+
+            var normalSlice = slice.Normalize();
+            var inner = new GridSize(
+                normalSlice.End.Row - normalSlice.Start.Row + 1,
+                normalSlice.End.Column - normalSlice.Start.Column + 1
+            );
+
+            if (inner.Row > this.value.Row || inner.Column > this.value.Column)
+                throw new ArgumentOutOfRangeException("Must be slice the grid size", nameof(slice));
+
+            if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
+                step.Row > inner.value.Row || step.Column > inner.value.Column)
+                yield break;
+
+            var (rowCount, colCount) = inner.value / step;
+            var extend = rangeSize - GridIndex.One;
+
+            if ((rowCount - 1) * step.Row + extend.Row >= inner.value.Row)
+                rowCount -= 1;
+
+            if ((colCount - 1) * step.Column + extend.Column >= inner.value.Column)
+                colCount -= 1;
+
+            for (var r = 0; r < rowCount; r++)
+            {
+                for (var c = 0; c < colCount; c++)
+                {
+                    var pivot = new GridIndex(r, c) * step;
+                    yield return inner.IndexRange(pivot, GridIndex.Zero, extend) + normalSlice.Start;
                 }
             }
         }
