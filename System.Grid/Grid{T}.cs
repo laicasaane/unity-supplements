@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace System.Grid
 {
     [Serializable]
-    public class Grid<T> : IGrid<T>, ISerializable
+    public partial class Grid<T> : IGrid<T>, ISerializable
     {
         public GridSize Size { get; private set; }
 
@@ -267,62 +267,81 @@ namespace System.Grid
             }
         }
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
+        public GridValues GetValues()
+            => new GridValues(this);
+
+        public GridValues GetValues(in GridIndex pivot, int extend)
             => GetValues(this.Size.IndexRange(pivot, extend));
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+        public GridValues GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
             => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend)
+        public GridValues GetValues(in GridIndex pivot, in GridIndex extend)
             => GetValues(this.Size.IndexRange(pivot, extend));
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+        public GridValues GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
             => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, bool byRow)
+        public GridValues GetValues(in GridIndex pivot, bool byRow)
             => GetValues(this.Size.IndexRange(pivot, byRow));
 
-        public IEnumerable<T> GetValues(GridIndexRange range)
+        public GridValues GetValues(in GridIndexRange range)
         {
-            foreach (var index in this.Size.ClampIndexRange(range))
-            {
-                if (this.data.TryGetValue(index, out var value))
-                    yield return value;
-            }
+            var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
+            return new GridValues(this, enumerator);
         }
 
-        public IEnumerable<T> GetValues(GridRange range)
+        public GridValues GetValues(in GridRange range)
         {
-            foreach (var index in this.Size.ClampIndexRange(range))
-            {
-                if (this.data.TryGetValue(index, out var value))
-                    yield return value;
-            }
+            var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
+            return new GridValues(this, enumerator);
         }
 
-        public IEnumerable<T> GetValues(IEnumerable<GridIndex> indices)
+        public GridValues GetValues(IEnumerable<GridIndex> indices)
         {
             if (indices == null)
                 throw new ArgumentNullException(nameof(indices));
 
-            foreach (var index in indices)
-            {
-                if (this.data.TryGetValue(index, out var value))
-                    yield return value;
-            }
+            return new GridValues(this, indices.GetEnumerator());
         }
 
-        public IEnumerable<T> GetValues(IEnumerator<GridIndex> enumerator)
+        public GridValues GetValues(IEnumerator<GridIndex> indices)
         {
-            if (enumerator == null)
-                throw new ArgumentNullException(nameof(enumerator));
+            if (indices == null)
+                throw new ArgumentNullException(nameof(indices));
 
-            while (enumerator.MoveNext())
-            {
-                if (this.data.TryGetValue(enumerator.Current, out var value))
-                    yield return value;
-            }
+            return new GridValues(this, indices);
         }
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues()
+            => GetValues();
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, int extend)
+            => GetValues(this.Size.IndexRange(pivot, extend));
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, in GridIndex extend)
+            => GetValues(this.Size.IndexRange(pivot, extend));
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, bool byRow)
+            => GetValues(this.Size.IndexRange(pivot, byRow));
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndexRange range)
+            => GetValues(range);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridRange range)
+            => GetValues(range);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(IEnumerable<GridIndex> indices)
+            => GetValues(indices);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(IEnumerator<GridIndex> indices)
+            => GetValues(indices);
 
         public void GetIndexedValues(ICollection<GridValue<T>> output)
         {
@@ -429,71 +448,70 @@ namespace System.Grid
             }
         }
 
-        public IEnumerable<GridValue<T>> GetIndexedValues()
-        {
-            foreach (var kv in this.data)
-            {
-                yield return kv;
-            }
-        }
+        public GridIndexedValues GetIndexedValues()
+            => new GridIndexedValues(this);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
+        public GridIndexedValues GetIndexedValues(in GridIndex pivot, int extend)
             => GetIndexedValues(this.Size.IndexRange(pivot, extend));
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+        public GridIndexedValues GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
             => GetIndexedValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend)
+        public GridIndexedValues GetIndexedValues(in GridIndex pivot, in GridIndex extend)
             => GetIndexedValues(this.Size.IndexRange(pivot, extend));
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+        public GridIndexedValues GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
             => GetIndexedValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend));
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow)
+        public GridIndexedValues GetIndexedValues(in GridIndex pivot, bool byRow)
             => GetIndexedValues(this.Size.IndexRange(pivot, byRow));
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range)
+        public GridIndexedValues GetIndexedValues(in GridIndexRange range)
         {
-            foreach (var index in this.Size.ClampIndexRange(range))
-            {
-                if (this.data.TryGetValue(index, out var value))
-                    yield return new GridValue<T>(index, value);
-            }
+            var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
+            return new GridIndexedValues(this, enumerator);
         }
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(GridRange range)
+        public GridIndexedValues GetIndexedValues(in GridRange range)
         {
-            foreach (var index in this.Size.ClampIndexRange(range))
-            {
-                if (this.data.TryGetValue(index, out var value))
-                    yield return new GridValue<T>(index, value);
-            }
+            var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
+            return new GridIndexedValues(this, enumerator);
         }
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerable<GridIndex> indices)
-        {
-            if (indices == null)
-                throw new ArgumentNullException(nameof(indices));
+        public GridIndexedValues GetIndexedValues(IEnumerable<GridIndex> indices)
+            => new GridIndexedValues(this, indices?.GetEnumerator());
 
-            foreach (var index in indices)
-            {
-                if (this.data.TryGetValue(index, out var value))
-                    yield return new GridValue<T>(index, value);
-            }
-        }
+        public GridIndexedValues GetIndexedValues(IEnumerator<GridIndex> indices)
+            => new GridIndexedValues(this, indices);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerator<GridIndex> enumerator)
-        {
-            if (enumerator == null)
-                throw new ArgumentNullException(nameof(enumerator));
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues()
+            => GetIndexedValues();
 
-            while (enumerator.MoveNext())
-            {
-                var index = enumerator.Current;
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, int extend)
+            => GetIndexedValues(pivot, extend);
 
-                if (this.data.TryGetValue(index, out var value))
-                    yield return new GridValue<T>(index, value);
-            }
-        }
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetIndexedValues(pivot, lowerExtend, upperExtend);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, in GridIndex extend)
+            => GetIndexedValues(pivot, extend);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetIndexedValues(pivot, lowerExtend, upperExtend);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, bool byRow)
+            => GetIndexedValues(pivot, byRow);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndexRange range)
+            => GetIndexedValues(range);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridRange range)
+            => GetIndexedValues(range);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(IEnumerable<GridIndex> indices)
+            => GetIndexedValues(indices);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(IEnumerator<GridIndex> indices)
+            => GetIndexedValues(indices);
     }
 }

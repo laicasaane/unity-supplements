@@ -24,6 +24,28 @@ namespace System.Grid
             this.hasSource = true;
         }
 
+        public override int GetHashCode()
+            => GetSource().GetHashCode();
+
+        public override bool Equals(object obj)
+            => obj is ReadGrid<T> other && Equals(in other);
+
+        public bool Equals(ReadGrid<T> other)
+        {
+            var source = GetSource();
+            var otherSource = other.GetSource();
+
+            return source == otherSource;
+        }
+
+        public bool Equals(in ReadGrid<T> other)
+        {
+            var source = GetSource();
+            var otherSource = other.GetSource();
+
+            return source == otherSource;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal Grid<T> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
@@ -70,31 +92,64 @@ namespace System.Grid
         public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output)
             => GetSource().GetValues(enumerator, output);
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, int extend)
+        public Grid<T>.GridValues GetValues()
+            => GetSource().GetValues();
+
+        public Grid<T>.GridValues GetValues(in GridIndex pivot, int extend)
             => GetSource().GetValues(pivot, extend);
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+        public Grid<T>.GridValues GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
             => GetSource().GetValues(pivot, lowerExtend, upperExtend);
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend)
+        public Grid<T>.GridValues GetValues(in GridIndex pivot, in GridIndex extend)
             => GetSource().GetValues(pivot, extend);
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+        public Grid<T>.GridValues GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
             => GetSource().GetValues(pivot, lowerExtend, upperExtend);
 
-        public IEnumerable<T> GetValues(in GridIndex pivot, bool byRow)
+        public Grid<T>.GridValues GetValues(in GridIndex pivot, bool byRow)
             => GetSource().GetValues(pivot, byRow);
 
-        public IEnumerable<T> GetValues(GridIndexRange range)
+        public Grid<T>.GridValues GetValues(in GridIndexRange range)
             => GetSource().GetValues(range);
 
-        public IEnumerable<T> GetValues(GridRange range)
+        public Grid<T>.GridValues GetValues(in GridRange range)
             => GetSource().GetValues(range);
 
-        public IEnumerable<T> GetValues(IEnumerable<GridIndex> indices)
+        public Grid<T>.GridValues GetValues(IEnumerable<GridIndex> indices)
             => GetSource().GetValues(indices);
 
-        public IEnumerable<T> GetValues(IEnumerator<GridIndex> enumrator)
+        public Grid<T>.GridValues GetValues(IEnumerator<GridIndex> enumrator)
+            => GetSource().GetValues(enumrator);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues()
+            => GetSource().GetValues();
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, int extend)
+            => GetSource().GetValues(pivot, extend);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetSource().GetValues(pivot, lowerExtend, upperExtend);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, in GridIndex extend)
+            => GetSource().GetValues(pivot, extend);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetSource().GetValues(pivot, lowerExtend, upperExtend);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndex pivot, bool byRow)
+            => GetSource().GetValues(pivot, byRow);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridIndexRange range)
+            => GetSource().GetValues(range);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(in GridRange range)
+            => GetSource().GetValues(range);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(IEnumerable<GridIndex> indices)
+            => GetSource().GetValues(indices);
+
+        IGridValues<T> IReadOnlyGrid<T>.GetValues(IEnumerator<GridIndex> enumrator)
             => GetSource().GetValues(enumrator);
 
         public void GetIndexedValues(ICollection<GridValue<T>> output)
@@ -127,57 +182,65 @@ namespace System.Grid
         public void GetIndexedValues(IEnumerator<GridIndex> enumerator, ICollection<GridValue<T>> output)
             => GetSource().GetIndexedValues(enumerator, output);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues()
+        public Grid<T>.GridIndexedValues GetIndexedValues()
             => GetSource().GetIndexedValues();
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridIndex pivot, int extend)
             => GetSource().GetIndexedValues(pivot, extend);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
             => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridIndex pivot, in GridIndex extend)
             => GetSource().GetIndexedValues(pivot, extend);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
             => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridIndex pivot, bool byRow)
             => GetSource().GetIndexedValues(pivot, byRow);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridIndexRange range)
             => GetSource().GetIndexedValues(range);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(GridRange range)
+        public Grid<T>.GridIndexedValues GetIndexedValues(in GridRange range)
             => GetSource().GetIndexedValues(range);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerable<GridIndex> indices)
+        public Grid<T>.GridIndexedValues GetIndexedValues(IEnumerable<GridIndex> indices)
             => GetSource().GetIndexedValues(indices);
 
-        public IEnumerable<GridValue<T>> GetIndexedValues(IEnumerator<GridIndex> enumerator)
+        public Grid<T>.GridIndexedValues GetIndexedValues(IEnumerator<GridIndex> enumerator)
             => GetSource().GetIndexedValues(enumerator);
 
-        public override int GetHashCode()
-            => GetSource().GetHashCode();
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues()
+            => GetSource().GetIndexedValues();
 
-        public override bool Equals(object obj)
-            => obj is ReadGrid<T> other && Equals(in other);
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, int extend)
+            => GetSource().GetIndexedValues(pivot, extend);
 
-        public bool Equals(ReadGrid<T> other)
-        {
-            var source = GetSource();
-            var otherSource = other.GetSource();
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend)
+            => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend);
 
-            return source == otherSource;
-        }
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, in GridIndex extend)
+            => GetSource().GetIndexedValues(pivot, extend);
 
-        public bool Equals(in ReadGrid<T> other)
-        {
-            var source = GetSource();
-            var otherSource = other.GetSource();
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend)
+            => GetSource().GetIndexedValues(pivot, lowerExtend, upperExtend);
 
-            return source == otherSource;
-        }
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndex pivot, bool byRow)
+            => GetSource().GetIndexedValues(pivot, byRow);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridIndexRange range)
+            => GetSource().GetIndexedValues(range);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(in GridRange range)
+            => GetSource().GetIndexedValues(range);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(IEnumerable<GridIndex> indices)
+            => GetSource().GetIndexedValues(indices);
+
+        IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(IEnumerator<GridIndex> enumerator)
+            => GetSource().GetIndexedValues(enumerator);
 
         private static Grid<T> _empty { get; } = new Grid<T>();
 

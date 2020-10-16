@@ -36,23 +36,25 @@ namespace System.Grid
 
         void GetValues(IEnumerator<GridIndex> indices, ICollection<T> output);
 
-        IEnumerable<T> GetValues(in GridIndex pivot, int extend);
+        IGridValues<T> GetValues();
 
-        IEnumerable<T> GetValues(in GridIndex pivot, int lowerExtend, int upperExtend);
+        IGridValues<T> GetValues(in GridIndex pivot, int extend);
 
-        IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex extend);
+        IGridValues<T> GetValues(in GridIndex pivot, int lowerExtend, int upperExtend);
 
-        IEnumerable<T> GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend);
+        IGridValues<T> GetValues(in GridIndex pivot, in GridIndex extend);
 
-        IEnumerable<T> GetValues(in GridIndex pivot, bool byRow);
+        IGridValues<T> GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend);
 
-        IEnumerable<T> GetValues(GridIndexRange range);
+        IGridValues<T> GetValues(in GridIndex pivot, bool byRow);
 
-        IEnumerable<T> GetValues(GridRange range);
+        IGridValues<T> GetValues(in GridIndexRange range);
 
-        IEnumerable<T> GetValues(IEnumerable<GridIndex> indices);
+        IGridValues<T> GetValues(in GridRange range);
 
-        IEnumerable<T> GetValues(IEnumerator<GridIndex> indices);
+        IGridValues<T> GetValues(IEnumerable<GridIndex> indices);
+
+        IGridValues<T> GetValues(IEnumerator<GridIndex> indices);
 
         void GetIndexedValues(ICollection<GridValue<T>> output);
 
@@ -74,24 +76,24 @@ namespace System.Grid
 
         void GetIndexedValues(IEnumerator<GridIndex> indices, ICollection<GridValue<T>> output);
 
-        IEnumerable<GridValue<T>> GetIndexedValues();
+        IGridIndexedValues<T> GetIndexedValues();
 
-        IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int extend);
+        IGridIndexedValues<T> GetIndexedValues(in GridIndex pivot, int extend);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend);
+        IGridIndexedValues<T> GetIndexedValues(in GridIndex pivot, int lowerExtend, int upperExtend);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex extend);
+        IGridIndexedValues<T> GetIndexedValues(in GridIndex pivot, in GridIndex extend);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend);
+        IGridIndexedValues<T> GetIndexedValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(in GridIndex pivot, bool byRow);
+        IGridIndexedValues<T> GetIndexedValues(in GridIndex pivot, bool byRow);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(GridIndexRange range);
+        IGridIndexedValues<T> GetIndexedValues(in GridIndexRange range);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(GridRange range);
+        IGridIndexedValues<T> GetIndexedValues(in GridRange range);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(IEnumerable<GridIndex> indices);
+        IGridIndexedValues<T> GetIndexedValues(IEnumerable<GridIndex> indices);
 
-        IEnumerable<GridValue<T>> GetIndexedValues(IEnumerator<GridIndex> indices);
+        IGridIndexedValues<T> GetIndexedValues(IEnumerator<GridIndex> indices);
     }
 }
