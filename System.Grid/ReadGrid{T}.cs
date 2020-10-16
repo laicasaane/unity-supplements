@@ -37,7 +37,7 @@ namespace System.Grid
         public bool TryGetValue(in GridIndex index, out T value)
             => GetSource().TryGetValue(index, out value);
 
-        public IEnumerator<KeyValuePair<GridIndex, T>> GetEnumerator()
+        public Dictionary<GridIndex, T>.Enumerator GetEnumerator()
             => GetSource().GetEnumerator();
 
         public void GetValues(ICollection<T> output)

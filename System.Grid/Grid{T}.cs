@@ -183,7 +183,7 @@ namespace System.Grid
         public bool TryGetValue(in GridIndex index, out T value)
             => this.data.TryGetValue(index, out value);
 
-        public IEnumerator<KeyValuePair<GridIndex, T>> GetEnumerator()
+        public Dictionary<GridIndex, T>.Enumerator GetEnumerator()
             => this.data.GetEnumerator();
 
         public void GetValues(ICollection<T> output)
