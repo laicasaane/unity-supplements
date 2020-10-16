@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public partial class Pool<T> : IPool<T> where T : class, new()
+    public class Pool<T> : IPool<T> where T : class, new()
     {
         private readonly Queue<T> pool = new Queue<T>();
 
