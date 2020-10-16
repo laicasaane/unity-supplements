@@ -3,189 +3,209 @@
 ## Global
 
 ### Extensions
-- [Array1](https://github.com/laicasaane/unity-supplements/blob/master/Global/Extensions/Array1Extensions.cs)
-- [Number](https://github.com/laicasaane/unity-supplements/blob/master/Global/Extensions/NumberExtensions.cs)
-- [String](https://github.com/laicasaane/unity-supplements/blob/master/Global/Extensions/StringExtensions.cs)
+- [Array1](./Global/Extensions/Array1Extensions.cs)
+- [Number](./Global/Extensions/NumberExtensions.cs)
+- [String](./Global/Extensions/StringExtensions.cs)
 
 ## System
 
 ### Delegate
-- [ReadStructAction](https://github.com/laicasaane/unity-supplements/blob/master/System/Delegates/ReadStructAction.cs)
-- [ReadStructFunc](https://github.com/laicasaane/unity-supplements/blob/master/System/Delegates/ReadStructFunc.cs)
-- [ReadStructPredicate](https://github.com/laicasaane/unity-supplements/blob/master/System/Delegates/ReadStructPredicate.cs)
+- [ReadStructAction](./System/Delegates/ReadStructAction.cs)
+- [ReadStructFunc](./System/Delegates/ReadStructFunc.cs)
+- [ReadStructPredicate](./System/Delegates/ReadStructPredicate.cs)
 
 ### Interface
-- [IComparableReadOnlyStruct\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Interfaces/IComparableReadOnlyStruct%7BT%7D.cs)
-- [IEquatableReadOnlyStruct\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Interfaces/IEquatableReadOnlyStruct%7BT%7D.cs)
+- [IComparableReadOnlyStruct\<T>](./System/Interfaces/IComparableReadOnlyStruct%7BT%7D.cs)
+- [IEquatableReadOnlyStruct\<T>](./System/Interfaces/IEquatableReadOnlyStruct%7BT%7D.cs)
 
 ### Index & Length
-- [Index2](https://github.com/laicasaane/unity-supplements/blob/master/System/Indices/Index2.cs)
-- [Index3](https://github.com/laicasaane/unity-supplements/blob/master/System/Indices/Index3.cs)
-- [Index4](https://github.com/laicasaane/unity-supplements/blob/master/System/Indices/Index4.cs)
-- [Index5](https://github.com/laicasaane/unity-supplements/blob/master/System/Indices/Index5.cs)
-- [Length2](https://github.com/laicasaane/unity-supplements/blob/master/System/Lengths/Length2.cs)
-- [Length3](https://github.com/laicasaane/unity-supplements/blob/master/System/Lengths/Length3.cs)
-- [Length4](https://github.com/laicasaane/unity-supplements/blob/master/System/Lengths/Length4.cs)
-- [Length5](https://github.com/laicasaane/unity-supplements/blob/master/System/Lengths/Length5.cs)
+- [Index2](./System/Indices/Index2.cs)
+- [Index3](./System/Indices/Index3.cs)
+- [Index4](./System/Indices/Index4.cs)
+- [Index5](./System/Indices/Index5.cs)
+- [Length2](./System/Lengths/Length2.cs)
+- [Length3](./System/Lengths/Length3.cs)
+- [Length4](./System/Lengths/Length4.cs)
+- [Length5](./System/Lengths/Length5.cs)
 
 ### Array
-- [ReadArray1\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/ReadArray1/ReadArray1%7BT%7D.cs)
-- [ReadArray1\<T> extensions](https://github.com/laicasaane/unity-supplements/blob/master/System/ReadArray1/ReadArray1TExtensions.cs)
-- [Array1Pool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Pools/Array1Pool%7BT%7D.cs)
+- [ReadArray1\<T>](./System/ReadArray1/ReadArray1%7BT%7D.cs)
+- [ReadArray1\<T> extensions](./System/ReadArray1/ReadArray1TExtensions.cs)
+- [Array1Pool\<T>](./System/Pools/Array1Pool%7BT%7D.cs)
 
 ### Enum
-- [Enum\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Enum/Enum%7BT%7D.cs)
-- [EnumIndex](https://github.com/laicasaane/unity-supplements/blob/master/System/Enum/EnumIndex.cs)
-- [EnumLength](https://github.com/laicasaane/unity-supplements/blob/master/System/Enum/EnumLength.cs)
-- [EnumRandomizer\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Randomizer/EnumRandomizer%7BT%7D.cs)
+- [Enum\<T>](./System/Enum/Enum%7BT%7D.cs)
+- [EnumIndex](./System/Enum/EnumIndex.cs)
+- [EnumLength](./System/Enum/EnumLength.cs)
+- [EnumRandomizer\<T>](./System/Randomizer/EnumRandomizer%7BT%7D.cs)
 
 ### Singleton
-- [Singleton](https://github.com/laicasaane/unity-supplements/blob/master/System/Singletons/Singleton.cs)
-- [Singleton\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Singletons/Singleton%7BT%7D.cs)
+- [Singleton](./System/Singletons/Singleton.cs)
+- [Singleton\<T>](./System/Singletons/Singleton%7BT%7D.cs)
 
 ### Pseudo Probability
-- [PseudoProbability](https://github.com/laicasaane/unity-supplements/blob/master/System/PseudoProbability/PseudoProbability.cs)
-- [PseudoProbability.PRD](https://github.com/laicasaane/unity-supplements/blob/master/System/PseudoProbability/PseudoProbability.PRD.cs)
-- [PseudoProbability.IMath](https://github.com/laicasaane/unity-supplements/blob/master/System/PseudoProbability/PseudoProbability.IMath.cs)
-- [PseudoProbability.IRandom](https://github.com/laicasaane/unity-supplements/blob/master/System/PseudoProbability/PseudoProbability.IRandom.cs)
+- [PseudoProbability](./System/PseudoProbability/PseudoProbability.cs)
+- [PseudoProbability.PRD](./System/PseudoProbability/PseudoProbability.PRD.cs)
+- [PseudoProbability.IMath](./System/PseudoProbability/PseudoProbability.IMath.cs)
+- [PseudoProbability.IRandom](./System/PseudoProbability/PseudoProbability.IRandom.cs)
 
 ### Range
-- [IRange\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/IRange%7BT%7D.cs)
-- [IRange\<TValue, TEnumerator>](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/IRange%7BTValue%2CTEnumerator%7D.cs)
-- [IRangeEnumerator\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/IRangeEnumerator%7BT%7D.cs)
-- [ReadRange\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/ReadRange%7BT%7D.cs)
-- [ReadRange\<TValue, TEnumerator>](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/ReadRange%7BTValue%2CTEnumerator%7D.cs)
-- [IntRange](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/IntRange.cs)
-- [UIntRange](https://github.com/laicasaane/unity-supplements/blob/master/System/Range/UIntRange.cs)
+- [IRange\<T>](./System/Range/IRange%7BT%7D.cs)
+- [IRange\<TValue, TEnumerator>](./System/Range/IRange%7BTValue%2CTEnumerator%7D.cs)
+- [IRangeEnumerator\<T>](./System/Range/IRangeEnumerator%7BT%7D.cs)
+- [ReadRange\<T>](./System/Range/ReadRange%7BT%7D.cs)
+- [ReadRange\<TValue, TEnumerator>](./System/Range/ReadRange%7BTValue%2CTEnumerator%7D.cs)
+- [IntRange](./System/Range/IntRange.cs)
+- [UIntRange](./System/Range/UIntRange.cs)
 
 ### Misc.
-- [Converter](https://github.com/laicasaane/unity-supplements/blob/master/System/Converter.cs)
+- [Converter](./System/Converter.cs)
 
 ## System.IO
 
-- [FileSystem](https://github.com/laicasaane/unity-supplements/blob/master/System.IO/FileSystem.cs)
+- [FileSystem](./System.IO/FileSystem.cs)
 
 ## System.Runtime.Serialization.Formatters.Text
 
-- [ITextFormatter](https://github.com/laicasaane/unity-supplements/blob/master/System.Runtime.Serialization.Formatters.Text/ITextFormatter.cs)
-- [ITextFormatter\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Runtime.Serialization.Formatters.Text/ITextFormatter%7BT%7D.cs)
+- [ITextFormatter](./System.Runtime.Serialization.Formatters.Text/ITextFormatter.cs)
+- [ITextFormatter\<T>](./System.Runtime.Serialization.Formatters.Text/ITextFormatter%7BT%7D.cs)
 
 ## System.Collection.Generics
 
 ### Interface
-- [IReadOnlyStructEqualityComparer\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/IReadOnlyStructEqualityComparer%7BT%7D.cs)
-- [IReadOnlyStructComparer\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/IReadOnlyStructComparer%7BT%7D.cs)
+- [IReadOnlyStructEqualityComparer\<T>](./System.Collections.Generic/IReadOnlyStructEqualityComparer%7BT%7D.cs)
+- [IReadOnlyStructComparer\<T>](./System.Collections.Generic/IReadOnlyStructComparer%7BT%7D.cs)
 
 ### Extensions
-- [Collection\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/CollectionTExtensions.cs)
-- [IEnumerable\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/IEnumerableTExtensions.cs)
-- [IEnumerator\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/IEnumeratorTExtensions.cs)
-- [List\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/ListTExtensions.cs)
-- [Dictionary\<TKey, TValue>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/DictionaryTKeyTValueExtensions.cs)
-- [Queue\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/QueueTExtensions.cs)
-- [Stack\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Extensions/StackTExtensions.cs)
+- [Collection\<T>](./System.Collections.Generic/Extensions/CollectionTExtensions.cs)
+- [IEnumerable\<T>](./System.Collections.Generic/Extensions/IEnumerableTExtensions.cs)
+- [IEnumerator\<T>](./System.Collections.Generic/Extensions/IEnumeratorTExtensions.cs)
+- [List\<T>](./System.Collections.Generic/Extensions/ListTExtensions.cs)
+- [Dictionary\<TKey, TValue>](./System.Collections.Generic/Extensions/DictionaryTKeyTValueExtensions.cs)
+- [Queue\<T>](./System.Collections.Generic/Extensions/QueueTExtensions.cs)
+- [Stack\<T>](./System.Collections.Generic/Extensions/StackTExtensions.cs)
 
 ### Segment
-- [ISegment\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/Interfaces/ISegment.cs)
-- [ISegmentReader\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/Interfaces/ISegmentReader.cs)
-- [ISegmentSource\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/Interfaces/ISegmentSource.cs)
-- [Segment\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/Segment/Segment.cs)
-- [Segment1\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/Segment1.cs)
-- [Array1Segment\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/Array1Segment.cs)
-- [ListSegment\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/ListSegment.cs)
-- [StringSegment](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/StringSegment/StringSegment.cs)
-- [SegmentReader\<TSegment, TValue>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Segments/SegmentReader.cs)
-- [Extensions](https://github.com/laicasaane/unity-supplements/tree/master/System.Collections.Generic/Segments/Extensions)
+- [ISegment\<T>](./System.Collections.Generic/Segments/Interfaces/ISegment.cs)
+- [ISegmentReader\<T>](./System.Collections.Generic/Segments/Interfaces/ISegmentReader.cs)
+- [ISegmentSource\<T>](./System.Collections.Generic/Segments/Interfaces/ISegmentSource.cs)
+- [Segment\<T>](./System.Collections.Generic/Segments/Segment/Segment.cs)
+- [Segment1\<T>](./System.Collections.Generic/Segments/Segment1.cs)
+- [Array1Segment\<T>](./System.Collections.Generic/Segments/Array1Segment.cs)
+- [ListSegment\<T>](./System.Collections.Generic/Segments/ListSegment.cs)
+- [StringSegment](./System.Collections.Generic/Segments/StringSegment/StringSegment.cs)
+- [SegmentReader\<TSegment, TValue>](./System.Collections.Generic/Segments/SegmentReader.cs)
+- [Extensions](./System.Collections.Generic/Segments/Extensions)
 
 ### Read-Only Collection
-- [ReadCollection\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/ReadCollections/ReadCollection%7BT%7D.cs)
-- [ReadDictionary\<TKey, TValue>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/ReadCollections/ReadDictionary%7BTKey%2CTValue%7D.cs)
-- [ReadList\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/ReadCollections/ReadList%7BT%7D.cs)
-- [Extensions](https://github.com/laicasaane/unity-supplements/tree/master/System.Collections.Generic/ReadCollections/Extensions)
+- [ReadCollection\<T>](./System.Collections.Generic/ReadCollections/ReadCollection%7BT%7D.cs)
+- [ReadDictionary\<TKey, TValue>](./System.Collections.Generic/ReadCollections/ReadDictionary%7BTKey%2CTValue%7D.cs)
+- [ReadList\<T>](./System.Collections.Generic/ReadCollections/ReadList%7BT%7D.cs)
+- [Extensions](./System.Collections.Generic/ReadCollections/Extensions)
 
 ### Randomizer
-- [Randomizer](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Randomizer/Randomizer.cs)
-- [Randomizer.IRandom](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Randomizer/Randomizer.IRandom.cs)
-- [Randomizer.ICache\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Randomizer/Randomizer.Cache%7BT%7D.cs)
+- [Randomizer](./System.Collections.Generic/Randomizer/Randomizer.cs)
+- [Randomizer.IRandom](./System.Collections.Generic/Randomizer/Randomizer.IRandom.cs)
+- [Randomizer.ICache\<T>](./System.Collections.Generic/Randomizer/Randomizer.Cache%7BT%7D.cs)
 
 ### Pool
-- [IPool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/IPool%7BT%7D.cs)
-- [Pool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/Pool%7BT%7D.cs)
-- [ListPool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/ListPool%7BT%7D.cs)
-- [DictionaryPool\<TKey, TValue>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/DictionaryPool%7BTKey%2CTValue%7D.cs)
-- [HashSetPool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/HashSetPool%7BT%7D.cs)
-- [QueuePool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/QueuePool%7BT%7D.cs)
-- [StackPool\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/Pools/StackPool%7BT%7D.cs)
+- [IPool\<T>](./System.Collections.Generic/Pools/IPool%7BT%7D.cs)
+- [Pool\<T>](./System.Collections.Generic/Pools/Pool%7BT%7D.cs)
+- [ListPool\<T>](./System.Collections.Generic/Pools/ListPool%7BT%7D.cs)
+- [DictionaryPool\<TKey, TValue>](./System.Collections.Generic/Pools/DictionaryPool%7BTKey%2CTValue%7D.cs)
+- [HashSetPool\<T>](./System.Collections.Generic/Pools/HashSetPool%7BT%7D.cs)
+- [QueuePool\<T>](./System.Collections.Generic/Pools/QueuePool%7BT%7D.cs)
+- [StackPool\<T>](./System.Collections.Generic/Pools/StackPool%7BT%7D.cs)
 
 ### Misc.
-- [EnumValues\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Collections.Generic/EnumValues.cs)
+- [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
+
+## System.Collection.Concurrent
+
+### Pool
+- [ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentPool%7BT%7D.cs)
+- [ListConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ListConcurrentPool%7BT%7D.cs)
+- [DictionaryConcurrentPool\<TKey, TValue>](./System.Collections.Concurrent/Pools/DictionaryConcurrentPool%7BTKey%2CTValue%7D.cs)
+- [HashSetConcurrentPool\<T>](./System.Collections.Concurrent/Pools/HashSetConcurrentPool%7BT%7D.cs)
+- [QueueConcurrentPool\<T>](./System.Collections.Concurrent/Pools/QueueConcurrentPool%7BT%7D.cs)
+- [StackConcurrentPool\<T>](./System.Collections.Concurrent/Pools/StackConcurrentPool%7BT%7D.cs)
+- [ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentBagPool%7BT%7D.cs)
+- [ConcurrentDictionaryPool\<TKey, TValue>](./System.Collections.Concurrent/Pools/ConcurrentDictionaryPool%7BTKey%2CTValue%7D.cs)
+- [ConcurrentQueuePool\<T>](./System.Collections.Concurrent/Pools/ConcurrentQueuePool%7BT%7D.cs)
+- [ConcurrentStackPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentStackPool%7BT%7D.cs)
 
 ## System.Fluent
 
-- [ObjectExtensions.FluentDelegates](https://github.com/laicasaane/unity-supplements/blob/master/System.Fluent/Extensions/ObjectExtensions.FluentDelegates.cs)
+- [ObjectExtensions.FluentDelegates](./System.Fluent/Extensions/ObjectExtensions.FluentDelegates.cs)
 
 ## System.Grid
 
-- [GridIndex](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridIndex.cs)
-- [GridIndexRange](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridIndexRange.cs)
-- [GridRange](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridRange.cs)
-- [IReadOnlyGrid\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/IReadOnlyGrid%7BT%7D.cs)
-- [IGrid\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/IGrid%7BT%7D.cs)
-- [Grid\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/Grid%7BT%7D.cs)
-- [ReadGrid\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/ReadGrid%7BT%7D.cs)
-- [GridValue\<T>](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridValue%7BT%7D.cs)
-- [GridSize](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/GridSize.cs)
-- [ClampedGridSize](https://github.com/laicasaane/unity-supplements/blob/master/System.Grid/ClampedGridSize.cs)
+- [GridIndex](./System.Grid/GridIndex.cs)
+- [GridIndexRange](./System.Grid/GridIndexRange.cs)
+- [GridRange](./System.Grid/GridRange.cs)
+- [GridSize](./System.Grid/GridSize.cs)
+- [ClampedGridSize](./System.Grid/ClampedGridSize.cs)
+- [GridValue\<T>](./System.Grid/GridValue%7BT%7D.cs)
+- [IGridValues\<T>](./System.Grid/IGridValues%7BT%7D.cs)
+- [IGridValueEnumerator\<T>](./System.Grid/IGridValueEnumerator%7BT%7D.cs)
+- [IGridIndexedValues\<T>](./System.Grid/IGridIndexedValues%7BT%7D.cs)
+- [IGridIndexedValueEnumerator\<T>](./System.Grid/IGridIndexedValueEnumerator%7BT%7D.cs)
+- [IReadOnlyGrid\<T>](./System.Grid/IReadOnlyGrid%7BT%7D.cs)
+- [IGrid\<T>](./System.Grid/IGrid%7BT%7D.cs)
+- [Grid\<T>](./System.Grid/Grid%7BT%7D.cs)
+- [Grid\<T>.GridValues](./System.Grid/Grid%7BT%7D.GridValues.cs)
+- [Grid\<T>.GridIndexedValues](./System.Grid/Grid%7BT%7D.GridIndexedValues.cs)
+- [ReadGrid\<T>](./System.Grid/ReadGrid%7BT%7D.cs)
 
 ## System.Table
 
-- [IEntry](https://github.com/laicasaane/unity-supplements/blob/master/System.Table/IEntry.cs)
-- [IGetId](https://github.com/laicasaane/unity-supplements/blob/master/System.Table/IGetId.cs)
-- [ITable](https://github.com/laicasaane/unity-supplements/blob/master/System.Table/ITable.cs)
-- [Table](https://github.com/laicasaane/unity-supplements/blob/master/System.Table/Table.cs)
-- [ReadEntry](https://github.com/laicasaane/unity-supplements/blob/master/System.Table/ReadEntry.cs)
-- [ReadTable](https://github.com/laicasaane/unity-supplements/blob/master/System.Table/ReadTable.cs)
+- [IEntry](./System.Table/IEntry.cs)
+- [IGetId](./System.Table/IGetId.cs)
+- [ITable](./System.Table/ITable.cs)
+- [Table](./System.Table/Table.cs)
+- [ReadEntry](./System.Table/ReadEntry.cs)
+- [ReadTable](./System.Table/ReadTable.cs)
 
 ## UnityEngine
 
 ### Collection
-- [SerializableDictionary\<TKey, TValue>](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/SerializableDictionary.cs)
+- [SerializableDictionary\<TKey, TValue>](./UnityEngine/SerializableDictionary.cs)
 
 ### Singleton
-- [SingletonBehaviour\<T>](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/SingletonBehaviour.cs)
+- [SingletonBehaviour\<T>](./UnityEngine/SingletonBehaviour.cs)
 
 ### Extensions
-- [BoundsExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/BoundsExtensions.cs)
-- [ColorExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/ColorExtensions.cs)
-- [MatrixExtenions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/MatrixExtensions.cs)
-- [QuaternionExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/QuaternionExtensions.cs)
-- [RangeExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/RangeExtensions.cs)
-- [RayExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/RayExtensions.cs)
-- [RectExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/RectExtensions.cs)
-- [ResolutionExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/ResolutionExtensions.cs)
-- [VectorExtensions](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Extensions/VectorExtensions.cs)
+- [BoundsExtensions](./UnityEngine/Extensions/BoundsExtensions.cs)
+- [ColorExtensions](./UnityEngine/Extensions/ColorExtensions.cs)
+- [MatrixExtenions](./UnityEngine/Extensions/MatrixExtensions.cs)
+- [QuaternionExtensions](./UnityEngine/Extensions/QuaternionExtensions.cs)
+- [RangeExtensions](./UnityEngine/Extensions/RangeExtensions.cs)
+- [RayExtensions](./UnityEngine/Extensions/RayExtensions.cs)
+- [RectExtensions](./UnityEngine/Extensions/RectExtensions.cs)
+- [ResolutionExtensions](./UnityEngine/Extensions/ResolutionExtensions.cs)
+- [VectorExtensions](./UnityEngine/Extensions/VectorExtensions.cs)
 
 ### Misc.
-- [HSBColor](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/HSBColor.cs)
-- [LEBColor](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/LEBColor.cs)
-- [Offset](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Offset.cs)
-- [OffsetInt](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/OffsetInt.cs)
-- [ScreenResolution](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/ScreenResolution.cs)
-- [Size](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/Size.cs)
-- [SizeInt](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/SizeInt.cs)
-- [SingleLayer](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/SingleLayer.cs)
-- [SortingLayerId](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/SortingLayerId.cs)
-- [GridVector](https://github.com/laicasaane/unity-supplements/blob/master/UnityEngine/GridVector.cs)
+- [HSBColor](./UnityEngine/HSBColor.cs)
+- [LEBColor](./UnityEngine/LEBColor.cs)
+- [Offset](./UnityEngine/Offset.cs)
+- [OffsetInt](./UnityEngine/OffsetInt.cs)
+- [ScreenResolution](./UnityEngine/ScreenResolution.cs)
+- [Size](./UnityEngine/Size.cs)
+- [SizeInt](./UnityEngine/SizeInt.cs)
+- [SingleLayer](./UnityEngine/SingleLayer.cs)
+- [SortingLayerId](./UnityEngine/SortingLayerId.cs)
+- [GridVector](./UnityEngine/GridVector.cs)
 
 ## Unity.Collections
 
-- [ReadNativeArray\<T>](https://github.com/laicasaane/unity-supplements/blob/master/Unity.Collections/Segments/NativeArray/ReadNativeArray%7BT%7D.cs)
-- [ReadNativeSlice\<T>](https://github.com/laicasaane/unity-supplements/blob/master/Unity.Collections/Segments/NativeSlice/ReadNativeSlice%7BT%7D.cs)
-- [NativeArraySegment\<T>](https://github.com/laicasaane/unity-supplements/blob/master/Unity.Collections/Segments/NativeArray/NativeArraySegment.cs)
-- [NativeSliceSegment\<T>](https://github.com/laicasaane/unity-supplements/blob/master/Unity.Collections/Segments/NativeSlice/NativeSliceSegment.cs)
-- [Extensions](https://github.com/laicasaane/unity-supplements/blob/master/Unity.Collections/Segments/Extensions/NativeSegmentExtensions.cs)
+- [ReadNativeArray\<T>](./Unity.Collections/Segments/NativeArray/ReadNativeArray%7BT%7D.cs)
+- [ReadNativeSlice\<T>](./Unity.Collections/Segments/NativeSlice/ReadNativeSlice%7BT%7D.cs)
+- [NativeArraySegment\<T>](./Unity.Collections/Segments/NativeArray/NativeArraySegment.cs)
+- [NativeSliceSegment\<T>](./Unity.Collections/Segments/NativeSlice/NativeSliceSegment.cs)
+- [Extensions](./Unity.Collections/Segments/Extensions/NativeSegmentExtensions.cs)
 
 ## UnityEditor
-- [SingleLayerDrawer](https://github.com/laicasaane/unity-supplements/blob/master/Editor/UnityEngine/SingleLayerDrawer.cs)
-- [SortingLayerIdDrawer](https://github.com/laicasaane/unity-supplements/blob/master/Editor/UnityEngine/SortingLayerIdDrawer.cs)
-- [GridVectorDrawer](https://github.com/laicasaane/unity-supplements/blob/master/Editor/UnityEngine/GridVectorDrawer.cs)
+- [SingleLayerDrawer](./Editor/UnityEngine/SingleLayerDrawer.cs)
+- [SortingLayerIdDrawer](./Editor/UnityEngine/SortingLayerIdDrawer.cs)
+- [GridVectorDrawer](./Editor/UnityEngine/GridVectorDrawer.cs)
