@@ -289,7 +289,7 @@ namespace System.Grid
             return new GridRange(size, clamped, start, end);
         }
 
-        public static GridRange From(in GridIndex value, bool fromEnd = false)
+        public static GridRange FromSize(in GridIndex value, bool fromEnd = false)
             => new GridRange(value, GridIndex.Zero, value - GridIndex.One, fromEnd);
 
         public static GridRange FromStart(in GridIndex size, in GridIndex start, in GridIndex end)

@@ -130,7 +130,7 @@ namespace System
         public static UIntRange Normal(uint a, uint b)
             => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
 
-        public static UIntRange From(uint value, bool fromEnd = false)
+        public static UIntRange FromSize(uint value, bool fromEnd = false)
             => new UIntRange(0, value > 0 ? value - 1 : value, fromEnd);
 
         public static UIntRange FromStart(uint start, uint end)

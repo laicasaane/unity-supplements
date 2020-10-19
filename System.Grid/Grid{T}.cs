@@ -61,7 +61,7 @@ namespace System.Grid
             this.Size = info.GetValueOrDefault<GridSize>(nameof(this.Size));
             this.data = new Dictionary<GridIndex, T>();
 
-            foreach (var index in GridIndexRange.From(this.Size))
+            foreach (var index in GridIndexRange.FromSize(this.Size))
             {
                 try
                 {

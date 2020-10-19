@@ -182,7 +182,7 @@ namespace System.Grid
             return new GridIndexRange(start, end);
         }
 
-        public static GridIndexRange From(in GridIndex value, bool fromEnd = false)
+        public static GridIndexRange FromSize(in GridIndex value, bool fromEnd = false)
             => new GridIndexRange(GridIndex.Zero, value - GridIndex.One, fromEnd);
 
         public static GridIndexRange FromStart(in GridIndex start, in GridIndex end)

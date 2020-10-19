@@ -124,7 +124,7 @@ namespace System
         public static IntRange Normal(int a, int b)
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
 
-        public static IntRange From(int value, bool fromEnd = false)
+        public static IntRange FromSize(int value, bool fromEnd = false)
             => new IntRange(0, Math.Abs(value - 1), fromEnd);
 
         public static IntRange FromStart(int start, int end)
