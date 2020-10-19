@@ -65,6 +65,10 @@
 
 - [FileSystem](./System.IO/FileSystem.cs)
 
+## System.Runtime.Serialization
+
+- [SerializationInfoExtensions](./System.Runtime.Serialization/SerializationInfoExtensions.cs)
+
 ## System.Runtime.Serialization.Formatters.Text
 
 - [ITextFormatter](./System.Runtime.Serialization.Formatters.Text/ITextFormatter.cs)
@@ -142,7 +146,9 @@
 
 - [GridIndex](./System.Grid/GridIndex.cs)
 - [GridIndexRange](./System.Grid/GridIndexRange.cs)
+- [GridIndexRange.Enumerator](./System.Grid/GridIndexRange.Enumerator.cs)
 - [GridRange](./System.Grid/GridRange.cs)
+- [GridRange.Enumerator](./System.Grid/GridRange.Enumerator.cs)
 - [GridSize](./System.Grid/GridSize.cs)
 - [ClampedGridSize](./System.Grid/ClampedGridSize.cs)
 - [GridValue\<T>](./System.Grid/GridValue%7BT%7D.cs)
