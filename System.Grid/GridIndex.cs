@@ -32,23 +32,8 @@ namespace System.Grid
 
         private GridIndex(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Row = Math.Max(info.GetInt32(nameof(this.Row)), 0);
-            }
-            catch
-            {
-                this.Row = default;
-            }
-
-            try
-            {
-                this.Column = Math.Max(info.GetInt32(nameof(this.Column)), 0);
-            }
-            catch
-            {
-                this.Column = default;
-            }
+            this.Row = Math.Max(info.GetInt32OrDefault(nameof(this.Row)), 0);
+            this.Column = Math.Max(info.GetInt32OrDefault(nameof(this.Column)), 0);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

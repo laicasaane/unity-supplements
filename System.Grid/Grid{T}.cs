@@ -58,18 +58,10 @@ namespace System.Grid
 
         protected Grid(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Size = (GridSize)info.GetValue(nameof(this.Size), typeof(GridSize));
-            }
-            catch
-            {
-                this.Size = default;
-            }
-
+            this.Size = info.GetValueOrDefault<GridSize>(nameof(this.Size));
             this.data = new Dictionary<GridIndex, T>();
 
-            foreach (var index in GridIndexRange.Count(this.Size))
+            foreach (var index in GridIndexRange.From(this.Size))
             {
                 try
                 {

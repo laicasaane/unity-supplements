@@ -20,7 +20,7 @@ namespace System.Grid
 
         public ReadGrid(Grid<T> source)
         {
-            this.source = source;
+            this.source = source ?? _empty;
             this.hasSource = true;
         }
 
