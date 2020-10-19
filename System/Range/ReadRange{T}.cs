@@ -49,33 +49,9 @@ namespace System
 
         private ReadRange(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Start = (T)info.GetValue(nameof(this.Start), typeof(T));
-            }
-            catch
-            {
-                this.Start = default;
-            }
-
-            try
-            {
-                this.End = (T)info.GetValue(nameof(this.End), typeof(T));
-            }
-            catch
-            {
-                this.End = default;
-            }
-
-            try
-            {
-                this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
-            }
-            catch
-            {
-                this.IsFromEnd = default;
-            }
-
+            this.Start = info.GetValueOrDefault<T>(nameof(this.Start));
+            this.End = info.GetValueOrDefault<T>(nameof(this.End));
+            this.IsFromEnd = info.GetBooleanOrDefault(nameof(this.IsFromEnd));
             this.enumerator = null;
         }
 

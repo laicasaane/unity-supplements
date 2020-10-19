@@ -93,41 +93,10 @@ namespace UnityEngine
 
         private Offset(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Left = info.GetSingle(nameof(this.Left));
-            }
-            catch
-            {
-                this.Left = default;
-            }
-
-            try
-            {
-                this.Right = info.GetSingle(nameof(this.Right));
-            }
-            catch
-            {
-                this.Right = default;
-            }
-
-            try
-            {
-                this.Top = info.GetSingle(nameof(this.Top));
-            }
-            catch
-            {
-                this.Top = default;
-            }
-
-            try
-            {
-                this.Bottom = info.GetSingle(nameof(this.Bottom));
-            }
-            catch
-            {
-                this.Bottom = default;
-            }
+            this.Left = info.GetSingleOrDefault(nameof(this.Left));
+            this.Right = info.GetSingleOrDefault(nameof(this.Right));
+            this.Top = info.GetSingleOrDefault(nameof(this.Top));
+            this.Bottom = info.GetSingleOrDefault(nameof(this.Bottom));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

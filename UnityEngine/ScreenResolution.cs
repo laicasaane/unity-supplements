@@ -75,23 +75,8 @@ namespace UnityEngine
 
         private ScreenResolution(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Width = info.GetInt32(nameof(this.Width));
-            }
-            catch
-            {
-                this.Width = default;
-            }
-
-            try
-            {
-                this.Height = info.GetInt32(nameof(this.Height));
-            }
-            catch
-            {
-                this.Height = default;
-            }
+            this.Width = info.GetInt32OrDefault(nameof(this.Width));
+            this.Height = info.GetInt32OrDefault(nameof(this.Height));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

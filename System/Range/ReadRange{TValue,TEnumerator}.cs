@@ -36,33 +36,9 @@ namespace System
 
         private ReadRange(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Start = (TValue)info.GetValue(nameof(this.Start), typeof(TValue));
-            }
-            catch
-            {
-                this.Start = default;
-            }
-
-            try
-            {
-                this.End = (TValue)info.GetValue(nameof(this.End), typeof(TValue));
-            }
-            catch
-            {
-                this.End = default;
-            }
-
-            try
-            {
-                this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
-            }
-            catch
-            {
-                this.IsFromEnd = default;
-            }
-
+            this.Start = info.GetValueOrDefault<TValue>(nameof(this.Start));
+            this.End = info.GetValueOrDefault<TValue>(nameof(this.End));
+            this.IsFromEnd = info.GetBooleanOrDefault(nameof(this.IsFromEnd));
             this.enumerator = default;
         }
 
@@ -143,9 +119,7 @@ namespace System
             => Normal(this.Start, this.End, comparer);
 
         /// <summary>
-        /// Create a normal range from (a, b).
-        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
-        /// Otherwise, they are swapped.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
         /// </summary>
         public static ReadRange<TValue, TEnumerator> Normal(TValue a, TValue b, IComparer<TValue> comparer)
         {

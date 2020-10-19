@@ -103,32 +103,9 @@ namespace System
 
         private Length3(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.A = info.GetInt32(nameof(this.A));
-            }
-            catch
-            {
-                this.A = default;
-            }
-
-            try
-            {
-                this.B = info.GetInt32(nameof(this.B));
-            }
-            catch
-            {
-                this.B = default;
-            }
-
-            try
-            {
-                this.C = info.GetInt32(nameof(this.C));
-            }
-            catch
-            {
-                this.C = default;
-            }
+            this.A = info.GetInt32OrDefault(nameof(this.A));
+            this.B = info.GetInt32OrDefault(nameof(this.B));
+            this.C = info.GetInt32OrDefault(nameof(this.C));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

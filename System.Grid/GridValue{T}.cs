@@ -53,23 +53,8 @@ namespace System.Grid
 
         private GridValue(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Index = (GridIndex)info.GetValue(nameof(this.Index), typeof(GridIndex));
-            }
-            catch
-            {
-                this.Index = default;
-            }
-
-            try
-            {
-                this.Value = (T)info.GetValue(nameof(this.Value), typeof(T));
-            }
-            catch
-            {
-                this.Value = default;
-            }
+            this.Index = info.GetValueOrDefault<GridIndex>(nameof(this.Index));
+            this.Value = info.GetValueOrDefault<T>(nameof(this.Value));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

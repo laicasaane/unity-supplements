@@ -164,41 +164,10 @@ namespace UnityEngine
 
         private LEBColor(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.L = info.GetSingle(nameof(this.L));
-            }
-            catch
-            {
-                this.L = default;
-            }
-
-            try
-            {
-                this.E = info.GetSingle(nameof(this.E));
-            }
-            catch
-            {
-                this.E = default;
-            }
-
-            try
-            {
-                this.B = info.GetSingle(nameof(this.B));
-            }
-            catch
-            {
-                this.B = default;
-            }
-
-            try
-            {
-                this.A = info.GetSingle(nameof(this.A));
-            }
-            catch
-            {
-                this.A = default;
-            }
+            this.L = info.GetSingleOrDefault(nameof(this.L));
+            this.E = info.GetSingleOrDefault(nameof(this.E));
+            this.B = info.GetSingleOrDefault(nameof(this.B));
+            this.A = info.GetSingleOrDefault(nameof(this.A));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

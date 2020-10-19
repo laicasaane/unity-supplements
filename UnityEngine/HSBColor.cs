@@ -158,41 +158,10 @@ namespace UnityEngine
 
         private HSBColor(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.H = info.GetSingle(nameof(this.H));
-            }
-            catch
-            {
-                this.H = default;
-            }
-
-            try
-            {
-                this.S = info.GetSingle(nameof(this.S));
-            }
-            catch
-            {
-                this.S = default;
-            }
-
-            try
-            {
-                this.B = info.GetSingle(nameof(this.B));
-            }
-            catch
-            {
-                this.B = default;
-            }
-
-            try
-            {
-                this.A = info.GetSingle(nameof(this.A));
-            }
-            catch
-            {
-                this.A = default;
-            }
+            this.H = info.GetSingleOrDefault(nameof(this.H));
+            this.S = info.GetSingleOrDefault(nameof(this.S));
+            this.B = info.GetSingleOrDefault(nameof(this.B));
+            this.A = info.GetSingleOrDefault(nameof(this.A));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

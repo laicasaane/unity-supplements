@@ -29,32 +29,9 @@ namespace System
 
         private UIntRange(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Start = info.GetUInt32(nameof(this.Start));
-            }
-            catch
-            {
-                this.Start = default;
-            }
-
-            try
-            {
-                this.End = info.GetUInt32(nameof(this.End));
-            }
-            catch
-            {
-                this.End = default;
-            }
-
-            try
-            {
-                this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
-            }
-            catch
-            {
-                this.IsFromEnd = default;
-            }
+            this.Start = info.GetUInt32OrDefault(nameof(this.Start));
+            this.End = info.GetUInt32OrDefault(nameof(this.End));
+            this.IsFromEnd = info.GetBooleanOrDefault(nameof(this.IsFromEnd));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -95,6 +72,14 @@ namespace System
 
         IRange<uint> IRange<uint>.FromEnd()
             => FromEnd();
+
+        public uint Count()
+        {
+            if (this.End > this.Start)
+                return this.End - this.Start + 1;
+
+            return this.Start - this.End + 1;
+        }
 
         public bool Contains(uint value)
             => this.Start < this.End
@@ -139,14 +124,13 @@ namespace System
             => Normal(this.Start, this.End);
 
         /// <summary>
-        /// Create a normal range from (a, b).
-        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
-        /// Otherwise, they are swapped.
+        /// <summary>
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
         /// </summary>
         public static UIntRange Normal(uint a, uint b)
             => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
 
-        public static UIntRange Count(uint value, bool fromEnd = false)
+        public static UIntRange From(uint value, bool fromEnd = false)
             => new UIntRange(0, value > 0 ? value - 1 : value, fromEnd);
 
         public static UIntRange FromStart(uint start, uint end)

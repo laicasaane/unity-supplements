@@ -30,26 +30,8 @@ namespace System.Grid
 
         private GridSize(SerializationInfo info, StreamingContext context)
         {
-            int row;
-            int col;
-
-            try
-            {
-                row = info.GetInt32(nameof(GridIndex.Row));
-            }
-            catch
-            {
-                row = default;
-            }
-
-            try
-            {
-                col = info.GetInt32(nameof(GridIndex.Column));
-            }
-            catch
-            {
-                col = default;
-            }
+            var row = info.GetInt32OrDefault(nameof(GridIndex.Row));
+            var col = info.GetInt32OrDefault(nameof(GridIndex.Column));
 
             this.value = new GridIndex(row, col);
         }

@@ -66,23 +66,8 @@ namespace UnityEngine
 
         private Size(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Width = info.GetSingle(nameof(this.Width));
-            }
-            catch
-            {
-                this.Width = default;
-            }
-
-            try
-            {
-                this.Height = info.GetSingle(nameof(this.Height));
-            }
-            catch
-            {
-                this.Height = default;
-            }
+            this.Width = info.GetSingleOrDefault(nameof(this.Width));
+            this.Height = info.GetSingleOrDefault(nameof(this.Height));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)

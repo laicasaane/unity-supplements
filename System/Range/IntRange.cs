@@ -29,32 +29,9 @@ namespace System
 
         private IntRange(SerializationInfo info, StreamingContext context)
         {
-            try
-            {
-                this.Start = info.GetInt32(nameof(this.Start));
-            }
-            catch
-            {
-                this.Start = default;
-            }
-
-            try
-            {
-                this.End = info.GetInt32(nameof(this.End));
-            }
-            catch
-            {
-                this.End = default;
-            }
-
-            try
-            {
-                this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
-            }
-            catch
-            {
-                this.IsFromEnd = default;
-            }
+            this.Start = info.GetInt32OrDefault(nameof(this.Start));
+            this.End = info.GetInt32OrDefault(nameof(this.End));
+            this.IsFromEnd = info.GetBooleanOrDefault(nameof(this.IsFromEnd));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -95,6 +72,9 @@ namespace System
 
         IRange<int> IRange<int>.FromEnd()
             => FromEnd();
+
+        public int Count()
+            => Math.Abs(this.Start - this.End) + 1;
 
         public bool Contains(int value)
             => this.Start < this.End
@@ -139,14 +119,12 @@ namespace System
             => Normal(this.Start, this.End);
 
         /// <summary>
-        /// Create a normal range from (a, b).
-        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
-        /// Otherwise, they are swapped.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
         /// </summary>
         public static IntRange Normal(int a, int b)
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
 
-        public static IntRange Count(int value, bool fromEnd = false)
+        public static IntRange From(int value, bool fromEnd = false)
             => new IntRange(0, Math.Abs(value - 1), fromEnd);
 
         public static IntRange FromStart(int start, int end)
