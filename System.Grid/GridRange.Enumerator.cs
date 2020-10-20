@@ -9,7 +9,7 @@ namespace System.Grid
         {
             private readonly GridIndex start, end;
             private readonly GridIndex min, max;
-            private readonly bool fromEnd, rowFirst;
+            private readonly bool fromEnd, byRow;
 
             private GridIndex current;
             private sbyte flag;
@@ -17,30 +17,37 @@ namespace System.Grid
             public Enumerator(in GridRange range)
             {
                 this.fromEnd = range.IsFromEnd;
-                this.rowFirst = range.IsRowFirst;
+                this.byRow = range.Direction == GridDirection.Row;
                 this.flag = -1;
 
                 var size = (GridSize)range.Size;
-                var rowIsIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
-                var colIsIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
-
-                this.start = size.ClampIndex(new GridIndex(
-                    rowIsIncreasing ? range.Start.Row : range.End.Row,
-                    colIsIncreasing ? range.Start.Column : range.End.Column
-                ));
-
-                this.end = size.ClampIndex(new GridIndex(
-                    rowIsIncreasing ? range.End.Row : range.Start.Row,
-                    colIsIncreasing ? range.End.Column : range.Start.Column
-                ));
 
                 if (range.Clamped)
                 {
+                    var rowIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
+                    var colIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
+
+                    this.start = size.ClampIndex(new GridIndex(
+                        rowIncreasing ? range.Start.Row : range.End.Row,
+                        colIncreasing ? range.Start.Column : range.End.Column
+                    ));
+
+                    this.end = size.ClampIndex(new GridIndex(
+                        rowIncreasing ? range.End.Row : range.Start.Row,
+                        colIncreasing ? range.End.Column : range.Start.Column
+                    ));
+
                     this.min = this.start;
                     this.max = this.end;
                 }
                 else
                 {
+                    var start1 = range.Start.ToIndex1(size);
+                    var end1 = range.End.ToIndex1(size);
+
+                    this.start = start1 > end1 ? range.End : range.Start;
+                    this.end = start1 > end1 ? range.Start : range.End;
+
                     this.min = GridIndex.Zero;
                     this.max = range.Size - GridIndex.One;
                 }
@@ -72,7 +79,7 @@ namespace System.Grid
 
                 int row, col;
 
-                if (this.rowFirst)
+                if (this.byRow)
                 {
                     row = this.current.Row + 1;
                     col = this.current.Column;
@@ -109,7 +116,7 @@ namespace System.Grid
 
                 int row, col;
 
-                if (this.rowFirst)
+                if (this.byRow)
                 {
                     row = this.current.Row - 1;
                     col = this.current.Column;

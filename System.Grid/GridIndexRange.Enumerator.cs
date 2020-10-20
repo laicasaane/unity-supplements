@@ -8,35 +8,35 @@ namespace System.Grid
         public struct Enumerator : IEnumerator<GridIndex>, IRangeEnumerator<GridIndex>
         {
             private readonly GridIndex start, end;
-            private readonly bool fromEnd, rowFirst;
+            private readonly bool fromEnd, byRow;
 
             private GridIndex current;
             private sbyte flag;
 
             public Enumerator(in GridIndexRange range)
             {
-                var rowIsIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
-                var colIsIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
+                var rowIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
+                var colIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
 
                 this.start = new GridIndex(
-                    rowIsIncreasing ? range.Start.Row : range.End.Row,
-                    colIsIncreasing ? range.Start.Column : range.End.Column
+                    rowIncreasing ? range.Start.Row : range.End.Row,
+                    colIncreasing ? range.Start.Column : range.End.Column
                 );
 
                 this.end = new GridIndex(
-                    rowIsIncreasing ? range.End.Row : range.Start.Row,
-                    colIsIncreasing ? range.End.Column : range.Start.Column
+                    rowIncreasing ? range.End.Row : range.Start.Row,
+                    colIncreasing ? range.End.Column : range.Start.Column
                 );
 
                 this.fromEnd = range.IsFromEnd;
-                this.rowFirst = range.IsRowFirst;
+                this.byRow = range.Direction == GridDirection.Row;
                 this.current = this.fromEnd ? this.end : this.start;
                 this.flag = -1;
             }
 
             public Enumerator(bool rowFirst)
             {
-                this.rowFirst = rowFirst;
+                this.byRow = rowFirst;
                 this.start = this.end = default;
                 this.fromEnd = default;
                 this.current = default;
@@ -67,7 +67,7 @@ namespace System.Grid
 
                 int row, col;
 
-                if (this.rowFirst)
+                if (this.byRow)
                 {
                     row = this.current.Row + 1;
                     col = this.current.Column;
@@ -104,7 +104,7 @@ namespace System.Grid
 
                 int row, col;
 
-                if (this.rowFirst)
+                if (this.byRow)
                 {
                     row = this.current.Row - 1;
                     col = this.current.Column;
@@ -160,17 +160,17 @@ namespace System.Grid
 
             public IEnumerator<GridIndex> Enumerate(GridIndex start, GridIndex end, bool fromEnd)
             {
-                var rowIsIncreasing = start.Row.CompareTo(end.Row) <= 0;
-                var colIsIncreasing = start.Column.CompareTo(end.Column) <= 0;
+                var rowIncreasing = start.Row.CompareTo(end.Row) <= 0;
+                var colIncreasing = start.Column.CompareTo(end.Column) <= 0;
 
                 var newStart = new GridIndex(
-                    rowIsIncreasing ? start.Row : end.Row,
-                    colIsIncreasing ? start.Column : end.Column
+                    rowIncreasing ? start.Row : end.Row,
+                    colIncreasing ? start.Column : end.Column
                 );
 
                 var newEnd = new GridIndex(
-                    rowIsIncreasing ? end.Row : start.Row,
-                    colIsIncreasing ? end.Column : start.Column
+                    rowIncreasing ? end.Row : start.Row,
+                    colIncreasing ? end.Column : start.Column
                 );
 
                 return fromEnd ? EnumerateFromEnd(newStart, newEnd) : EnumerateFromStart(newStart, newEnd);
@@ -178,7 +178,7 @@ namespace System.Grid
 
             private IEnumerator<GridIndex> EnumerateFromStart(GridIndex start, GridIndex end)
             {
-                if (this.rowFirst)
+                if (this.byRow)
                 {
                     for (var c = start.Column; c <= end.Column; c++)
                     {
@@ -202,7 +202,7 @@ namespace System.Grid
 
             private IEnumerator<GridIndex> EnumerateFromEnd(GridIndex start, GridIndex end)
             {
-                if (this.rowFirst)
+                if (this.byRow)
                 {
                     for (var c = end.Column; c >= start.Column; c--)
                     {

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace System.Grid
 {
     [Serializable]
-    public readonly struct ClampedGridSize : IEquatableReadOnlyStruct<ClampedGridSize>, ISerializable
+    public readonly partial struct ClampedGridSize : IEquatableReadOnlyStruct<ClampedGridSize>, ISerializable
     {
         public int Row => this.value.Row;
 
@@ -144,27 +144,27 @@ namespace System.Grid
             );
         }
 
-        public void IndexRanges(int rangeSize, ICollection<GridIndexRange> output)
-            => IndexRanges(rangeSize, rangeSize, output);
+        public void Partition(int rangeSize, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(rangeSize, rangeSize, output, direction);
 
-        public void IndexRanges(in GridIndex rangeSize, ICollection<GridIndexRange> output)
-            => IndexRanges(rangeSize, rangeSize, output);
+        public void Partition(in GridIndex rangeSize, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(rangeSize, rangeSize, output, direction);
 
-        public void IndexRanges(int rangeSize, int step, ICollection<GridIndexRange> output)
-            => IndexRanges(GridIndex.One * rangeSize, step, output);
+        public void Partition(int rangeSize, int step, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(GridIndex.One * rangeSize, step, output, direction);
 
-        public void IndexRanges(int rangeSize, in GridIndex step, ICollection<GridIndexRange> output)
-            => IndexRanges(GridIndex.One * rangeSize, step, output);
+        public void Partition(int rangeSize, in GridIndex step, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(GridIndex.One * rangeSize, step, output, direction);
 
-        public void IndexRanges(in GridIndex rangeSize, int step, ICollection<GridIndexRange> output)
+        public void Partition(in GridIndex rangeSize, int step, ICollection<GridIndexRange> output, GridDirection direction = default)
         {
             if (step < 1)
                 throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
 
-            IndexRanges(rangeSize, GridIndex.One * step, output);
+            Partition(rangeSize, GridIndex.One * step, output, direction);
         }
 
-        private static void ValidateIndexRanges(in GridIndex step, ICollection<GridIndexRange> output)
+        private static void ValidatePartition(in GridIndex step, ICollection<GridIndexRange> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
@@ -174,9 +174,9 @@ namespace System.Grid
                                             nameof(step));
         }
 
-        public void IndexRanges(in GridIndex rangeSize, in GridIndex step, ICollection<GridIndexRange> output)
+        public void Partition(in GridIndex rangeSize, in GridIndex step, ICollection<GridIndexRange> output, GridDirection direction = default)
         {
-            ValidateIndexRanges(step, output);
+            ValidatePartition(step, output);
 
             if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
                 step.Row > this.value.Row || step.Column > this.value.Column)
@@ -191,95 +191,141 @@ namespace System.Grid
             if ((colCount - 1) * step.Column + extend.Column >= this.value.Column)
                 colCount -= 1;
 
-            for (var r = 0; r < rowCount; r++)
+            switch (direction)
             {
-                for (var c = 0; c < colCount; c++)
-                {
-                    var pivot = new GridIndex(r * step.Row, c * step.Column);
-                    output.Add(IndexRange(pivot, GridIndex.Zero, extend));
-                }
+                case GridDirection.Column:
+                    {
+                        for (var r = 0; r < rowCount; r++)
+                        {
+                            for (var c = 0; c < colCount; c++)
+                            {
+                                var pivot = new GridIndex(r * step.Row, c * step.Column);
+                                output.Add(IndexRange(pivot, GridIndex.Zero, extend));
+                            }
+                        }
+
+                        break;
+                    }
+
+                case GridDirection.Row:
+                    {
+                        for (var c = 0; c < colCount; c++)
+                        {
+                            for (var r = 0; r < rowCount; r++)
+                            {
+                                var pivot = new GridIndex(r * step.Row, c * step.Column);
+                                output.Add(IndexRange(pivot, GridIndex.Zero, extend));
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
 
-        public void IndexRanges(in GridIndexRange slice, int rangeSize, ICollection<GridIndexRange> output)
-            => IndexRanges(slice, rangeSize, rangeSize, output);
+        public void Partition(in GridIndexRange slice, int rangeSize, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(slice, rangeSize, rangeSize, output, direction);
 
-        public void IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, ICollection<GridIndexRange> output)
-            => IndexRanges(slice, rangeSize, rangeSize, output);
+        public void Partition(in GridIndexRange slice, in GridIndex rangeSize, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(slice, rangeSize, rangeSize, output, direction);
 
-        public void IndexRanges(in GridIndexRange slice, int rangeSize, int step, ICollection<GridIndexRange> output)
-            => IndexRanges(slice, GridIndex.One * rangeSize, step, output);
+        public void Partition(in GridIndexRange slice, int rangeSize, int step, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(slice, GridIndex.One * rangeSize, step, output, direction);
 
-        public void IndexRanges(in GridIndexRange slice, int rangeSize, in GridIndex step, ICollection<GridIndexRange> output)
-            => IndexRanges(slice, GridIndex.One * rangeSize, step, output);
+        public void Partition(in GridIndexRange slice, int rangeSize, in GridIndex step, ICollection<GridIndexRange> output, GridDirection direction = default)
+            => Partition(slice, GridIndex.One * rangeSize, step, output, direction);
 
-        public void IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, int step, ICollection<GridIndexRange> output)
+        public void Partition(in GridIndexRange slice, in GridIndex rangeSize, int step, ICollection<GridIndexRange> output, GridDirection direction = default)
         {
             if (step < 1)
                 throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
 
-            IndexRanges(slice, rangeSize, GridIndex.One * step, output);
+            Partition(slice, rangeSize, GridIndex.One * step, output, direction);
         }
 
-        public void IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, in GridIndex step, ICollection<GridIndexRange> output)
+        public void Partition(in GridIndexRange slice, in GridIndex rangeSize, in GridIndex step, ICollection<GridIndexRange> output, GridDirection direction = default)
         {
-            ValidateIndexRanges(step, output);
+            ValidatePartition(step, output);
 
             var normalSlice = slice.Normalize();
-            var inner = new ClampedGridSize(
+            var sliceSize = new ClampedGridSize(
                 normalSlice.End.Row - normalSlice.Start.Row + 1,
                 normalSlice.End.Column - normalSlice.Start.Column + 1
             );
 
-            if (inner.Row > this.value.Row || inner.Column > this.value.Column)
-                throw new ArgumentOutOfRangeException("Must be slice the grid size", nameof(slice));
+            if (sliceSize.Row > this.value.Row || sliceSize.Column > this.value.Column)
+                throw new ArgumentOutOfRangeException($"Must be lesser than or equal to the grid size {this.value}", nameof(slice));
 
             if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
-                step.Row > inner.value.Row || step.Column > inner.value.Column)
+                step.Row > sliceSize.value.Row || step.Column > sliceSize.value.Column)
                 return;
 
-            var (rowCount, colCount) = inner.value / step;
+            var (rowCount, colCount) = sliceSize.value / step;
             var extend = rangeSize - GridIndex.One;
 
-            if ((rowCount - 1) * step.Row + extend.Row >= inner.value.Row)
+            if ((rowCount - 1) * step.Row + extend.Row >= sliceSize.value.Row)
                 rowCount -= 1;
 
-            if ((colCount - 1) * step.Column + extend.Column >= inner.value.Column)
+            if ((colCount - 1) * step.Column + extend.Column >= sliceSize.value.Column)
                 colCount -= 1;
 
-            for (var r = 0; r < rowCount; r++)
+            switch (direction)
             {
-                for (var c = 0; c < colCount; c++)
-                {
-                    var row = r * step.Row + normalSlice.Start.Row;
-                    var col = c * step.Column + normalSlice.Start.Column;
+                case GridDirection.Column:
+                    {
+                        for (var r = 0; r < rowCount; r++)
+                        {
+                            for (var c = 0; c < colCount; c++)
+                            {
+                                var row = r * step.Row + normalSlice.Start.Row;
+                                var col = c * step.Column + normalSlice.Start.Column;
 
-                    output.Add(IndexRange(new GridIndex(row, col), GridIndex.Zero, extend));
-                }
+                                output.Add(IndexRange(new GridIndex(row, col), GridIndex.Zero, extend));
+                            }
+                        }
+
+                        break;
+                    }
+
+                case GridDirection.Row:
+                    {
+                        for (var c = 0; c < colCount; c++)
+                        {
+                            for (var r = 0; r < rowCount; r++)
+                            {
+                                var row = r * step.Row + normalSlice.Start.Row;
+                                var col = c * step.Column + normalSlice.Start.Column;
+
+                                output.Add(IndexRange(new GridIndex(row, col), GridIndex.Zero, extend));
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
 
-        public IEnumerable<GridIndexRange> IndexRanges(int rangeSize)
-           => IndexRanges(rangeSize, rangeSize);
+        public IEnumerable<GridIndexRange> Partition(int rangeSize, GridDirection direction = default)
+           => Partition(rangeSize, rangeSize, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndex rangeSize)
-            => IndexRanges(rangeSize, rangeSize);
+        public IEnumerable<GridIndexRange> Partition(in GridIndex rangeSize, GridDirection direction = default)
+            => Partition(rangeSize, rangeSize, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(int rangeSize, int step)
-            => IndexRanges(GridIndex.One * rangeSize, step);
+        public IEnumerable<GridIndexRange> Partition(int rangeSize, int step, GridDirection direction = default)
+            => Partition(GridIndex.One * rangeSize, step, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(int rangeSize, in GridIndex step)
-            => IndexRanges(GridIndex.One * rangeSize, step);
+        public IEnumerable<GridIndexRange> Partition(int rangeSize, in GridIndex step, GridDirection direction = default)
+            => Partition(GridIndex.One * rangeSize, step, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndex rangeSize, int step)
+        public IEnumerable<GridIndexRange> Partition(in GridIndex rangeSize, int step, GridDirection direction = default)
         {
             if (step < 1)
                 throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
 
-            return IndexRanges(rangeSize, GridIndex.One * step);
+            return Partition(rangeSize, GridIndex.One * step, direction);
         }
 
-        public IEnumerable<GridIndexRange> IndexRanges(GridIndex rangeSize, GridIndex step)
+        public IEnumerable<GridIndexRange> Partition(GridIndex rangeSize, GridIndex step, GridDirection direction = default)
         {
             if (step.Row < 1 || step.Column < 1)
                 throw new ArgumentException($"Must be greater than or equal to {nameof(GridIndex)}.{nameof(GridIndex.One)}",
@@ -298,73 +344,119 @@ namespace System.Grid
             if ((colCount - 1) * step.Column + extend.Column >= this.value.Column)
                 colCount -= 1;
 
-            for (var r = 0; r < rowCount; r++)
+            switch (direction)
             {
-                for (var c = 0; c < colCount; c++)
-                {
-                    var pivot = new GridIndex(r * step.Row, c * step.Column);
-                    yield return IndexRange(pivot, GridIndex.Zero, extend);
-                }
+                case GridDirection.Column:
+                    {
+                        for (var r = 0; r < rowCount; r++)
+                        {
+                            for (var c = 0; c < colCount; c++)
+                            {
+                                var pivot = new GridIndex(r * step.Row, c * step.Column);
+                                yield return IndexRange(pivot, GridIndex.Zero, extend);
+                            }
+                        }
+
+                        break;
+                    }
+
+                case GridDirection.Row:
+                    {
+                        for (var c = 0; c < colCount; c++)
+                        {
+                            for (var r = 0; r < rowCount; r++)
+                            {
+                                var pivot = new GridIndex(r * step.Row, c * step.Column);
+                                yield return IndexRange(pivot, GridIndex.Zero, extend);
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndexRange slice, int rangeSize)
-            => IndexRanges(slice, rangeSize, rangeSize);
+        public IEnumerable<GridIndexRange> Partition(in GridIndexRange slice, int rangeSize, GridDirection direction = default)
+            => Partition(slice, rangeSize, rangeSize, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndexRange slice, in GridIndex rangeSize)
-            => IndexRanges(slice, rangeSize, rangeSize);
+        public IEnumerable<GridIndexRange> Partition(in GridIndexRange slice, in GridIndex rangeSize, GridDirection direction = default)
+            => Partition(slice, rangeSize, rangeSize, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndexRange slice, int rangeSize, int step)
-            => IndexRanges(slice, GridIndex.One * rangeSize, step);
+        public IEnumerable<GridIndexRange> Partition(in GridIndexRange slice, int rangeSize, int step, GridDirection direction = default)
+            => Partition(slice, GridIndex.One * rangeSize, step, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndexRange slice, int rangeSize, in GridIndex step)
-            => IndexRanges(slice, GridIndex.One * rangeSize, step);
+        public IEnumerable<GridIndexRange> Partition(in GridIndexRange slice, int rangeSize, in GridIndex step, GridDirection direction = default)
+            => Partition(slice, GridIndex.One * rangeSize, step, direction);
 
-        public IEnumerable<GridIndexRange> IndexRanges(in GridIndexRange slice, in GridIndex rangeSize, int step)
+        public IEnumerable<GridIndexRange> Partition(in GridIndexRange slice, in GridIndex rangeSize, int step, GridDirection direction = default)
         {
             if (step < 1)
                 throw new ArgumentException($"Must be greater than or equal to 1", nameof(step));
 
-            return IndexRanges(slice, rangeSize, GridIndex.One * step);
+            return Partition(slice, rangeSize, GridIndex.One * step, direction);
         }
 
-        public IEnumerable<GridIndexRange> IndexRanges(GridIndexRange slice, GridIndex rangeSize, GridIndex step)
+        public IEnumerable<GridIndexRange> Partition(GridIndexRange slice, GridIndex rangeSize, GridIndex step, GridDirection direction = default)
         {
             if (step.Row < 1 || step.Column < 1)
                 throw new ArgumentException($"Must be greater than or equal to {nameof(GridIndex)}.{nameof(GridIndex.One)}",
                                             nameof(step));
 
             var normalSlice = slice.Normalize();
-            var inner = new ClampedGridSize(
+            var sliceSize = new ClampedGridSize(
                 normalSlice.End.Row - normalSlice.Start.Row + 1,
                 normalSlice.End.Column - normalSlice.Start.Column + 1
             );
 
-            if (inner.Row > this.value.Row || inner.Column > this.value.Column)
-                throw new ArgumentOutOfRangeException("Must be slice the grid size", nameof(slice));
+            if (sliceSize.Row > this.value.Row || sliceSize.Column > this.value.Column)
+                throw new ArgumentOutOfRangeException($"Must be lesser than or equal to the grid size {this.value}", nameof(slice));
 
             if (rangeSize.Row < 1 || rangeSize.Column < 1 ||
-                step.Row > inner.value.Row || step.Column > inner.value.Column)
+                step.Row > sliceSize.value.Row || step.Column > sliceSize.value.Column)
                 yield break;
 
-            var (rowCount, colCount) = inner.value / step;
+            var (rowCount, colCount) = sliceSize.value / step;
             var extend = rangeSize - GridIndex.One;
 
-            if ((rowCount - 1) * step.Row + extend.Row >= inner.value.Row)
+            if ((rowCount - 1) * step.Row + extend.Row >= sliceSize.value.Row)
                 rowCount -= 1;
 
-            if ((colCount - 1) * step.Column + extend.Column >= inner.value.Column)
+            if ((colCount - 1) * step.Column + extend.Column >= sliceSize.value.Column)
                 colCount -= 1;
 
-            for (var r = 0; r < rowCount; r++)
+            switch (direction)
             {
-                for (var c = 0; c < colCount; c++)
-                {
-                    var row = r * step.Row + normalSlice.Start.Row;
-                    var col = c * step.Column + normalSlice.Start.Column;
+                case GridDirection.Column:
+                    {
+                        for (var r = 0; r < rowCount; r++)
+                        {
+                            for (var c = 0; c < colCount; c++)
+                            {
+                                var row = r * step.Row + normalSlice.Start.Row;
+                                var col = c * step.Column + normalSlice.Start.Column;
 
-                    yield return IndexRange(new GridIndex(row, col), GridIndex.Zero, extend);
-                }
+                                yield return IndexRange(new GridIndex(row, col), GridIndex.Zero, extend);
+                            }
+                        }
+
+                        break;
+                    }
+
+                case GridDirection.Row:
+                    {
+                        for (var c = 0; c < colCount; c++)
+                        {
+                            for (var r = 0; r < rowCount; r++)
+                            {
+                                var row = r * step.Row + normalSlice.Start.Row;
+                                var col = c * step.Column + normalSlice.Start.Column;
+
+                                yield return IndexRange(new GridIndex(row, col), GridIndex.Zero, extend);
+                            }
+                        }
+
+                        break;
+                    }
             }
         }
 

@@ -13,25 +13,22 @@ namespace System.Grid
 
         public bool IsFromEnd { get; }
 
-        /// <summary>
-        /// Whether iterators should increase/decrease <see cref="GridIndex.Row"/> first then <see cref="GridIndex.Column"/>
-        /// </summary>
-        public bool IsRowFirst { get; }
+        public GridDirection Direction { get; }
 
-        public GridIndexRange(in GridIndex start, in GridIndex end, bool fromEnd = false, bool rowFirst = false)
+        public GridIndexRange(in GridIndex start, in GridIndex end, bool fromEnd = false, GridDirection direction = default)
         {
             this.Start = start;
             this.End = end;
             this.IsFromEnd = fromEnd;
-            this.IsRowFirst = rowFirst;
+            this.Direction = direction;
         }
 
         private GridIndexRange(SerializationInfo info, StreamingContext context)
         {
-            this.Start = (GridIndex)info.GetValue(nameof(this.Start), typeof(GridIndex));
-            this.End = (GridIndex)info.GetValue(nameof(this.End), typeof(GridIndex));
-            this.IsFromEnd = info.GetBoolean(nameof(this.IsFromEnd));
-            this.IsRowFirst = info.GetBooleanOrDefault(nameof(this.IsRowFirst));
+            this.Start = info.GetValueOrDefault<GridIndex>(nameof(this.Start));
+            this.End = info.GetValueOrDefault<GridIndex>(nameof(this.End));
+            this.IsFromEnd = info.GetBooleanOrDefault(nameof(this.IsFromEnd));
+            this.Direction = info.GetValueOrDefault<GridDirection>(nameof(this.Direction));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -39,43 +36,30 @@ namespace System.Grid
             info.AddValue(nameof(this.Start), this.Start);
             info.AddValue(nameof(this.End), this.End);
             info.AddValue(nameof(this.IsFromEnd), this.IsFromEnd);
-            info.AddValue(nameof(this.IsRowFirst), this.IsRowFirst);
+            info.AddValue(nameof(this.Direction), this.Direction);
         }
 
-        public void Deconstruct(out GridIndex start, out GridIndex end)
-        {
-            start = this.Start;
-            end = this.End;
-        }
-
-        public void Deconstruct(out GridIndex start, out GridIndex end, out bool fromEnd)
+        public void Deconstruct(out GridIndex start, out GridIndex end, out bool fromEnd, out GridDirection direction)
         {
             start = this.Start;
             end = this.End;
             fromEnd = this.IsFromEnd;
+            direction = this.Direction;
         }
 
-        public void Deconstruct(out GridIndex start, out GridIndex end, out bool fromEnd, out bool rowFirst)
-        {
-            start = this.Start;
-            end = this.End;
-            fromEnd = this.IsFromEnd;
-            rowFirst = this.IsRowFirst;
-        }
-
-        public GridIndexRange With(in GridIndex? Start = null, in GridIndex? End = null, bool? IsFromEnd = null, bool? IsRowFirst = null)
+        public GridIndexRange With(in GridIndex? Start = null, in GridIndex? End = null, bool? IsFromEnd = null, GridDirection? Direction = null)
             => new GridIndexRange(
                 Start ?? this.Start,
                 End ?? this.End,
                 IsFromEnd ?? this.IsFromEnd,
-                IsRowFirst ?? this.IsRowFirst
+                Direction ?? this.Direction
             );
 
-        public GridIndexRange RowFirst()
-            => new GridIndexRange(this.Start, this.End, this.IsFromEnd, true);
+        public GridIndexRange ByRow()
+            => new GridIndexRange(this.Start, this.End, this.IsFromEnd, GridDirection.Row);
 
-        public GridIndexRange ColumnFirst()
-            => new GridIndexRange(this.Start, this.End, this.IsFromEnd, false);
+        public GridIndexRange ByColumn()
+            => new GridIndexRange(this.Start, this.End, this.IsFromEnd, GridDirection.Column);
 
         public GridIndexRange FromStart()
             => new GridIndexRange(this.Start, this.End, false);
@@ -113,19 +97,19 @@ namespace System.Grid
                this.Start == other.Start &&
                this.End == other.End &&
                this.IsFromEnd == other.IsFromEnd &&
-               this.IsRowFirst == other.IsRowFirst;
+               this.Direction == other.Direction;
 
         public bool Equals(in GridIndexRange other)
             => this.Start == other.Start &&
                this.End == other.End &&
                this.IsFromEnd == other.IsFromEnd &&
-               this.IsRowFirst == other.IsRowFirst;
+               this.Direction == other.Direction;
 
         public bool Equals(GridIndexRange other)
             => this.Start == other.Start &&
                this.End == other.End &&
                this.IsFromEnd == other.IsFromEnd &&
-               this.IsRowFirst == other.IsRowFirst;
+               this.Direction == other.Direction;
 
         public override int GetHashCode()
         {
@@ -133,7 +117,7 @@ namespace System.Grid
             hashCode = hashCode * -1521134295 + this.Start.GetHashCode();
             hashCode = hashCode * -1521134295 + this.End.GetHashCode();
             hashCode = hashCode * -1521134295 + this.IsFromEnd.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.IsRowFirst.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.Direction.GetHashCode();
             return hashCode;
         }
 
@@ -150,7 +134,7 @@ namespace System.Grid
             => GetEnumerator();
 
         public GridIndexRange Normalize()
-            => Normal(this.Start, this.End);
+            => Normal(this.Start, this.End, this.IsFromEnd, this.Direction);
 
         public bool Intersects(in GridIndexRange other)
         {
@@ -164,7 +148,7 @@ namespace System.Grid
         /// <summary>
         /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
         /// </summary>
-        public static GridIndexRange Normal(in GridIndex a, in GridIndex b)
+        public static GridIndexRange Normal(in GridIndex a, in GridIndex b, bool fromEnd = false, GridDirection direction = default)
         {
             var rowIncreasing = a.Row.CompareTo(b.Row) <= 0;
             var colIncreasing = a.Column.CompareTo(b.Column) <= 0;
@@ -179,7 +163,7 @@ namespace System.Grid
                 colIncreasing ? b.Column : a.Column
             );
 
-            return new GridIndexRange(start, end);
+            return new GridIndexRange(start, end, fromEnd, direction);
         }
 
         public static GridIndexRange FromSize(in GridIndex value, bool fromEnd = false)
@@ -197,8 +181,8 @@ namespace System.Grid
         public static implicit operator GridIndexRange(in (GridIndex start, GridIndex end, bool fromEnd) value)
             => new GridIndexRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator GridIndexRange(in (GridIndex start, GridIndex end, bool fromEnd, bool rowFirst) value)
-            => new GridIndexRange(value.start, value.end, value.fromEnd, value.rowFirst);
+        public static implicit operator GridIndexRange(in (GridIndex start, GridIndex end, bool fromEnd, GridDirection direction) value)
+            => new GridIndexRange(value.start, value.end, value.fromEnd, value.direction);
 
         public static implicit operator ReadRange<GridIndex, Enumerator>(in GridIndexRange value)
             => new ReadRange<GridIndex, Enumerator>(value.Start, value.End, value.IsFromEnd);
