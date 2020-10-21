@@ -88,7 +88,8 @@ namespace System.Grid
                 true,
                 ClampIndex(range.Start),
                 ClampIndex(range.End),
-                range.IsFromEnd
+                range.IsFromEnd,
+                range.Direction
             );
 
         public GridRange ClampIndexRange(in GridRange range)
@@ -97,7 +98,8 @@ namespace System.Grid
                 range.Clamped,
                 ClampIndex(range.Start),
                 ClampIndex(range.End),
-                range.IsFromEnd
+                range.IsFromEnd,
+                range.Direction
             );
 
         public GridRange IndexRange(in GridIndex pivot, int extend)

@@ -85,7 +85,8 @@ namespace System.Grid
             => new GridIndexRange(
                 ClampIndex(range.Start),
                 ClampIndex(range.End),
-                range.IsFromEnd
+                range.IsFromEnd,
+                range.Direction
             );
 
         public GridIndexRange IndexRange(in GridIndex pivot, int extend)
