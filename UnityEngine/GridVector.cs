@@ -110,6 +110,12 @@ namespace UnityEngine
         public static implicit operator GridIndex(in GridVector value)
             => new GridIndex(value.row, value.column);
 
+        public static implicit operator ClampedGridSize(in GridVector value)
+            => new GridIndex(value.row, value.column);
+
+        public static implicit operator GridSize(in GridVector value)
+            => new GridIndex(value.row, value.column);
+
         public static implicit operator GridVector( in GridIndex value)
             => new GridVector(value.Row, value.Column);
 
