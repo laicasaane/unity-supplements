@@ -133,6 +133,15 @@ namespace UnityEngine
         public static SizeInt operator /(in SizeInt lhs, in SizeInt rhs)
             => new SizeInt(lhs.Width / rhs.Width, lhs.Height / rhs.Height);
 
+        public static SizeInt operator %(in SizeInt lhs, int rhs)
+            => new SizeInt(lhs.Width % rhs, lhs.Height % rhs);
+
+        public static SizeInt operator %(in SizeInt lhs, in Vector2Int rhs)
+            => new SizeInt(lhs.Width % rhs.x, lhs.Height % rhs.y);
+
+        public static SizeInt operator %(in SizeInt lhs, in SizeInt rhs)
+            => new SizeInt(lhs.Width % rhs.Width, lhs.Height % rhs.Height);
+
         public static bool operator ==(in SizeInt lhs, in SizeInt rhs)
             => lhs.Width == rhs.Width && lhs.Height == rhs.Height;
 

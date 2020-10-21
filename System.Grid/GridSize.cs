@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -517,5 +517,11 @@ namespace System.Grid
 
         public static GridSize operator /(in GridSize lhs, in GridIndex rhs)
             => new GridSize(lhs.value / rhs);
+
+        public static GridSize operator %(in GridSize lhs, int rhs)
+            => new GridSize(lhs.value % rhs);
+
+        public static GridSize operator %(in GridSize lhs, in GridIndex rhs)
+            => new GridSize(lhs.value % rhs);
     }
 }

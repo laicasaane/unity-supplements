@@ -172,6 +172,12 @@ namespace System
         public static Index3 operator /(in Index3 lhs, in Index3 rhs)
             => new Index3(lhs.A / rhs.A, lhs.B / rhs.B, lhs.C / rhs.C);
 
+        public static Index3 operator %(in Index3 lhs, int rhs)
+            => new Index3(lhs.A % rhs, lhs.B % rhs, lhs.C % rhs);
+
+        public static Index3 operator %(in Index3 lhs, in Index3 rhs)
+            => new Index3(lhs.A % rhs.A, lhs.B % rhs.B, lhs.C % rhs.C);
+
         public static bool operator ==(in Index3 lhs, in Index3 rhs)
             => lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C;
 

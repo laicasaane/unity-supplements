@@ -151,6 +151,13 @@ namespace UnityEngine
         public static OffsetInt operator /(in OffsetInt lhs, in OffsetInt rhs)
             => new OffsetInt(lhs.Left / rhs.Left, lhs.Right / rhs.Right, lhs.Top / rhs.Top, lhs.Bottom / rhs.Bottom);
 
+        public static OffsetInt operator %(in OffsetInt lhs, int rhs)
+            => new OffsetInt(lhs.Left % rhs, lhs.Right % rhs, lhs.Top % rhs, lhs.Bottom % rhs);
+
+        public static OffsetInt operator %(in OffsetInt lhs, in OffsetInt rhs)
+            => new OffsetInt(lhs.Left % rhs.Left, lhs.Right % rhs.Right, lhs.Top % rhs.Top, lhs.Bottom % rhs.Bottom);
+
+
         public static bool operator ==(in OffsetInt lhs, in OffsetInt rhs)
             => lhs.Left == rhs.Left && lhs.Right == rhs.Right &&
                lhs.Top == rhs.Top && lhs.Bottom == rhs.Bottom;

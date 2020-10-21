@@ -189,6 +189,12 @@ namespace System
         public static Length5 operator /(in Length5 lhs, in Length5 rhs)
             => new Length5(lhs.A / rhs.A, lhs.B / rhs.B, lhs.C / rhs.C, lhs.D / rhs.D, lhs.E / rhs.E);
 
+        public static Length5 operator %(in Length5 lhs, int rhs)
+            => new Length5(lhs.A % rhs, lhs.B % rhs, lhs.C % rhs, lhs.D % rhs, lhs.E % rhs);
+
+        public static Length5 operator %(in Length5 lhs, in Length5 rhs)
+            => new Length5(lhs.A % rhs.A, lhs.B % rhs.B, lhs.C % rhs.C, lhs.D % rhs.D, lhs.E % rhs.E);
+
         public static bool operator ==(in Length5 lhs, in Length5 rhs)
             => lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C && lhs.D == rhs.D && lhs.E == rhs.E;
 

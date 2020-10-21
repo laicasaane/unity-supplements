@@ -146,6 +146,12 @@ namespace UnityEngine
         public static GridVector operator /(in GridVector lhs, in GridVector rhs)
             => new GridVector(lhs.row / rhs.Row, lhs.column / rhs.Column);
 
+        public static GridVector operator %(in GridVector lhs, int rhs)
+            => new GridVector(lhs.row % rhs, lhs.column % rhs);
+
+        public static GridVector operator %(in GridVector lhs, in GridVector rhs)
+            => new GridVector(lhs.row % rhs.Row, lhs.column % rhs.Column);
+
         public static GridVector Clamp(in GridVector value, in GridVector min, in GridVector max)
             => new GridVector(
                 value.row < min.row ? min.row : (value.row > max.row ? max.row : value.row),

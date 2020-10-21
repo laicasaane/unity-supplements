@@ -1,4 +1,4 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 
 namespace System.Grid
 {
@@ -129,6 +129,12 @@ namespace System.Grid
 
         public static GridIndex operator /(in GridIndex lhs, in GridIndex rhs)
             => new GridIndex(lhs.Row / rhs.Row, lhs.Column / rhs.Column);
+
+        public static GridIndex operator %(in GridIndex lhs, int rhs)
+            => new GridIndex(lhs.Row % rhs, lhs.Column % rhs);
+
+        public static GridIndex operator %(in GridIndex lhs, in GridIndex rhs)
+            => new GridIndex(lhs.Row % rhs.Row, lhs.Column % rhs.Column);
 
         public static GridIndex Clamp(in GridIndex value, in GridIndex min, in GridIndex max)
             => new GridIndex(

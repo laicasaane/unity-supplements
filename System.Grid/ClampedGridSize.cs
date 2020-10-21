@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -506,5 +506,11 @@ namespace System.Grid
 
         public static ClampedGridSize operator /(in ClampedGridSize lhs, in GridIndex rhs)
             => new ClampedGridSize(lhs.value / rhs);
+
+        public static ClampedGridSize operator %(in ClampedGridSize lhs, int rhs)
+            => new ClampedGridSize(lhs.value % rhs);
+
+        public static ClampedGridSize operator %(in ClampedGridSize lhs, in GridIndex rhs)
+            => new ClampedGridSize(lhs.value % rhs);
     }
 }

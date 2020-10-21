@@ -222,6 +222,12 @@ namespace System
         public static Index5 operator /(in Index5 lhs, in Index5 rhs)
             => new Index5(lhs.A / rhs.A, lhs.B / rhs.B, lhs.C / rhs.C, lhs.D / rhs.D, lhs.E / rhs.E);
 
+        public static Index5 operator %(in Index5 lhs, int rhs)
+            => new Index5(lhs.A % rhs, lhs.B % rhs, lhs.C % rhs, lhs.D % rhs, lhs.E % rhs);
+
+        public static Index5 operator %(in Index5 lhs, in Index5 rhs)
+            => new Index5(lhs.A % rhs.A, lhs.B % rhs.B, lhs.C % rhs.C, lhs.D % rhs.D, lhs.E % rhs.E);
+
         public static bool operator ==(in Index5 lhs, in Index5 rhs)
             => lhs.A == rhs.A && lhs.B == rhs.B && lhs.C == rhs.C && lhs.D == rhs.D && lhs.E == rhs.E;
 

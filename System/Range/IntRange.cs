@@ -159,20 +159,6 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public static IntRange operator +(in IntRange lhs, in int rhs)
-            => new IntRange(
-                lhs.Start + rhs,
-                lhs.End + rhs,
-                lhs.IsFromEnd
-            );
-
-        public static IntRange operator -(in IntRange lhs, in int rhs)
-            => new IntRange(
-                lhs.Start - rhs,
-                lhs.End - rhs,
-                lhs.IsFromEnd
-            );
-
         public struct Enumerator : IEnumerator<int>, IRangeEnumerator<int>
         {
             private readonly int start;
