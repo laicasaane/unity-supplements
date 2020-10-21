@@ -179,7 +179,7 @@ namespace System.Grid
         }
 
         public override string ToString()
-            => $"{{ {nameof(this.Size)}={this.Size}, {nameof(this.Clamped)}={this.Clamped}, {nameof(this.Start)}={this.Start}, {nameof(this.End)}={this.End}, {nameof(this.IsFromEnd)}={this.IsFromEnd} }}";
+            => $"{{ {nameof(this.Size)}={this.Size}, {nameof(this.Clamped)}={this.Clamped}, {nameof(this.Start)}={this.Start}, {nameof(this.End)}={this.End}, {nameof(this.IsFromEnd)}={this.IsFromEnd}, {nameof(this.Direction)}={this.Direction} }}";
 
         public Enumerator GetEnumerator()
             => new Enumerator(this);
