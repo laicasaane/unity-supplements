@@ -2,6 +2,8 @@
 
 namespace System
 {
+    using ConcurrentPool = System.Collections.Concurrent.ConcurrentPool;
+
     public class EnumRandomizer<T> where T : struct, Enum
     {
         private static readonly Random _rand = new Random();
@@ -32,8 +34,8 @@ namespace System
 
         public void Initialize(int sequenceAmount, bool divideByEnumCount = false)
         {
-            var cache = ListPool<T>.Get();
-            var innerCache = ListPool<T>.Get();
+            var cache = ConcurrentPool.Provider.List<T>();
+            var innerCache = ConcurrentPool.Provider.List<T>();
             var count = sequenceAmount;
             var enumCount = this.primaryValues.Count;
             var redundant = 0;
@@ -64,7 +66,7 @@ namespace System
             cache.AddRange(this.values);
             Randomize(this.rand, cache, this.values);
 
-            ListPool<T>.Return(cache, innerCache);
+            ConcurrentPool.Provider.Return(cache, innerCache);
         }
 
         public T Random()
@@ -81,14 +83,14 @@ namespace System
             if (!enumValues.HasSource || enumValues.Count <= 0)
                 return default;
 
-            var cache = ListPool<T>.Get();
+            var cache = ConcurrentPool.Provider.List<T>();
             cache.AddRange(enumValues);
 
-            var values = ListPool<T>.Get();
+            var values = ConcurrentPool.Provider.List<T>();
             Randomize(_rand, cache, values);
             var value = RandomizeValue(_rand, values);
 
-            ListPool<T>.Return(cache, values);
+            ConcurrentPool.Provider.Return(cache, values);
 
             return value;
         }

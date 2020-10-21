@@ -1,5 +1,7 @@
 ﻿namespace System.Collections.Generic
 {
+    using ConcurrentPool = System.Collections.Concurrent.ConcurrentPool;
+
     public static class StackTExtensions
     {
         public static bool ValidateIndex<T>(this Stack<T> self, int index)
@@ -180,7 +182,7 @@
             if (count > self.Count)
                 throw new IndexOutOfRangeException(nameof(count));
 
-            var cache = StackPool<T>.Get();
+            var cache = ConcurrentPool.Provider.Stack<T>();
 
             if (allowDuplicate)
             {
@@ -196,7 +198,7 @@
                 self.Push(cache.Pop());
             }
 
-            StackPool<T>.Return(cache);
+            ConcurrentPool.Provider.Return(cache);
         }
 
         private static void PopRangeWithDuplicate<T>(Stack<T> self, int offset, int count, bool allowNull,
