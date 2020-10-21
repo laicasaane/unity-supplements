@@ -70,7 +70,7 @@ namespace System.Collections.Concurrent
                 => StackConcurrentPool<T>.Return(items);
 
             public Dictionary<TKey, TValue> Dictionary<TKey, TValue>()
-                => DictionaryPool<TKey, TValue>.Get();
+                => DictionaryConcurrentPool<TKey, TValue>.Get();
 
             public void Return<TKey, TValue>(Dictionary<TKey, TValue> item)
                 => DictionaryConcurrentPool<TKey, TValue>.Return(item);
