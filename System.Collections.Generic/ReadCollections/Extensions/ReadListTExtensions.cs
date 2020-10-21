@@ -18,7 +18,7 @@
 
         public static void GetRange<T>(in this ReadList<T> self, int offset, int count, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
-            if (self == null || output == null || count == 0)
+            if (output == null || count == 0)
                 return;
 
             offset = Math.Max(offset, 0);
