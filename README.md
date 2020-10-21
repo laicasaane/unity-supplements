@@ -88,6 +88,7 @@
 - [Dictionary\<TKey, TValue>](./System.Collections.Generic/Extensions/DictionaryTKeyTValueExtensions.cs)
 - [Queue\<T>](./System.Collections.Generic/Extensions/QueueTExtensions.cs)
 - [Stack\<T>](./System.Collections.Generic/Extensions/StackTExtensions.cs)
+- [HashSet\<T>](./System.Collections.Generic/Extensions/HashSetTExtensions.cs)
 
 ### Segment
 - [ISegment\<T>](./System.Collections.Generic/Segments/Interfaces/ISegment.cs)
@@ -105,6 +106,7 @@
 - [ReadCollection\<T>](./System.Collections.Generic/ReadCollections/ReadCollection%7BT%7D.cs)
 - [ReadDictionary\<TKey, TValue>](./System.Collections.Generic/ReadCollections/ReadDictionary%7BTKey%2CTValue%7D.cs)
 - [ReadList\<T>](./System.Collections.Generic/ReadCollections/ReadList%7BT%7D.cs)
+- [ReadHashSet\<T>](./System.Collections.Generic/ReadCollections/ReadHashSet%7BT%7D.cs)
 - [Extensions](./System.Collections.Generic/ReadCollections/Extensions)
 
 ### Randomizer
@@ -120,6 +122,9 @@
 - [HashSetPool\<T>](./System.Collections.Generic/Pools/HashSetPool%7BT%7D.cs)
 - [QueuePool\<T>](./System.Collections.Generic/Pools/QueuePool%7BT%7D.cs)
 - [StackPool\<T>](./System.Collections.Generic/Pools/StackPool%7BT%7D.cs)
+- [IPoolProvider](./System.Collections.Generic/Pools/IPoolProvider.cs)
+- [Pool](./System.Collections.Generic/Pools/Pool.cs)
+- [Pool.DefaultProvider](./System.Collections.Generic/Pools/Pool.DefaultProvider.cs)
 
 ### Misc.
 - [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
@@ -127,6 +132,7 @@
 ## System.Collection.Concurrent
 
 ### Pool
+- [Array1ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/Array1ConcurrentPool%7BT%7D.cs)
 - [ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentPool%7BT%7D.cs)
 - [ListConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ListConcurrentPool%7BT%7D.cs)
 - [DictionaryConcurrentPool\<TKey, TValue>](./System.Collections.Concurrent/Pools/DictionaryConcurrentPool%7BTKey%2CTValue%7D.cs)
@@ -137,6 +143,9 @@
 - [ConcurrentDictionaryPool\<TKey, TValue>](./System.Collections.Concurrent/Pools/ConcurrentDictionaryPool%7BTKey%2CTValue%7D.cs)
 - [ConcurrentQueuePool\<T>](./System.Collections.Concurrent/Pools/ConcurrentQueuePool%7BT%7D.cs)
 - [ConcurrentStackPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentStackPool%7BT%7D.cs)
+- [IConcurrentPoolProvider](./System.Collections.Concurrent/Pools/IConcurrentPoolProvider.cs)
+- [ConcurrentPool](./System.Collections.Concurrent/Pools/ConcurrentPool.cs)
+- [ConcurrentPool.DefaultProvider](./System.Collections.Concurrent/Pools/ConcurrentPool.DefaultProvider.cs)
 
 ## System.Fluent
 
