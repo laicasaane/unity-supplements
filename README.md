@@ -151,6 +151,8 @@
 - [GridRange.Enumerator](./System.Grid/GridRange.Enumerator.cs)
 - [GridSize](./System.Grid/GridSize.cs)
 - [ClampedGridSize](./System.Grid/ClampedGridSize.cs)
+- [GridPartitioner](./System.Grid/GridPartitioner.cs)
+- [ClampedGridPartitioner](./System.Grid/ClampedGridPartitioner.cs)
 - [GridValue\<T>](./System.Grid/GridValue%7BT%7D.cs)
 - [IGridValues\<T>](./System.Grid/IGridValues%7BT%7D.cs)
 - [IGridValueEnumerator\<T>](./System.Grid/IGridValueEnumerator%7BT%7D.cs)
