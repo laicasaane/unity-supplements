@@ -337,23 +337,5 @@ namespace System.Grid
 
         public static bool operator !=(in GridRange lhs, in GridRange rhs)
             => !lhs.Equals(in rhs);
-
-        public static GridRange operator +(in GridRange lhs, in GridIndex rhs)
-            => new GridRange(
-                lhs.Size + rhs,
-                lhs.Clamped,
-                lhs.Start + rhs,
-                lhs.End + rhs,
-                lhs.IsFromEnd
-            );
-
-        public static GridRange operator -(in GridRange lhs, in GridIndex rhs)
-            => new GridRange(
-                lhs.Size - rhs,
-                lhs.Clamped,
-                lhs.Start - rhs,
-                lhs.End - rhs,
-                lhs.IsFromEnd
-            );
     }
 }
