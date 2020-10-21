@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -201,14 +201,8 @@ namespace System.Grid
                 step.Row > this.value.Row || step.Column > this.value.Column)
                 return;
 
-            var (rowCount, colCount) = this.value / step;
             var extend = rangeSize - GridIndex.One;
-
-            if ((rowCount - 1) * step.Row + extend.Row >= this.value.Row)
-                rowCount -= 1;
-
-            if ((colCount - 1) * step.Column + extend.Column >= this.value.Column)
-                colCount -= 1;
+            var (rowCount, colCount) = (this.value / step);
 
             switch (direction)
             {
@@ -219,7 +213,13 @@ namespace System.Grid
                             for (var c = 0; c < colCount; c++)
                             {
                                 var pivot = new GridIndex(r * step.Row, c * step.Column);
-                                output.Add(IndexRange(pivot, GridIndex.Zero, extend));
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                output.Add(new GridRange(this, pivot, upperExtend));
                             }
                         }
 
@@ -233,7 +233,13 @@ namespace System.Grid
                             for (var r = 0; r < rowCount; r++)
                             {
                                 var pivot = new GridIndex(r * step.Row, c * step.Column);
-                                output.Add(IndexRange(pivot, GridIndex.Zero, extend));
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                output.Add(new GridRange(this, pivot, upperExtend));
                             }
                         }
 
@@ -279,14 +285,8 @@ namespace System.Grid
                 step.Row > sliceSize.value.Row || step.Column > sliceSize.value.Column)
                 return;
 
-            var (rowCount, colCount) = sliceSize.value / step;
             var extend = rangeSize - GridIndex.One;
-
-            if ((rowCount - 1) * step.Row + extend.Row >= sliceSize.value.Row)
-                rowCount -= 1;
-
-            if ((colCount - 1) * step.Column + extend.Column >= sliceSize.value.Column)
-                colCount -= 1;
+            var (rowCount, colCount) = (this.value / step) - extend;
 
             switch (direction)
             {
@@ -296,10 +296,18 @@ namespace System.Grid
                         {
                             for (var c = 0; c < colCount; c++)
                             {
-                                var row = r * step.Row + normalSlice.Start.Row;
-                                var col = c * step.Column + normalSlice.Start.Column;
+                                var pivot = new GridIndex(
+                                    r * step.Row + normalSlice.Start.Row,
+                                    c * step.Column + normalSlice.Start.Column
+                                );
 
-                                output.Add(IndexRange(new GridIndex(row, col), GridIndex.Zero, extend));
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                output.Add(new GridRange(this, pivot, upperExtend));
                             }
                         }
 
@@ -312,10 +320,18 @@ namespace System.Grid
                         {
                             for (var r = 0; r < rowCount; r++)
                             {
-                                var row = r * step.Row + normalSlice.Start.Row;
-                                var col = c * step.Column + normalSlice.Start.Column;
+                                var pivot = new GridIndex(
+                                    r * step.Row + normalSlice.Start.Row,
+                                    c * step.Column + normalSlice.Start.Column
+                                );
 
-                                output.Add(IndexRange(new GridIndex(row, col), GridIndex.Zero, extend));
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                output.Add(new GridRange(this, pivot, upperExtend));
                             }
                         }
 
@@ -354,14 +370,8 @@ namespace System.Grid
                 step.Row > this.value.Row || step.Column > this.value.Column)
                 yield break;
 
-            var (rowCount, colCount) = this.value / step;
             var extend = rangeSize - GridIndex.One;
-
-            if ((rowCount - 1) * step.Row + extend.Row >= this.value.Row)
-                rowCount -= 1;
-
-            if ((colCount - 1) * step.Column + extend.Column >= this.value.Column)
-                colCount -= 1;
+            var (rowCount, colCount) = (this.value / step) - extend;
 
             switch (direction)
             {
@@ -372,7 +382,13 @@ namespace System.Grid
                             for (var c = 0; c < colCount; c++)
                             {
                                 var pivot = new GridIndex(r * step.Row, c * step.Column);
-                                yield return IndexRange(pivot, GridIndex.Zero, extend);
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                yield return new GridRange(this, pivot, upperExtend);
                             }
                         }
 
@@ -386,7 +402,13 @@ namespace System.Grid
                             for (var r = 0; r < rowCount; r++)
                             {
                                 var pivot = new GridIndex(r * step.Row, c * step.Column);
-                                yield return IndexRange(pivot, GridIndex.Zero, extend);
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                yield return new GridRange(this, pivot, upperExtend);
                             }
                         }
 
@@ -434,14 +456,8 @@ namespace System.Grid
                 step.Row > sliceSize.value.Row || step.Column > sliceSize.value.Column)
                 yield break;
 
-            var (rowCount, colCount) = sliceSize.value / step;
             var extend = rangeSize - GridIndex.One;
-
-            if ((rowCount - 1) * step.Row + extend.Row >= sliceSize.value.Row)
-                rowCount -= 1;
-
-            if ((colCount - 1) * step.Column + extend.Column >= sliceSize.value.Column)
-                colCount -= 1;
+            var (rowCount, colCount) = (this.value / step) - extend;
 
             switch (direction)
             {
@@ -451,10 +467,18 @@ namespace System.Grid
                         {
                             for (var c = 0; c < colCount; c++)
                             {
-                                var row = r * step.Row + normalSlice.Start.Row;
-                                var col = c * step.Column + normalSlice.Start.Column;
+                                var pivot = new GridIndex(
+                                    r * step.Row + normalSlice.Start.Row,
+                                    c * step.Column + normalSlice.Start.Column
+                                );
 
-                                yield return IndexRange(new GridIndex(row, col), GridIndex.Zero, extend);
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                yield return new GridRange(this, pivot, upperExtend);
                             }
                         }
 
@@ -467,10 +491,18 @@ namespace System.Grid
                         {
                             for (var r = 0; r < rowCount; r++)
                             {
-                                var row = r * step.Row + normalSlice.Start.Row;
-                                var col = c * step.Column + normalSlice.Start.Column;
+                                var pivot = new GridIndex(
+                                    r * step.Row + normalSlice.Start.Row,
+                                    c * step.Column + normalSlice.Start.Column
+                                );
 
-                                yield return IndexRange(new GridIndex(row, col), GridIndex.Zero, extend);
+                                var upperExtend = pivot + extend;
+
+                                if (upperExtend.Row >= this.value.Row ||
+                                    upperExtend.Column >= this.value.Column)
+                                    break;
+
+                                yield return new GridRange(this, pivot, upperExtend);
                             }
                         }
 
