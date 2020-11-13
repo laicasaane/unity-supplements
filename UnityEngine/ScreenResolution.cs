@@ -66,7 +66,7 @@ namespace UnityEngine
 
         public void Apply(bool fullscreen = false)
         {
-            var mode = fullscreen ? FullScreenMode.ExclusiveFullScreen : FullScreenMode.Windowed;
+            var mode = fullscreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
 
 #if !UNITY_EDITOR
             Screen.SetResolution(this.Width, this.Height, mode);
