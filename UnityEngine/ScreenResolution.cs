@@ -73,6 +73,13 @@ namespace UnityEngine
 #endif
         }
 
+        public void Apply(FullScreenMode mode)
+        {
+#if !UNITY_EDITOR
+            Screen.SetResolution(this.Width, this.Height, mode);
+#endif
+        }
+
         private ScreenResolution(SerializationInfo info, StreamingContext context)
         {
             this.Width = info.GetInt32OrDefault(nameof(this.Width));
