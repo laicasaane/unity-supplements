@@ -21,7 +21,7 @@
             if (collection != null)
                 cache.Input.AddRange(collection);
 
-            for (var i = 0; i < cache.Input.Count; i++)
+            while (cache.Input.Count > 0)
             {
                 var index = rand.Range(0, cache.Input.Count);
                 cache.Output.Add(cache.Input[index]);
