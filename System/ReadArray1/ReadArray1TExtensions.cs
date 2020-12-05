@@ -65,7 +65,7 @@ namespace System
             {
                 for (var i = offset; i < count; i++)
                 {
-                    ref var item = ref self[i];
+                    var item = self[i];
 
                     if (allowNull || item != null)
                         output.Add(item);
@@ -76,7 +76,7 @@ namespace System
 
             for (var i = offset; i < count; i++)
             {
-                ref var item = ref self[i];
+                var item = self[i];
 
                 if ((allowNull || item != null) && !output.Contains(item))
                     output.Add(item);

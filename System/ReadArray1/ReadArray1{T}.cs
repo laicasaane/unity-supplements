@@ -7,29 +7,49 @@ namespace System
     public readonly struct ReadArray1<T> : IReadOnlyList<T>, IEquatableReadOnlyStruct<ReadArray1<T>>
     {
         private readonly T[] source;
-        private readonly bool hasSource;
+        private readonly int length;
+
+        public int Length => this.length;
+
+        int IReadOnlyCollection<T>.Count => this.length;
+
+        public ref readonly T this[int index]
+        {
+            get
+            {
+                if ((uint)index >= (uint)this.length)
+                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+                return ref this.source[index];
+            }
+        }
+
+        T IReadOnlyList<T>.this[int index]
+        {
+            get
+            {
+                if ((uint)index >= (uint)this.length)
+                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+                return this.source[index];
+            }
+        }
 
         public ReadArray1(T[] source)
         {
-            this.source = source ?? _empty;
-            this.Length = this.source.Length;
-            this.hasSource = true;
+            if (source == null)
+            {
+                this = default;
+                return;
+            }
+
+            this.source = source;
+            this.length = this.source.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal T[] GetSource()
-            => this.hasSource ? (this.source ?? _empty) : _empty;
-
-        public ref T this[int index]
-            => ref GetSource()[index];
-
-        T IReadOnlyList<T>.this[int index]
-            => GetSource()[index];
-
-        public int Length { get; }
-
-        int IReadOnlyCollection<T>.Count
-            => this.Length;
+            => (0 >= (uint)this.length) ? _empty : this.source;
 
         public override int GetHashCode()
             => GetSource().GetHashCode();
@@ -61,13 +81,11 @@ namespace System
 
         public T[] ToArray()
         {
-            var source = GetSource();
-            var array = new T[source.Length];
+            if (0 >= (uint)this.length)
+                return Array.Empty<T>();
 
-            for (var i = 0; i < source.Length; i++)
-            {
-                array[i] = source[i];
-            }
+            var array = new T[this.length];
+            Array.Copy(this.source, 0, array, 0, this.length);
 
             return array;
         }
@@ -81,7 +99,7 @@ namespace System
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
-        private static T[] _empty { get; } = new T[0];
+        private static readonly T[] _empty = Array.Empty<T>();
 
         public static ReadArray1<T> Empty { get; } = new ReadArray1<T>(_empty);
 
