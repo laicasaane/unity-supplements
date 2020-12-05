@@ -2,36 +2,39 @@
 {
     public readonly struct Segment1<T> : ISegment<T>, IEquatableReadOnlyStruct<Segment1<T>>
     {
-        public bool HasSource { get; }
 
         private readonly T source;
+        private readonly bool hasSource;
+        private readonly int count;
+
+        public bool HasSource => this.hasSource;
+
+        public int Count => this.count;
 
         public Segment1(T source)
         {
             this.source = source;
-            this.HasSource = true;
-            this.Count = 1;
+            this.hasSource = true;
+            this.count = 1;
         }
 
         public T this[int index]
         {
             get
             {
-                if (index < 0 || index >= this.Count)
+                if ((uint)index >= (uint)this.count)
                     throw new IndexOutOfRangeException(nameof(index));
 
                 return this.source;
             }
         }
 
-        public int Count { get; }
-
         public override int GetHashCode()
         {
             var hashCode = -989046110;
-            hashCode = hashCode * -1521134295 + this.HasSource.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.hasSource.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode(this.source);
-            hashCode = hashCode * -1521134295 + this.Count.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.count.GetHashCode();
             return hashCode;
         }
 
@@ -39,19 +42,19 @@
             => obj is Segment1<T> other && Equals(in other);
 
         public bool Equals(Segment1<T> other)
-            => this.HasSource == other.HasSource && Equals(this.source, other.source) &&
-               this.Count == other.Count;
+            => this.hasSource == other.HasSource && Equals(this.source, other.source) &&
+               this.count == other.Count;
 
         public bool Equals(in Segment1<T> other)
-            => this.HasSource == other.HasSource && Equals(this.source, other.source) &&
-               this.Count == other.Count;
+            => this.hasSource == other.HasSource && Equals(this.source, other.source) &&
+               this.count == other.Count;
 
         public Segment1<T> Slice(int index)
         {
-            if (index < 0 || index >= this.Count)
+            if (index < 0 || index >= this.count)
                 throw new IndexOutOfRangeException(nameof(index));
 
-            if (this.Count == 0)
+            if (this.count == 0)
                 return new Segment1<T>();
 
             return new Segment1<T>(this.source);
@@ -59,10 +62,10 @@
 
         public Segment1<T> Slice(int index, int count)
         {
-            if ((uint)index > (uint)this.Count || (uint)count > (uint)(this.Count - index))
+            if ((uint)index > (uint)this.count || (uint)count > (uint)(this.count - index))
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            if (this.Count == 0)
+            if (this.count == 0)
                 return new Segment1<T>();
 
             return new Segment1<T>(this.source);
@@ -70,10 +73,10 @@
 
         public Segment1<T> Skip(int count)
         {
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            if (count == this.Count)
+            if (count == this.count)
                 return new Segment1<T>();
 
             return new Segment1<T>(this.source);
@@ -81,10 +84,10 @@
 
         public Segment1<T> SkipLast(int count)
         {
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            if (count == this.Count)
+            if (count == this.count)
                 return new Segment1<T>();
 
             return new Segment1<T>(this.source);
@@ -92,7 +95,7 @@
 
         public Segment1<T> Take(int count)
         {
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
             if (count == 0)
@@ -103,7 +106,7 @@
 
         public Segment1<T> TakeLast(int count)
         {
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
             if (count == 0)

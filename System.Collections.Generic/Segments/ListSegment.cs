@@ -3,30 +3,33 @@
     public readonly partial struct ListSegment<T> : ISegment<T>, IEquatableReadOnlyStruct<ListSegment<T>>
     {
         private readonly ReadList<T> source;
+        private readonly bool hasSource;
+        private readonly int count;
+        private readonly int offset;
 
-        public bool HasSource { get; }
+        public bool HasSource => this.hasSource;
 
-        public int Offset { get; }
+        public int Offset => this.offset;
 
-        public int Count { get; }
+        public int Count => this.count;
 
         public T this[int index]
         {
             get
             {
-                if (index < 0 || index >= this.Count)
+                if ((uint)index >= (uint)this.count)
                     throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-                return this.source[this.Offset + index];
+                return this.source[this.offset + index];
             }
         }
 
         public ListSegment(in ReadList<T> source)
         {
             this.source = source;
-            this.HasSource = true;
-            this.Offset = 0;
-            this.Count = this.source.Count;
+            this.hasSource = true;
+            this.offset = 0;
+            this.count = this.source.Count;
         }
 
         public ListSegment(in ReadList<T> source, int offset, int count)
@@ -39,60 +42,60 @@
             if ((uint)offset > (uint)this.source.Count || (uint)count > (uint)(this.source.Count - offset))
                 throw ThrowHelper.GetSegmentCtorValidationFailedException(this.source, offset, count);
 
-            this.HasSource = true;
-            this.Offset = offset;
-            this.Count = count;
+            this.hasSource = true;
+            this.offset = offset;
+            this.count = count;
         }
 
         public ListSegment<T> Slice(int index)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)index > (uint)this.Count)
+            if ((uint)index > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new ListSegment<T>(this.source, this.Offset + index, this.Count - index);
+            return new ListSegment<T>(this.source, this.offset + index, this.count - index);
         }
 
         public ListSegment<T> Slice(int index, int count)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)index > (uint)this.Count || (uint)count > (uint)(this.Count - index))
+            if ((uint)index > (uint)this.count || (uint)count > (uint)(this.count - index))
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new ListSegment<T>(this.source, this.Offset + index, count);
+            return new ListSegment<T>(this.source, this.offset + index, count);
         }
 
         public ListSegment<T> Skip(int count)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new ListSegment<T>(this.source, this.Offset + count, this.Count - count);
+            return new ListSegment<T>(this.source, this.offset + count, this.count - count);
         }
 
         public ListSegment<T> Take(int count)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new ListSegment<T>(this.source, this.Offset, count);
+            return new ListSegment<T>(this.source, this.offset, count);
         }
 
         public ListSegment<T> TakeLast(int count)
-            => Skip(this.Count - count);
+            => Skip(this.count - count);
 
         public ListSegment<T> SkipLast(int count)
-            => Take(this.Count - count);
+            => Take(this.count - count);
 
         ISegment<T> ISegment<T>.Slice(int index)
             => Slice(index);
@@ -114,13 +117,13 @@
 
         public T[] ToArray()
         {
-            if (!this.HasSource || this.Count == 0)
+            if (!this.hasSource || this.count == 0)
                 return new T[0];
 
-            var array = new T[this.Count];
-            var count = this.Count + this.Offset;
+            var array = new T[this.count];
+            var count = this.count + this.offset;
 
-            for (int i = this.Offset, j = 0; i < count; i++, j++)
+            for (int i = this.offset, j = 0; i < count; i++, j++)
             {
                 array[j] = this.source[i];
             }
@@ -132,12 +135,12 @@
         {
             var index = -1;
 
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return index;
 
-            var count = this.Count + this.Offset;
+            var count = this.count + this.offset;
 
-            for (var i = this.Offset; i < count; i++)
+            for (var i = this.offset; i < count; i++)
             {
                 if (this.source[i].Equals(item))
                 {
@@ -146,17 +149,17 @@
                 }
             }
 
-            return index >= 0 ? index - this.Offset : -1;
+            return index >= 0 ? index - this.offset : -1;
         }
 
         public bool Contains(T item)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return false;
 
-            var count = this.Count + this.Offset;
+            var count = this.count + this.offset;
 
-            for (var i = this.Offset; i < count; i++)
+            for (var i = this.offset; i < count; i++)
             {
                 if (this.source[i].Equals(item))
                     return true;
@@ -166,7 +169,7 @@
         }
 
         public Enumerator GetEnumerator()
-            => new Enumerator(this.HasSource ? this : Empty);
+            => new Enumerator(this.hasSource ? this : Empty);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();
@@ -178,20 +181,20 @@
             => obj is ListSegment<T> other && Equals(in other);
 
         public bool Equals(ListSegment<T> other)
-            => this.HasSource == other.HasSource && this.source.Equals(in other.source) &&
-               other.Count == this.Count && other.Offset == this.Offset;
+            => this.hasSource == other.HasSource && this.source.Equals(in other.source) &&
+               other.Count == this.count && other.Offset == this.offset;
 
         public bool Equals(in ListSegment<T> other)
-            => this.HasSource == other.HasSource && this.source.Equals(in other.source) &&
-               other.Count == this.Count && other.Offset == this.Offset;
+            => this.hasSource == other.HasSource && this.source.Equals(in other.source) &&
+               other.Count == this.count && other.Offset == this.offset;
 
         public override int GetHashCode()
         {
             var hashCode = 1328453276;
-            hashCode = hashCode * -1521134295 + this.HasSource.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.hasSource.GetHashCode();
             hashCode = hashCode * -1521134295 + this.source.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.Offset.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.Count.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.offset.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.count.GetHashCode();
             return hashCode;
         }
 

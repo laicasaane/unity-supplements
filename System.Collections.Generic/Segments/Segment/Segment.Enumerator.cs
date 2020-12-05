@@ -13,7 +13,7 @@
             {
                 this.source = segment.source;
 
-                if (!segment.HasSource)
+                if (!segment.hasSource)
                 {
                     this.start = 0;
                     this.end = 0;
@@ -21,8 +21,8 @@
                     return;
                 }
 
-                this.start = segment.Offset;
-                this.end = segment.Offset + segment.Count;
+                this.start = segment.offset;
+                this.end = segment.offset + segment.count;
                 this.current = this.start - 1;
             }
 

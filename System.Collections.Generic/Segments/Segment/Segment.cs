@@ -5,22 +5,25 @@ namespace System.Collections.Generic
     public readonly partial struct Segment<T> : ISegment<T>, IEquatableReadOnlyStruct<Segment<T>>
     {
         private readonly ISegmentSource<T> source;
+        private readonly bool hasSource;
+        private readonly int count;
+        private readonly int offset;
 
-        public bool HasSource { get; }
+        public bool HasSource => this.hasSource;
 
-        public int Offset { get; }
+        public int Offset => this.offset;
 
-        public int Count { get; }
+        public int Count => this.count;
 
         public T this[int index]
-            => GetSource()[this.Offset + index];
+            => GetSource()[this.offset + index];
 
         public Segment(in ReadArray1<T> source)
         {
             this.source = source == null ? _empty : new Array1Source(source);
-            this.HasSource = true;
-            this.Offset = 0;
-            this.Count = this.source.Count;
+            this.hasSource = true;
+            this.offset = 0;
+            this.count = this.source.Count;
         }
 
         public Segment(in ReadArray1<T> source, int offset, int count)
@@ -33,17 +36,17 @@ namespace System.Collections.Generic
             if ((uint)offset > (uint)this.source.Count || (uint)count > (uint)(this.source.Count - offset))
                 throw ThrowHelper.GetSegmentCtorValidationFailedException(this.source, offset, count);
 
-            this.HasSource = true;
-            this.Offset = offset;
-            this.Count = count;
+            this.hasSource = true;
+            this.offset = offset;
+            this.count = count;
         }
 
         public Segment(ISegmentSource<T> source)
         {
             this.source = source ?? _empty;
-            this.HasSource = true;
-            this.Offset = 0;
-            this.Count = source.Count;
+            this.hasSource = true;
+            this.offset = 0;
+            this.count = source.Count;
         }
 
         public Segment(ISegmentSource<T> source, int offset, int count)
@@ -52,64 +55,64 @@ namespace System.Collections.Generic
                 throw ThrowHelper.GetSegmentCtorValidationFailedException(source, offset, count);
 
             this.source = source;
-            this.HasSource = true;
-            this.Offset = offset;
-            this.Count = count;
+            this.hasSource = true;
+            this.offset = offset;
+            this.count = count;
         }
 
         public Segment<T> Slice(int index)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)index > (uint)this.Count)
+            if ((uint)index > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new Segment<T>(this.source, this.Offset + index, this.Count - index);
+            return new Segment<T>(this.source, this.offset + index, this.count - index);
         }
 
         public Segment<T> Slice(int index, int count)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)index > (uint)this.Count || (uint)count > (uint)(this.Count - index))
+            if ((uint)index > (uint)this.count || (uint)count > (uint)(this.count - index))
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-            return new Segment<T>(this.source, this.Offset + index, count);
+            return new Segment<T>(this.source, this.offset + index, count);
         }
 
         public Segment<T> Skip(int count)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new Segment<T>(this.source, this.Offset + count, this.Count - count);
+            return new Segment<T>(this.source, this.offset + count, this.count - count);
         }
 
         public Segment<T> Take(int count)
         {
-            if (!this.HasSource)
+            if (!this.hasSource)
                 return Empty;
 
-            if ((uint)count > (uint)this.Count)
+            if ((uint)count > (uint)this.count)
                 throw ThrowHelper.GetArgumentOutOfRange_CountException();
 
-            return new Segment<T>(this.source, this.Offset, count);
+            return new Segment<T>(this.source, this.offset, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ISegmentSource<T> GetSource()
-            => this.HasSource ? this.source : _empty;
+            => this.hasSource ? this.source : _empty;
 
         public Segment<T> TakeLast(int count)
-            => Skip(this.Count - count);
+            => Skip(this.count - count);
 
         public Segment<T> SkipLast(int count)
-            => Take(this.Count - count);
+            => Take(this.count - count);
 
         ISegment<T> ISegment<T>.Slice(int index)
             => Slice(index);
@@ -132,10 +135,10 @@ namespace System.Collections.Generic
         public T[] ToArray()
         {
             var source = GetSource();
-            var array = new T[this.Count];
-            var count = this.Count + this.Offset;
+            var array = new T[this.count];
+            var count = this.count + this.offset;
 
-            for (int i = this.Offset, j = 0; i < count; i++, j++)
+            for (int i = this.offset, j = 0; i < count; i++, j++)
             {
                 array[j] = source[i];
             }
@@ -152,9 +155,9 @@ namespace System.Collections.Generic
             if (source.Count <= 0)
                 return index;
 
-            var count = this.Count + this.Offset;
+            var count = this.count + this.offset;
 
-            for (var i = this.Offset; i < count; i++)
+            for (var i = this.offset; i < count; i++)
             {
                 if (source[i].Equals(item))
                 {
@@ -163,15 +166,15 @@ namespace System.Collections.Generic
                 }
             }
 
-            return index >= 0 ? index - this.Offset : -1;
+            return index >= 0 ? index - this.offset : -1;
         }
 
         public bool Contains(T item)
         {
             var source = GetSource();
-            var count = this.Count + this.Offset;
+            var count = this.count + this.offset;
 
-            for (var i = this.Offset; i < count; i++)
+            for (var i = this.offset; i < count; i++)
             {
                 if (source[i].Equals(item))
                     return true;
@@ -181,7 +184,7 @@ namespace System.Collections.Generic
         }
 
         public Enumerator GetEnumerator()
-            => new Enumerator(this.HasSource ? this : Empty);
+            => new Enumerator(this.hasSource ? this : Empty);
 
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();
@@ -193,20 +196,20 @@ namespace System.Collections.Generic
             => obj is Segment<T> other && Equals(in other);
 
         public bool Equals(Segment<T> other)
-            => this.HasSource == other.HasSource && this.source.Equals(other) &&
-               this.Count == other.Count && this.Offset == other.Offset;
+            => this.hasSource == other.HasSource && this.source.Equals(other) &&
+               this.count == other.Count && this.offset == other.Offset;
 
         public bool Equals(in Segment<T> other)
-            => this.HasSource == other.HasSource && this.source.Equals(other) &&
-               this.Count == other.Count && this.Offset == other.Offset;
+            => this.hasSource == other.HasSource && this.source.Equals(other) &&
+               this.count == other.Count && this.offset == other.Offset;
 
         public override int GetHashCode()
         {
             var hashCode = 1328453276;
-            hashCode = hashCode * -1521134295 + this.HasSource.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.hasSource.GetHashCode();
             hashCode = hashCode * -1521134295 + GetSource().GetHashCode();
-            hashCode = hashCode * -1521134295 + this.Offset.GetHashCode();
-            hashCode = hashCode * -1521134295 + this.Count.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.offset.GetHashCode();
+            hashCode = hashCode * -1521134295 + this.count.GetHashCode();
             return hashCode;
         }
 
