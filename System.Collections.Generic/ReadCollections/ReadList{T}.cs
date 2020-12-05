@@ -7,21 +7,20 @@ namespace System.Collections.Generic
         private readonly List<T> source;
         private readonly bool hasSource;
 
+        public int Count => GetSource().Count;
+
+        public T this[int index]
+            => GetSource()[index];
+
         public ReadList(List<T> source)
         {
             this.source = source ?? _empty;
-            this.Count = this.source.Count;
             this.hasSource = true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal List<T> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
-
-        public T this[int index]
-            => GetSource()[index];
-
-        public int Count { get; }
 
         public override int GetHashCode()
             => GetSource().GetHashCode();

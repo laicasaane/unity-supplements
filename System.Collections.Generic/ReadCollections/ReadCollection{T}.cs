@@ -7,14 +7,13 @@ namespace System.Collections.Generic
         private readonly ICollection<T> source;
         private readonly bool hasSource;
 
+        public int Count => GetSource().Count;
+
         public ReadCollection(ICollection<T> source)
         {
             this.source = source ?? _empty;
-            this.Count = this.source.Count;
             this.hasSource = true;
         }
-
-        public int Count { get; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal ICollection<T> GetSource()

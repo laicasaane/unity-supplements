@@ -7,18 +7,17 @@ namespace System.Collections.Generic
         private readonly HashSet<T> source;
         private readonly bool hasSource;
 
+        public int Count => GetSource().Count;
+
         public ReadHashSet(HashSet<T> source)
         {
             this.source = source ?? _empty;
-            this.Count = this.source.Count;
             this.hasSource = true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal HashSet<T> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
-
-        public int Count { get; }
 
         public override int GetHashCode()
             => GetSource().GetHashCode();

@@ -11,17 +11,6 @@ namespace System.Collections.Generic
         private readonly Dictionary<TKey, TValue> source;
         private readonly bool hasSource;
 
-        public ReadDictionary(Dictionary<TKey, TValue> source)
-        {
-            this.source = source ?? _empty;
-            this.Count = this.source.Count;
-            this.hasSource = true;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal Dictionary<TKey, TValue> GetSource()
-            => this.hasSource ? (this.source ?? _empty) : _empty;
-
         public TValue this[TKey key]
             => GetSource()[key];
 
@@ -37,7 +26,17 @@ namespace System.Collections.Generic
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
             => GetSource().Values;
 
-        public int Count { get; }
+        public int Count => GetSource().Count;
+
+        public ReadDictionary(Dictionary<TKey, TValue> source)
+        {
+            this.source = source ?? _empty;
+            this.hasSource = true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal Dictionary<TKey, TValue> GetSource()
+            => this.hasSource ? (this.source ?? _empty) : _empty;
 
         public override int GetHashCode()
             => GetSource().GetHashCode();
