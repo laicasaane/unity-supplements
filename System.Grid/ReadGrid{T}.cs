@@ -50,6 +50,9 @@ namespace System.Grid
         internal Grid<T> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
 
+        public void CopyTo(Grid<T> dest)
+            => GetSource().CopyTo(dest);
+
         public bool ContainsIndex(in GridIndex index)
             => GetSource().ContainsIndex(index);
 

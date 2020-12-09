@@ -160,6 +160,14 @@ namespace System.Grid
             this.data.AddRange(data.data);
         }
 
+        public void CopyTo(Grid<T> dest)
+        {
+            if (dest == null)
+                throw new ArgumentNullException(nameof(dest));
+
+            dest.Initialize(this);
+        }
+
         public void Clear()
         {
             this.Size = GridSize.Zero;
