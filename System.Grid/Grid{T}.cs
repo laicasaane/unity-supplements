@@ -14,7 +14,24 @@ namespace System.Grid
 
         public IEnumerable<T> Values => this.data.Values;
 
-        public T this[in GridIndex key] => this.data[key];
+        public T this[in GridIndex key]
+        {
+            get
+            {
+                if (!this.data.TryGetValue(key, out var value))
+                    throw new ArgumentOutOfRangeException(nameof(key));
+
+                return value;
+            }
+
+            set
+            {
+                if (!this.data.ContainsKey(key))
+                    throw new ArgumentOutOfRangeException(nameof(key));
+
+                this.data[key] = value;
+            }
+        }
 
         private readonly Dictionary<GridIndex, T> data;
 
