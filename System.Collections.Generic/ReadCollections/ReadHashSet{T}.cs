@@ -87,6 +87,9 @@ namespace System.Collections.Generic
         public static implicit operator ReadHashSet<T>(HashSet<T> source)
             => source == null ? Empty : new ReadHashSet<T>(source);
 
+        public static implicit operator ReadCollection<T>(in ReadHashSet<T> source)
+            => new ReadCollection<T>(source.GetSource());
+
         public static bool operator ==(in ReadHashSet<T> a, in ReadHashSet<T> b)
             => a.Equals(in b);
 

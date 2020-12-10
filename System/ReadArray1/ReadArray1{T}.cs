@@ -106,6 +106,9 @@ namespace System
         public static implicit operator ReadArray1<T>(T[] source)
             => source == null ? Empty : new ReadArray1<T>(source);
 
+        public static implicit operator ReadCollection<T>(in ReadArray1<T> source)
+            => new ReadCollection<T>(source.GetSource());
+
         public static bool operator ==(in ReadArray1<T> a, in ReadArray1<T> b)
             => a.Equals(in b);
 

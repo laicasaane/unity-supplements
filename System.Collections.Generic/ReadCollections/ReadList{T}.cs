@@ -153,6 +153,9 @@ namespace System.Collections.Generic
         public static implicit operator ReadList<T>(List<T> source)
             => source == null ? Empty : new ReadList<T>(source);
 
+        public static implicit operator ReadCollection<T>(in ReadList<T> source)
+            => new ReadCollection<T>(source.GetSource());
+
         public static bool operator ==(in ReadList<T> a, in ReadList<T> b)
             => a.Equals(in b);
 

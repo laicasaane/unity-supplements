@@ -91,6 +91,9 @@ namespace System.Collections.Generic
         public static implicit operator ReadDictionary<TKey, TValue>(Dictionary<TKey, TValue> source)
             => source == null ? Empty : new ReadDictionary<TKey, TValue>(source);
 
+        public static implicit operator ReadCollection<KeyValuePair<TKey, TValue>>(in ReadDictionary<TKey, TValue> source)
+            => new ReadCollection<KeyValuePair<TKey, TValue>>(source.GetSource());
+
         public static bool operator ==(in ReadDictionary<TKey, TValue> a, in ReadDictionary<TKey, TValue> b)
             => a.Equals(in b);
 
