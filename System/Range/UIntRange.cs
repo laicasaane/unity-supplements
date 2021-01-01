@@ -182,7 +182,7 @@ namespace System
                 this.fromEnd = range.IsFromEnd;
 
                 this.current = this.fromEnd ? this.end : this.start;
-                this.flag = -1;
+                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
             }
 
             public bool MoveNext()

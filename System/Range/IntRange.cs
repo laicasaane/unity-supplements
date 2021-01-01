@@ -74,7 +74,7 @@ namespace System
             => FromEnd();
 
         public int Count()
-            => Math.Abs(this.Start - this.End) + 1;
+            => Math.Max(this.Start - this.End + 1, 0);
 
         public bool Contains(int value)
             => this.Start < this.End
@@ -125,7 +125,7 @@ namespace System
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
 
         public static IntRange FromSize(int value, bool fromEnd = false)
-            => new IntRange(0, Math.Abs(value - 1), fromEnd);
+            => new IntRange(0, Math.Max(value - 1, 0), fromEnd);
 
         public static IntRange FromStart(int start, int end)
             => new IntRange(start, end, false);
@@ -176,7 +176,7 @@ namespace System
                 this.fromEnd = range.IsFromEnd;
 
                 this.current = this.fromEnd ? this.end : this.start;
-                this.flag = -1;
+                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
             }
 
             public bool MoveNext()

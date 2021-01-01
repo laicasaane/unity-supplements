@@ -131,14 +131,14 @@ namespace System.Grid
         {
             if (this.Clamped)
             {
-                var row = Math.Abs(this.End.Row - this.Start.Row) + 1;
-                var col = Math.Abs(this.End.Column - this.Start.Column) + 1;
+                var row = Math.Max(this.End.Row - this.Start.Row + 1, 0);
+                var col = Math.Max(this.End.Column - this.Start.Column + 1, 0);
                 return row * col;
             }
 
             var startIndex = this.Start.ToIndex1(this.Size);
             var endIndex = this.End.ToIndex1(this.Size);
-            return Math.Abs(endIndex - startIndex) + 1;
+            return Math.Max(endIndex - startIndex + 1, 0);
         }
 
         public override bool Equals(object obj)

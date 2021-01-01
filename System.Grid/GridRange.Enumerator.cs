@@ -18,7 +18,6 @@ namespace System.Grid
             {
                 this.fromEnd = range.IsFromEnd;
                 this.byRow = range.Direction == GridDirection.Row;
-                this.flag = -1;
 
                 var size = (GridSize)range.Size;
 
@@ -53,6 +52,7 @@ namespace System.Grid
                 }
 
                 this.current = this.fromEnd ? this.end : this.start;
+                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
             }
 
             public bool MoveNext()

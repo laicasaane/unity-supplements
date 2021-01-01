@@ -85,10 +85,11 @@ namespace System.Grid
 
             return containsRow && containsCol;
         }
+
         public int Count()
         {
-            var row = Math.Abs(this.End.Row - this.Start.Row) + 1;
-            var col = Math.Abs(this.End.Column - this.Start.Column) + 1;
+            var row = Math.Max(this.End.Row - this.Start.Row + 1, 0);
+            var col = Math.Max(this.End.Column - this.Start.Column + 1, 0);
             return row * col;
         }
 
