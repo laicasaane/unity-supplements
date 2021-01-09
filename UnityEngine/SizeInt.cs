@@ -13,12 +13,9 @@ namespace UnityEngine
         {
             get
             {
-                switch (index)
-                {
-                    case 0: return this.Width;
-                    case 1: return this.Height;
-                    default: throw new IndexOutOfRangeException();
-                }
+                if (index == 0) return this.Width;
+                if (index == 1) return this.Height;
+                throw new IndexOutOfRangeException();
             }
         }
 

@@ -15,12 +15,9 @@ namespace System.Grid
         {
             get
             {
-                switch (index)
-                {
-                    case 0: return this.Row;
-                    case 1: return this.Column;
-                    default: throw new IndexOutOfRangeException();
-                }
+                if (index == 0) return this.Row;
+                if (index == 1) return this.Column;
+                throw new IndexOutOfRangeException();
             }
         }
 

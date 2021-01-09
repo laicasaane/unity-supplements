@@ -16,13 +16,10 @@ namespace System
         {
             get
             {
-                switch (index)
-                {
-                    case 0: return this.A;
-                    case 1: return this.B;
-                    case 2: return this.C;
-                    default: throw new IndexOutOfRangeException();
-                }
+                if (index == 0) return this.A;
+                if (index == 1) return this.B;
+                if (index == 2) return this.C;
+                throw new IndexOutOfRangeException();
             }
         }
 

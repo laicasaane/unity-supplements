@@ -31,12 +31,9 @@ namespace UnityEngine
         {
             get
             {
-                switch (index)
-                {
-                    case 0: return this.row;
-                    case 1: return this.column;
-                    default: throw new IndexOutOfRangeException();
-                }
+                if (index == 0) return this.row;
+                if (index == 1) return this.column;
+                throw new IndexOutOfRangeException();
             }
         }
 

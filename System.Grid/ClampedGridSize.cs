@@ -9,6 +9,16 @@ namespace System.Grid
 
         public int Column => this.value.Column;
 
+        public int this[int index]
+        {
+            get
+            {
+                if (index == 0) return this.value.Row;
+                if (index == 1) return this.value.Column;
+                throw new IndexOutOfRangeException();
+            }
+        }
+
         private readonly GridIndex value;
 
         public ClampedGridSize(int row, int column)
