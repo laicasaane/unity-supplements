@@ -7,20 +7,21 @@ namespace System
     public readonly struct ReadArray1<T> : IReadOnlyList<T>, IEquatableReadOnlyStruct<ReadArray1<T>>
     {
         private readonly T[] source;
-        private readonly int length;
 
-        public int Length => this.length;
+        public int Length => GetSource().Length;
 
-        int IReadOnlyCollection<T>.Count => this.length;
+        int IReadOnlyCollection<T>.Count => GetSource().Length;
 
         public ref readonly T this[int index]
         {
             get
             {
-                if ((uint)index >= (uint)this.length)
+                var source = GetSource();
+
+                if ((uint)index >= (uint)source.Length)
                     throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-                return ref this.source[index];
+                return ref source[index];
             }
         }
 
@@ -28,10 +29,12 @@ namespace System
         {
             get
             {
-                if ((uint)index >= (uint)this.length)
+                var source = GetSource();
+
+                if ((uint)index >= (uint)source.Length)
                     throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-                return this.source[index];
+                return source[index];
             }
         }
 
@@ -44,12 +47,11 @@ namespace System
             }
 
             this.source = source;
-            this.length = this.source.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal T[] GetSource()
-            => (0 >= (uint)this.length) ? _empty : this.source;
+            => this.source ?? _empty;
 
         public override int GetHashCode()
             => GetSource().GetHashCode();
@@ -81,11 +83,13 @@ namespace System
 
         public T[] ToArray()
         {
-            if (0 >= (uint)this.length)
+            var source = GetSource();
+
+            if (source.Length == 0)
                 return Array.Empty<T>();
 
-            var array = new T[this.length];
-            Array.Copy(this.source, 0, array, 0, this.length);
+            var array = new T[source.Length];
+            Array.Copy(source, 0, array, 0, source.Length);
 
             return array;
         }
