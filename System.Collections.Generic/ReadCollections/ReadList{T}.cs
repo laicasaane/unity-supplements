@@ -5,7 +5,6 @@ namespace System.Collections.Generic
     public readonly struct ReadList<T> : IReadOnlyList<T>, IEquatableReadOnlyStruct<ReadList<T>>
     {
         private readonly List<T> source;
-        private readonly bool hasSource;
 
         public int Count => GetSource().Count;
 
@@ -15,12 +14,11 @@ namespace System.Collections.Generic
         public ReadList(List<T> source)
         {
             this.source = source ?? _empty;
-            this.hasSource = true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal List<T> GetSource()
-            => this.hasSource ? (this.source ?? _empty) : _empty;
+            => this.source ?? _empty;
 
         public override int GetHashCode()
             => GetSource().GetHashCode();
