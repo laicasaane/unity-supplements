@@ -61,6 +61,25 @@
 ### Misc.
 - [Converter](./System/Converter.cs)
 
+## System.Delegates
+
+- [IAction](./System.Delegates/IAction.cs)
+- [IActionIn](./System.Delegates/IActionIn.cs)
+- [IActionRef](./System.Delegates/IActionRef.cs)
+- [IFunc](./System.Delegates/IFunc.cs)
+- [IFuncIn](./System.Delegates/IFuncIn.cs)
+- [IFuncRef](./System.Delegates/IFuncRef.cs)
+- [IPredicate](./System.Delegates/IPredicate.cs)
+- [IPredicateIn](./System.Delegates/IPredicateIn.cs)
+- [IPredicateRef](./System.Delegates/IPredicateRef.cs)
+
+## System.ValueDelegates
+
+- [ValueAction](./System.ValueDelegates/Action)
+- [ValueFunc](./System.ValueDelegates/Func)
+- [ValuePredicate](./System.ValueDelegates/Predicate)
+- [ValueDelegate](./System.ValueDelegates/Delegate)
+
 ## System.IO
 
 - [FileSystem](./System.IO/FileSystem.cs)
