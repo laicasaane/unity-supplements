@@ -166,6 +166,14 @@
 - [ConcurrentPool](./System.Collections.Concurrent/Pools/ConcurrentPool.cs)
 - [ConcurrentPool.DefaultProvider](./System.Collections.Concurrent/Pools/ConcurrentPool.DefaultProvider.cs)
 
+## System.Collection.ArrayBased
+
+- [ArrayList\<T>](./System.Collection.ArrayBased/ArrayList%7BT%7D.cs)
+- [ArrayDictionary\<TKey, TValue>](./System.Collection.ArrayBased/ArrayDictionary%7BTKey,TValue%7D.cs)
+- [ReadArrayList\<T>](./System.Collection.ArrayBased/ReadArrayList%7BT%7D.cs)
+- [ReadArrayDictionary\<TKey, TValue>](./System.Collection.ArrayBased/ReadArrayDictionary%7BTKey,TValue%7D.cs)
+- [RefReadArrayList\<T>](./System.Collection.ArrayBased/RefReadArrayList%7BT%7D.cs)
+
 ## System.Fluent
 
 - [ObjectExtensions.FluentDelegates](./System.Fluent/Extensions/ObjectExtensions.FluentDelegates.cs)
@@ -192,6 +200,13 @@
 - [Grid\<T>.GridValues](./System.Grid/Grid%7BT%7D.GridValues.cs)
 - [Grid\<T>.GridIndexedValues](./System.Grid/Grid%7BT%7D.GridIndexedValues.cs)
 - [ReadGrid\<T>](./System.Grid/ReadGrid%7BT%7D.cs)
+
+## System.Grid.ArrayBased
+
+- [ArrayGrid\<T>](./System.Grid.ArrayBased/ArrayGrid%7BT%7D.cs)
+- [ArrayGrid\<T>.GridValues](./System.Grid.ArrayBased/ArrayGrid%7BT%7D.GridValues.cs)
+- [ArrayGrid\<T>.GridIndexedValues](./System.Grid.ArrayBased/ArrayGrid%7BT%7D.GridIndexedValues.cs)
+- [ReadArrayGrid\<T>](./System.Grid.ArrayBased/ReadArrayGrid%7BT%7D.cs)
 
 ## System.Table
 
