@@ -93,7 +93,7 @@
 - [ITextFormatter](./System.Runtime.Serialization.Formatters.Text/ITextFormatter.cs)
 - [ITextFormatter\<T>](./System.Runtime.Serialization.Formatters.Text/ITextFormatter%7BT%7D.cs)
 
-## System.Collection.Generics
+## System.Collections.Generics
 
 ### Interface
 - [IReadOnlyStructEqualityComparer\<T>](./System.Collections.Generic/IReadOnlyStructEqualityComparer%7BT%7D.cs)
@@ -148,7 +148,7 @@
 ### Misc.
 - [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
 
-## System.Collection.Concurrent
+## System.Collections.Concurrent
 
 ### Pool
 - [Array1ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/Array1ConcurrentPool%7BT%7D.cs)
@@ -166,13 +166,13 @@
 - [ConcurrentPool](./System.Collections.Concurrent/Pools/ConcurrentPool.cs)
 - [ConcurrentPool.DefaultProvider](./System.Collections.Concurrent/Pools/ConcurrentPool.DefaultProvider.cs)
 
-## System.Collection.ArrayBased
+## System.Collections.ArrayBased
 
-- [ArrayList\<T>](./System.Collection.ArrayBased/ArrayList%7BT%7D.cs)
-- [ArrayDictionary\<TKey, TValue>](./System.Collection.ArrayBased/ArrayDictionary%7BTKey,TValue%7D.cs)
-- [ReadArrayList\<T>](./System.Collection.ArrayBased/ReadArrayList%7BT%7D.cs)
-- [ReadArrayDictionary\<TKey, TValue>](./System.Collection.ArrayBased/ReadArrayDictionary%7BTKey,TValue%7D.cs)
-- [RefReadArrayList\<T>](./System.Collection.ArrayBased/RefReadArrayList%7BT%7D.cs)
+- [ArrayList\<T>](./System.Collections.ArrayBased/ArrayList%7BT%7D.cs)
+- [ArrayDictionary\<TKey, TValue>](./System.Collections.ArrayBased/ArrayDictionary%7BTKey,TValue%7D.cs)
+- [ReadArrayList\<T>](./System.Collections.ArrayBased/ReadArrayList%7BT%7D.cs)
+- [ReadArrayDictionary\<TKey, TValue>](./System.Collections.ArrayBased/ReadArrayDictionary%7BTKey,TValue%7D.cs)
+- [RefReadArrayList\<T>](./System.Collections.ArrayBased/RefReadArrayList%7BT%7D.cs)
 
 ## System.Fluent
 
