@@ -12,7 +12,7 @@ namespace System.Grid
 
         void Initialize(in GridSize size, IEnumerator<GridValue<T>> data);
 
-        void Initialize(Grid<T> data);
+        void Initialize(IGrid<T> source);
 
         void Clear();
     }

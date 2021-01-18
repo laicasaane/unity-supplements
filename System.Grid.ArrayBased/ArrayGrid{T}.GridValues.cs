@@ -1,16 +1,17 @@
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.ArrayBased;
 using System.Collections.Generic;
 
-namespace System.Grid
+namespace System.Grid.ArrayBased
 {
-    public partial class Grid<T>
+    public partial class ArrayGrid<T>
     {
-        public readonly struct GridIndexedValues : IGridIndexedValues<T>
+        public readonly struct GridValues : IGridValues<T>
         {
-            private readonly Grid<T> source;
+            private readonly ArrayGrid<T> source;
             private readonly IEnumerator<GridIndex> enumerator;
 
-            public GridIndexedValues(Grid<T> grid, IEnumerator<GridIndex> enumerator)
+            public GridValues(ArrayGrid<T> grid, IEnumerator<GridIndex> enumerator)
             {
                 this.source = grid;
                 this.enumerator = enumerator;
@@ -19,24 +20,24 @@ namespace System.Grid
             public Enumerator GetEnumerator()
                 => new Enumerator(this.source, this.enumerator);
 
-            IGridIndexedValueEnumerator<T> IGridIndexedValues<T>.GetEnumerator()
+            IGridValueEnumerator<T> IGridValues<T>.GetEnumerator()
                 => GetEnumerator();
 
-            IEnumerator<GridValue<T>> IEnumerable<GridValue<T>>.GetEnumerator()
+            IEnumerator<T> IEnumerable<T>.GetEnumerator()
                 => GetEnumerator();
 
             IEnumerator IEnumerable.GetEnumerator()
                 => GetEnumerator();
 
-            public struct Enumerator : IGridIndexedValueEnumerator<T>
+            public struct Enumerator : IGridValueEnumerator<T>
             {
-                private readonly ReadDictionary<GridIndex, T> source;
+                private readonly ReadArrayDictionary<GridIndex, T> source;
                 private readonly IEnumerator<GridIndex> enumerator;
                 private readonly bool hasSource;
 
-                public Enumerator(Grid<T> grid, IEnumerator<GridIndex> enumerator)
+                public Enumerator(ArrayGrid<T> grid, IEnumerator<GridIndex> enumerator)
                 {
-                    this.source = grid?.data ?? ReadDictionary<GridIndex, T>.Empty;
+                    this.source = grid?.data ?? ReadArrayDictionary<GridIndex, T>.Empty;
                     this.enumerator = enumerator;
                     this.hasSource = true;
                 }
@@ -45,13 +46,13 @@ namespace System.Grid
                     => this.enumerator != null &&
                        this.source.ContainsKey(this.enumerator.Current);
 
-                public GridValue<T> Current
+                public T Current
                 {
                     get
                     {
                         var key = this.enumerator.Current;
                         this.source.TryGetValue(key, out var value);
-                        return new GridValue<T>(key, value);
+                        return value;
                     }
                 }
 

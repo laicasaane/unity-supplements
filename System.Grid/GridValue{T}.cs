@@ -65,5 +65,8 @@ namespace System.Grid
 
         public static implicit operator GridValue<T>(in KeyValuePair<GridIndex, T> kvp)
             => new GridValue<T>(kvp.Key, kvp.Value);
+
+        public static implicit operator GridValue<T>(in (GridIndex Index, T Value) kvp)
+            => new GridValue<T>(kvp.Index, kvp.Value);
     }
 }

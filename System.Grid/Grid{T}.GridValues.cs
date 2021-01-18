@@ -10,7 +10,7 @@ namespace System.Grid
             private readonly Grid<T> source;
             private readonly IEnumerator<GridIndex> enumerator;
 
-            public GridValues(Grid<T> grid, IEnumerator<GridIndex> enumerator = null)
+            public GridValues(Grid<T> grid, IEnumerator<GridIndex> enumerator)
             {
                 this.source = grid;
                 this.enumerator = enumerator;
@@ -34,10 +34,10 @@ namespace System.Grid
                 private readonly IEnumerator<GridIndex> enumerator;
                 private readonly bool hasSource;
 
-                public Enumerator(Grid<T> grid, IEnumerator<GridIndex> enumerator = null)
+                public Enumerator(Grid<T> grid, IEnumerator<GridIndex> enumerator)
                 {
                     this.source = grid?.data ?? ReadDictionary<GridIndex, T>.Empty;
-                    this.enumerator = enumerator ?? this.source.Keys.GetEnumerator();
+                    this.enumerator = enumerator;
                     this.hasSource = true;
                 }
 

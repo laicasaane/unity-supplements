@@ -1,24 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ArrayBased;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace System.Grid
+namespace System.Grid.ArrayBased
 {
     [Serializable]
-    public partial class Grid<T> : IGrid<T>, ISerializable
+    public partial class ArrayGrid<T> : IGrid<T>, ISerializable
     {
         public GridSize Size { get; private set; }
 
-        public int Count => this.data.Count;
+        public uint Count => this.data.Count;
 
-        public IEnumerable<GridIndex> Indices => this.data.Keys;
+        public ReadHashSet<GridIndex> Indices => this.indexCache;
 
-        public IEnumerable<T> Values => this.data.Values;
+        IEnumerable<GridIndex> IReadOnlyGrid<T>.Indices => this.indexCache;
+
+        public ReadArray1<T> Values => this.data.Values;
+
+        IEnumerable<T> IReadOnlyGrid<T>.Values => this.data.Values;
 
         public T this[in GridIndex key]
         {
             get
             {
-                if (!this.data.TryGetValue(key, out var value))
+                if (!this.data.TryGetValue(in key, out var value))
                     throw new ArgumentOutOfRangeException(nameof(key));
 
                 return value;
@@ -26,57 +31,67 @@ namespace System.Grid
 
             set
             {
-                if (!this.data.ContainsKey(key))
+                if (!this.data.ContainsKey(in key))
                     throw new ArgumentOutOfRangeException(nameof(key));
 
-                this.data[key] = value;
+                this.data[in key] = value;
             }
         }
 
-        private readonly Dictionary<GridIndex, T> data;
+        private readonly ArrayDictionary<GridIndex, T> data;
+        private readonly HashSet<GridIndex> indexCache;
 
-        public Grid()
+        public ArrayGrid()
         {
-            this.data = new Dictionary<GridIndex, T>();
+            this.data = new ArrayDictionary<GridIndex, T>();
+            this.indexCache = new HashSet<GridIndex>();
         }
 
-        public Grid(in GridSize size, IEnumerable<KeyValuePair<GridIndex, T>> data)
+        public ArrayGrid(in GridSize size, ArrayDictionary<GridIndex, T> data)
+            : this()
         {
-            this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(in GridSize size, IEnumerable<GridValue<T>> data)
+        public ArrayGrid(in GridSize size, IEnumerable<KeyValuePair<GridIndex, T>> data)
+            : this()
         {
-            this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(in GridSize size, IEnumerator<KeyValuePair<GridIndex, T>> data)
+        public ArrayGrid(in GridSize size, IEnumerable<GridValue<T>> data)
+            : this()
         {
-            this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(in GridSize size, IEnumerator<GridValue<T>> data)
+        public ArrayGrid(in GridSize size, IEnumerator<KeyValuePair<GridIndex, T>> data)
+            : this()
         {
-            this.data = new Dictionary<GridIndex, T>();
             Initialize(size, data);
         }
 
-        public Grid(Grid<T> source)
+        public ArrayGrid(in GridSize size, IEnumerator<GridValue<T>> data)
+            : this()
+        {
+            Initialize(size, data);
+        }
+
+        public ArrayGrid(ArrayGrid<T> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
             this.Size = source.Size;
-            this.data = new Dictionary<GridIndex, T>(source.data);
+            this.data = new ArrayDictionary<GridIndex, T>(source.data);
+
+            RefreshIndexCache();
         }
 
-        protected Grid(SerializationInfo info, StreamingContext context)
+        protected ArrayGrid(SerializationInfo info, StreamingContext context)
         {
             this.Size = info.GetValueOrDefault<GridSize>(nameof(this.Size));
-            this.data = new Dictionary<GridIndex, T>();
+            this.data = new ArrayDictionary<GridIndex, T>();
 
             foreach (var index in GridIndexRange.FromSize(this.Size))
             {
@@ -89,6 +104,8 @@ namespace System.Grid
                 {
                 }
             }
+
+            RefreshIndexCache();
         }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -101,6 +118,33 @@ namespace System.Grid
             }
         }
 
+        private void RefreshIndexCache()
+        {
+            this.indexCache.Clear();
+
+            foreach (var node in this.data.Keys)
+            {
+                this.indexCache.Add(node.Key);
+            }
+        }
+
+        public void Initialize(in GridSize size, ArrayDictionary<GridIndex, T> data)
+        {
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+            Clear();
+            this.Size = size;
+
+            foreach (var (index, value) in data)
+            {
+                if (this.Size.ValidateIndex(index))
+                    this.data.Add(in index, value);
+            }
+
+            RefreshIndexCache();
+        }
+
         public void Initialize(in GridSize size, IEnumerable<KeyValuePair<GridIndex, T>> data)
         {
             if (data == null)
@@ -109,11 +153,13 @@ namespace System.Grid
             Clear();
             this.Size = size;
 
-            foreach (var kv in data)
+            foreach (var (index, value) in data)
             {
-                if (this.Size.ValidateIndex(kv.Key))
-                    this.data[kv.Key] = kv.Value;
+                if (this.Size.ValidateIndex(index))
+                    this.data.Add(in index, value);
             }
+
+            RefreshIndexCache();
         }
 
         public void Initialize(in GridSize size, IEnumerable<GridValue<T>> data)
@@ -128,8 +174,10 @@ namespace System.Grid
             foreach (var kv in data)
             {
                 if (this.Size.ValidateIndex(kv.Index))
-                    this.data[kv.Index] = kv.Value;
+                    this.data.Add(in kv.Index, kv.Value);
             }
+
+            RefreshIndexCache();
         }
 
         public void Initialize(in GridSize size, IEnumerator<KeyValuePair<GridIndex, T>> data)
@@ -138,16 +186,17 @@ namespace System.Grid
                 throw new ArgumentNullException(nameof(data));
 
             Clear();
-
             this.Size = size;
 
             while (data.MoveNext())
             {
-                var kv = data.Current;
+                var (index, value) = data.Current;
 
-                if (this.Size.ValidateIndex(kv.Key))
-                    this.data[kv.Key] = kv.Value;
+                if (this.Size.ValidateIndex(index))
+                    this.data.Add(in index, value);
             }
+
+            RefreshIndexCache();
         }
 
         public void Initialize(in GridSize size, IEnumerator<GridValue<T>> data)
@@ -157,16 +206,17 @@ namespace System.Grid
 
 
             Clear();
-
             this.Size = size;
 
             while (data.MoveNext())
             {
-                var kv = data.Current;
+                var (index, value) = data.Current;
 
-                if (this.Size.ValidateIndex(kv.Index))
-                    this.data[kv.Index] = kv.Value;
+                if (this.Size.ValidateIndex(index))
+                    this.data.Add(in index, value);
             }
+
+            RefreshIndexCache();
         }
 
         public void Initialize(IGrid<T> source)
@@ -178,47 +228,49 @@ namespace System.Grid
 
             this.Size = source.Size;
 
-            foreach (var kv in source.GetIndexedValues())
+            foreach (var (index, value) in source.GetIndexedValues())
             {
-                this.data[kv.Index] = kv.Value;
+                this.data.Add(in index, value);
             }
+
+            RefreshIndexCache();
         }
 
         public void Set(in GridIndex index, T value)
         {
-            if (!this.data.ContainsKey(index))
+            if (!this.data.ContainsKey(in index))
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            this.data[index] = value;
+            this.data.Set(in index, value);
         }
 
         public void Set(in GridIndex index, in T value)
         {
-            if (!this.data.ContainsKey(index))
+            if (!this.data.ContainsKey(in index))
                 throw new ArgumentOutOfRangeException(nameof(index));
 
-            this.data[index] = value;
+            this.data.Set(in index, in value);
         }
 
         public bool TrySet(in GridIndex index, T value)
         {
-            if (!this.data.ContainsKey(index))
+            if (!this.data.ContainsKey(in index))
                 return false;
 
-            this.data[index] = value;
+            this.data.Set(in index, value);
             return true;
         }
 
         public bool TrySet(in GridIndex index, in T value)
         {
-            if (!this.data.ContainsKey(index))
+            if (!this.data.ContainsKey(in index))
                 return false;
 
-            this.data[index] = value;
+            this.data.Set(in index, in value);
             return true;
         }
 
-        public void CopyTo(Grid<T> dest)
+        public void CopyTo(ArrayGrid<T> dest)
         {
             if (dest == null)
                 throw new ArgumentNullException(nameof(dest));
@@ -232,16 +284,25 @@ namespace System.Grid
             this.data.Clear();
         }
 
+        public void FastClear()
+        {
+            this.Size = GridSize.Zero;
+            this.data.FastClear();
+        }
+
         public bool ContainsIndex(in GridIndex index)
-            => this.data.ContainsKey(index);
+            => this.data.ContainsKey(in index);
 
         public bool ContainsValue(T value)
             => this.data.ContainsValue(value);
 
-        public bool TryGetValue(in GridIndex index, out T value)
-            => this.data.TryGetValue(index, out value);
+        public bool ContainsValue(in T value)
+            => this.data.ContainsValue(in value);
 
-        public Dictionary<GridIndex, T>.Enumerator GetEnumerator()
+        public bool TryGetValue(in GridIndex index, out T value)
+            => this.data.TryGetValue(in index, out value);
+
+        public ArrayDictionary<GridIndex, T>.Enumerator GetEnumerator()
             => this.data.GetEnumerator();
 
         public void GetValues(ICollection<T> output)
@@ -278,7 +339,7 @@ namespace System.Grid
 
             foreach (var index in this.Size.ClampIndexRange(range))
             {
-                if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
+                if (this.data.TryGetValue(in index, out var value) && !output.Contains(value))
                     output.Add(value);
             }
         }
@@ -290,7 +351,7 @@ namespace System.Grid
 
             foreach (var index in this.Size.ClampIndexRange(range))
             {
-                if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
+                if (this.data.TryGetValue(in index, out var value) && !output.Contains(value))
                     output.Add(value);
             }
         }
@@ -305,7 +366,7 @@ namespace System.Grid
 
             foreach (var index in indices)
             {
-                if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
+                if (this.data.TryGetValue(in index, out var value) && !output.Contains(value))
                     output.Add(value);
             }
         }
@@ -320,13 +381,19 @@ namespace System.Grid
 
             while (enumerator.MoveNext())
             {
-                if (this.data.TryGetValue(enumerator.Current, out var value) && !output.Contains(value))
+                var index = enumerator.Current;
+
+                if (this.data.TryGetValue(in index, out var value) && !output.Contains(value))
                     output.Add(value);
             }
         }
 
         public GridValues GetValues()
-            => new GridValues(this, this.data.Keys.GetEnumerator());
+        {
+            RefreshIndexCache();
+
+            return new GridValues(this, this.indexCache.GetEnumerator());
+        }
 
         public GridValues GetValues(in GridIndex pivot, int extend)
             => GetValues(this.Size.IndexRange(pivot, extend));
@@ -437,7 +504,7 @@ namespace System.Grid
 
             foreach (var index in this.Size.ClampIndexRange(range))
             {
-                if (!this.data.TryGetValue(index, out var value))
+                if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
                 var data = new GridValue<T>(index, value);
@@ -454,7 +521,7 @@ namespace System.Grid
 
             foreach (var index in this.Size.ClampIndexRange(range))
             {
-                if (!this.data.TryGetValue(index, out var value))
+                if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
                 var data = new GridValue<T>(index, value);
@@ -474,7 +541,7 @@ namespace System.Grid
 
             foreach (var index in indices)
             {
-                if (!this.data.TryGetValue(index, out var value))
+                if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
                 var data = new GridValue<T>(index, value);
@@ -496,7 +563,7 @@ namespace System.Grid
             {
                 var index = enumerator.Current;
 
-                if (!this.data.TryGetValue(index, out var value))
+                if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
                 var data = new GridValue<T>(index, value);
@@ -507,7 +574,11 @@ namespace System.Grid
         }
 
         public GridIndexedValues GetIndexedValues()
-            => new GridIndexedValues(this, this.data.Keys.GetEnumerator());
+        {
+            RefreshIndexCache();
+
+            return new GridIndexedValues(this, this.indexCache.GetEnumerator());
+        }
 
         public GridIndexedValues GetIndexedValues(in GridIndex pivot, int extend)
             => GetIndexedValues(this.Size.IndexRange(pivot, extend));
