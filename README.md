@@ -66,15 +66,15 @@
 
 ## System.Delegates
 
-- [IAction](./System.Delegates/IAction.cs)
-- [IActionIn](./System.Delegates/IActionIn.cs)
-- [IActionRef](./System.Delegates/IActionRef.cs)
-- [IFunc](./System.Delegates/IFunc.cs)
-- [IFuncIn](./System.Delegates/IFuncIn.cs)
-- [IFuncRef](./System.Delegates/IFuncRef.cs)
-- [IPredicate](./System.Delegates/IPredicate.cs)
-- [IPredicateIn](./System.Delegates/IPredicateIn.cs)
-- [IPredicateRef](./System.Delegates/IPredicateRef.cs)
+- [IAction](./System.Delegates/Action/IAction.cs)
+- [IActionIn](./System.Delegates/Action/IActionIn.cs)
+- [IActionRef](./System.Delegates/Action/IActionRef.cs)
+- [IFunc](./System.Delegates/Func/IFunc.cs)
+- [IFuncIn](./System.Delegates/Func/IFuncIn.cs)
+- [IFuncRef](./System.Delegates/Func/IFuncRef.cs)
+- [IPredicate](./System.Delegates/Predicate/IPredicate.cs)
+- [IPredicateIn](./System.Delegates/Predicate/IPredicateIn.cs)
+- [IPredicateRef](./System.Delegates/Predicate/IPredicateRef.cs)
 
 ## System.ValueDelegates
 
