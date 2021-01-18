@@ -13,6 +13,9 @@
 - [ReadStructAction](./System/Delegates/ReadStructAction.cs)
 - [ReadStructFunc](./System/Delegates/ReadStructFunc.cs)
 - [ReadStructPredicate](./System/Delegates/ReadStructPredicate.cs)
+- [RefAction](./System/Delegates/RefAction.cs)
+- [RefFunc](./System/Delegates/RefFunc.cs)
+- [RefPredicate](./System/Delegates/RefPredicate.cs)
 
 ### Interface
 - [IComparableReadOnlyStruct\<T>](./System/Interfaces/IComparableReadOnlyStruct%7BT%7D.cs)
