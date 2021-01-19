@@ -1,5 +1,12 @@
 # Unity Supplements
 
+## Changelog
+
+### 2.5.3
+
+#### Breaking changes
+- Change the namespace of all pooling-related classes
+
 ## Global
 
 ### Extensions
@@ -34,7 +41,6 @@
 ### Array
 - [ReadArray1\<T>](./System/ReadArray1/ReadArray1%7BT%7D.cs)
 - [ReadArray1\<T> extensions](./System/ReadArray1/ReadArray1TExtensions.cs)
-- [Array1Pool\<T>](./System/Pools/Array1Pool%7BT%7D.cs)
 
 ### Enum
 - [Enum\<T>](./System/Enum/Enum%7BT%7D.cs)
@@ -136,38 +142,8 @@
 - [Randomizer.IRandom](./System.Collections.Generic/Randomizer/Randomizer.IRandom.cs)
 - [Randomizer.ICache\<T>](./System.Collections.Generic/Randomizer/Randomizer.Cache%7BT%7D.cs)
 
-### Pool
-- [IPool\<T>](./System.Collections.Generic/Pools/IPool%7BT%7D.cs)
-- [Pool\<T>](./System.Collections.Generic/Pools/Pool%7BT%7D.cs)
-- [ListPool\<T>](./System.Collections.Generic/Pools/ListPool%7BT%7D.cs)
-- [DictionaryPool\<TKey, TValue>](./System.Collections.Generic/Pools/DictionaryPool%7BTKey%2CTValue%7D.cs)
-- [HashSetPool\<T>](./System.Collections.Generic/Pools/HashSetPool%7BT%7D.cs)
-- [QueuePool\<T>](./System.Collections.Generic/Pools/QueuePool%7BT%7D.cs)
-- [StackPool\<T>](./System.Collections.Generic/Pools/StackPool%7BT%7D.cs)
-- [IPoolProvider](./System.Collections.Generic/Pools/IPoolProvider.cs)
-- [Pool](./System.Collections.Generic/Pools/Pool.cs)
-- [Pool.DefaultProvider](./System.Collections.Generic/Pools/Pool.DefaultProvider.cs)
-
 ### Misc.
 - [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
-
-## System.Collections.Concurrent
-
-### Pool
-- [Array1ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/Array1ConcurrentPool%7BT%7D.cs)
-- [ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentPool%7BT%7D.cs)
-- [ListConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ListConcurrentPool%7BT%7D.cs)
-- [DictionaryConcurrentPool\<TKey, TValue>](./System.Collections.Concurrent/Pools/DictionaryConcurrentPool%7BTKey%2CTValue%7D.cs)
-- [HashSetConcurrentPool\<T>](./System.Collections.Concurrent/Pools/HashSetConcurrentPool%7BT%7D.cs)
-- [QueueConcurrentPool\<T>](./System.Collections.Concurrent/Pools/QueueConcurrentPool%7BT%7D.cs)
-- [StackConcurrentPool\<T>](./System.Collections.Concurrent/Pools/StackConcurrentPool%7BT%7D.cs)
-- [ConcurrentPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentBagPool%7BT%7D.cs)
-- [ConcurrentDictionaryPool\<TKey, TValue>](./System.Collections.Concurrent/Pools/ConcurrentDictionaryPool%7BTKey%2CTValue%7D.cs)
-- [ConcurrentQueuePool\<T>](./System.Collections.Concurrent/Pools/ConcurrentQueuePool%7BT%7D.cs)
-- [ConcurrentStackPool\<T>](./System.Collections.Concurrent/Pools/ConcurrentStackPool%7BT%7D.cs)
-- [IConcurrentPoolProvider](./System.Collections.Concurrent/Pools/IConcurrentPoolProvider.cs)
-- [ConcurrentPool](./System.Collections.Concurrent/Pools/ConcurrentPool.cs)
-- [ConcurrentPool.DefaultProvider](./System.Collections.Concurrent/Pools/ConcurrentPool.DefaultProvider.cs)
 
 ## System.Collections.ArrayBased
 
@@ -176,6 +152,40 @@
 - [ReadArrayList\<T>](./System.Collections.ArrayBased/ReadArrayList%7BT%7D.cs)
 - [ReadArrayDictionary\<TKey, TValue>](./System.Collections.ArrayBased/ReadArrayDictionary%7BTKey,TValue%7D.cs)
 - [RefReadArrayList\<T>](./System.Collections.ArrayBased/RefReadArrayList%7BT%7D.cs)
+
+## System.Collections.Pooling
+
+- [IPool\<T>](./System.Collections.Pooling/IPool%7BT%7D.cs)
+- [Pool\<T>](./System.Collections.Pooling/Pool%7BT%7D.cs)
+- [IPoolProvider](./System.Collections.Pooling/IPoolProvider.cs)
+- [Pool](./System.Collections.Pooling/Pool.cs)
+- [Pool.DefaultProvider](./System.Collections.Pooling/Pool.DefaultProvider.cs)
+- [Array1Pool\<T>](./System.Collections.Pooling/Pools/Array1Pool%7BT%7D.cs)
+- [ListPool\<T>](./System.Collections.Pooling/Pools/ListPool%7BT%7D.cs)
+- [DictionaryPool\<TKey, TValue>](./System.Collections.Pooling/Pools/DictionaryPool%7BTKey%2CTValue%7D.cs)
+- [ArrayListPool\<T>](./System.Collections.Pooling/Pools/ArrayListPool%7BT%7D.cs)
+- [ArrayDictionaryPool\<TKey, TValue>](./System.Collections.Pooling/Pools/ArrayDictionaryPool%7BTKey%2CTValue%7D.cs)
+- [HashSetPool\<T>](./System.Collections.Pooling/Pools/HashSetPool%7BT%7D.cs)
+- [QueuePool\<T>](./System.Collections.Pooling/Pools/QueuePool%7BT%7D.cs)
+- [StackPool\<T>](./System.Collections.Pooling/Pools/StackPool%7BT%7D.cs)
+
+## System.Collections.Pooling.Concurrent
+- [ConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/ConcurrentPool%7BT%7D.cs)
+- [IConcurrentPoolProvider](./System.Collections.Pooling.Concurrent/IConcurrentPoolProvider.cs)
+- [ConcurrentPool](./System.Collections.Pooling.Concurrent/ConcurrentPool.cs)
+- [ConcurrentPool.DefaultProvider](./System.Collections.Pooling.Concurrent/ConcurrentPool.DefaultProvider.cs)
+- [Array1ConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/Pools/Array1ConcurrentPool%7BT%7D.cs)
+- [ListConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/Pools/ListConcurrentPool%7BT%7D.cs)
+- [DictionaryConcurrentPool\<TKey, TValue>](./System.Collections.Pooling.Concurrent/Pools/DictionaryConcurrentPool%7BTKey%2CTValue%7D.cs)
+- [ArrayListConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/Pools/ArrayListConcurrentPool%7BT%7D.cs)
+- [ArrayDictionaryConcurrentPool\<TKey, TValue>](./System.Collections.Pooling.Concurrent/Pools/ArrayDictionaryConcurrentPool%7BTKey%2CTValue%7D.cs)
+- [HashSetConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/Pools/HashSetConcurrentPool%7BT%7D.cs)
+- [QueueConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/Pools/QueueConcurrentPool%7BT%7D.cs)
+- [StackConcurrentPool\<T>](./System.Collections.Pooling.Concurrent/Pools/StackConcurrentPool%7BT%7D.cs)
+- [ConcurrentBagPool\<T>](./System.Collections.Pooling.Concurrent/Pools/ConcurrentBagPool%7BT%7D.cs)
+- [ConcurrentDictionaryPool\<TKey, TValue>](./System.Collections.Pooling.Concurrent/Pools/ConcurrentDictionaryPool%7BTKey%2CTValue%7D.cs)
+- [ConcurrentQueuePool\<T>](./System.Collections.Pooling.Concurrent/Pools/ConcurrentQueuePool%7BT%7D.cs)
+- [ConcurrentStackPool\<T>](./System.Collections.Pooling.Concurrent/Pools/ConcurrentStackPool%7BT%7D.cs)
 
 ## System.Fluent
 
