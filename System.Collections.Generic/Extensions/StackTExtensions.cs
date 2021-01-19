@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    using ConcurrentPool = System.Collections.Concurrent.ConcurrentPool;
+    using ConcurrentPool = Pooling.Concurrent.ConcurrentPool;
 
     public static class StackTExtensions
     {

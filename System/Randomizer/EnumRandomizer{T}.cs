@@ -2,7 +2,7 @@
 
 namespace System
 {
-    using ConcurrentPool = System.Collections.Concurrent.ConcurrentPool;
+    using ConcurrentPool = Collections.Pooling.Concurrent.ConcurrentPool;
 
     public class EnumRandomizer<T> where T : struct, Enum
     {
