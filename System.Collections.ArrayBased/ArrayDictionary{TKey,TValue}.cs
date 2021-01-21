@@ -15,8 +15,10 @@ namespace System.Collections.ArrayBased
     /// The only slower operation is resizing the memory on Add, as this implementation needs to use two separate arrays
     /// compared to the standard dictionary.
     /// </summary>
-    public sealed class ArrayDictionary<TKey, TValue> where TKey : IEquatable<TKey>
+    public sealed class ArrayDictionary<TKey, TValue>
     {
+        private readonly IEqualityComparer<TKey> comparer;
+
         private TValue[] values;
         private Node[] valuesInfo;
         private int[] buckets;
@@ -40,6 +42,7 @@ namespace System.Collections.ArrayBased
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => AddValue(key, value, out _);
         }
+        public IEqualityComparer<TKey> Comparer => this.comparer;
 
         public uint Count => this.freeValueCellIndex;
 
@@ -67,24 +70,44 @@ namespace System.Collections.ArrayBased
             get => this.values;
         }
 
+        public ArrayDictionary()
+        {
+            this.comparer = EqualityComparer<TKey>.Default;
+            this.valuesInfo = new Node[1];
+            this.values = new TValue[1];
+            this.buckets = new int[3];
+        }
+
+        public ArrayDictionary(IEqualityComparer<TKey> comparer)
+        {
+            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.valuesInfo = new Node[1];
+            this.values = new TValue[1];
+            this.buckets = new int[3];
+        }
+
         public ArrayDictionary(uint size)
         {
+            this.comparer = EqualityComparer<TKey>.Default;
             this.valuesInfo = new Node[size];
             this.values = new TValue[size];
             this.buckets = new int[HashHelpers.GetPrime((int)size)];
         }
 
-        public ArrayDictionary()
+        public ArrayDictionary(uint size, IEqualityComparer<TKey> comparer)
         {
-            this.valuesInfo = new Node[1];
-            this.values = new TValue[1];
-            this.buckets = new int[3];
+            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.valuesInfo = new Node[size];
+            this.values = new TValue[size];
+            this.buckets = new int[HashHelpers.GetPrime((int)size)];
         }
 
         public ArrayDictionary(ArrayDictionary<TKey, TValue> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
+
+            this.comparer = source.comparer ?? EqualityComparer<TKey>.Default;
 
             this.values = new TValue[source.values.Length];
             Array.Copy(source.values, this.values, this.values.Length);
@@ -99,11 +122,60 @@ namespace System.Collections.ArrayBased
             this.collisions = source.collisions;
         }
 
+        public ArrayDictionary(params (TKey Key, TValue Value)[] source)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            this.comparer = EqualityComparer<TKey>.Default;
+            this.valuesInfo = new Node[source.Length];
+            this.values = new TValue[source.Length];
+            this.buckets = new int[HashHelpers.GetPrime(source.Length)];
+
+            foreach (var (key, value) in source)
+            {
+                AddValue(key, value, out _);
+            }
+        }
+
+        public ArrayDictionary(ICollection<(TKey Key, TValue Value)> source)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            this.comparer = EqualityComparer<TKey>.Default;
+            this.valuesInfo = new Node[source.Count];
+            this.values = new TValue[source.Count];
+            this.buckets = new int[HashHelpers.GetPrime(source.Count)];
+
+            foreach (var (key, value) in source)
+            {
+                AddValue(key, value, out _);
+            }
+        }
+
         public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
+            this.comparer = EqualityComparer<TKey>.Default;
+            this.valuesInfo = new Node[source.Count];
+            this.values = new TValue[source.Count];
+            this.buckets = new int[HashHelpers.GetPrime(source.Count)];
+
+            foreach (var kv in source)
+            {
+                AddValue(kv.Key, kv.Value, out _);
+            }
+        }
+
+        public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source, IEqualityComparer<TKey> comparer)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
             this.valuesInfo = new Node[source.Count];
             this.values = new TValue[source.Count];
             this.buckets = new int[HashHelpers.GetPrime(source.Count)];
@@ -197,9 +269,28 @@ namespace System.Collections.ArrayBased
             if (value == null)
                 return false;
 
-            foreach (var x in this.values)
+            var comparer = EqualityComparer<TValue>.Default;
+
+            foreach (var kv in this)
             {
-                if (value.Equals(x))
+                if (comparer.Equals(kv.Value, value))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool ContainsValue(TValue value, IEqualityComparer<TValue> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            if (value == null)
+                return false;
+
+            foreach (var kv in this)
+            {
+                if (comparer.Equals(kv.Value, value))
                     return true;
             }
 
@@ -211,9 +302,28 @@ namespace System.Collections.ArrayBased
             if (value == null)
                 return false;
 
-            foreach (var x in this.values)
+            var comparer = EqualityComparer<TValue>.Default;
+
+            foreach (var kv in this)
             {
-                if (value.Equals(x))
+                if (comparer.Equals(kv.Value, value))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public bool ContainsValue(in TValue value, IEqualityComparerIn<TValue> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            if (value == null)
+                return false;
+
+            foreach (var kv in this)
+            {
+                if (comparer.Equals(in kv.Value, in value))
                     return true;
             }
 
@@ -357,7 +467,7 @@ namespace System.Collections.ArrayBased
                     //for some reason this is faster than using Comparer<TKey>.default, should investigate
                     ref var node = ref this.valuesInfo[currentValueIndex];
                     if (node.Hash == hash &&
-                        node.Key.Equals(key) == true)
+                        this.comparer.Equals(node.Key, key) == true)
                     {
                         //the key already exists, simply replace the value!
                         this.values[currentValueIndex] = value;
@@ -467,7 +577,7 @@ namespace System.Collections.ArrayBased
                     //for some reason this is faster than using Comparer<TKey>.default, should investigate
                     ref var node = ref this.valuesInfo[currentValueIndex];
                     if (node.Hash == hash &&
-                        node.Key.Equals(key) == true)
+                        this.comparer.Equals(node.Key, key) == true)
                     {
                         //the key already exists, simply replace the value!
                         this.values[currentValueIndex] = value;
@@ -563,7 +673,7 @@ namespace System.Collections.ArrayBased
             {
                 ref var node = ref this.valuesInfo[indexToValueToRemove];
                 if (node.Hash == hash &&
-                    node.Key.Equals(key) == true)
+                    this.comparer.Equals(node.Key, key) == true)
                 {
                     //if the key is found and the bucket points directly to the node to remove
                     if (this.buckets[bucketIndex] - 1 == indexToValueToRemove)
@@ -652,7 +762,7 @@ namespace System.Collections.ArrayBased
             {
                 ref var node = ref this.valuesInfo[indexToValueToRemove];
                 if (node.Hash == hash &&
-                    node.Key.Equals(key) == true)
+                    this.comparer.Equals(node.Key, key) == true)
                 {
                     //if the key is found and the bucket points directly to the node to remove
                     if (this.buckets[bucketIndex] - 1 == indexToValueToRemove)
@@ -749,7 +859,7 @@ namespace System.Collections.ArrayBased
                 //for some reason this is way faster than using Comparer<TKey>.default, should investigate
                 ref var node = ref this.valuesInfo[valueIndex];
 
-                if (node.Hash == hash && node.Key.Equals(key) == true)
+                if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
                 {
                     //this is the one
                     findIndex = (uint)valueIndex;
@@ -779,7 +889,7 @@ namespace System.Collections.ArrayBased
                 //for some reason this is way faster than using Comparer<TKey>.default, should investigate
                 ref var node = ref this.valuesInfo[valueIndex];
 
-                if (node.Hash == hash && node.Key.Equals(key) == true)
+                if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
                 {
                     //this is the one
                     findIndex = (uint)valueIndex;
@@ -872,13 +982,13 @@ namespace System.Collections.ArrayBased
         {
             private readonly TKey key;
             private readonly TValue[] values;
-            private readonly int index;
+            private readonly uint index;
 
             public TKey Key => this.key;
 
             public ref TValue Value => ref this.values[this.index];
 
-            public KeyValuePair(TKey key, TValue[] values, int index)
+            public KeyValuePair(TKey key, TValue[] values, uint index)
             {
                 this.key = key;
                 this.values = values;
@@ -895,14 +1005,17 @@ namespace System.Collections.ArrayBased
         public struct Enumerator
         {
             private readonly ArrayDictionary<TKey, TValue> source;
-            private readonly int count;
-            private int index;
+            private readonly uint count;
+
+            private uint index;
+            private bool first;
 
             public Enumerator(ArrayDictionary<TKey, TValue> source)
             {
                 this.source = source;
-                this.index = -1;
-                this.count = (int)source.Count;
+                this.count = source.Count;
+                this.index = 0;
+                this.first = true;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -912,9 +1025,19 @@ namespace System.Collections.ArrayBased
                 if (this.count != this.source.Count)
                     throw new ArrayDictionaryException("Cannot modify a dictionary during its iteration");
 #endif
+
+                if (this.count == 0)
+                    return false;
+
+                if (this.first)
+                {
+                    this.first = false;
+                    return true;
+                }
+
                 if (this.index < this.count - 1)
                 {
-                    ++this.index;
+                    this.index += 1;
                     return true;
                 }
 

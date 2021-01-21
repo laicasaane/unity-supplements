@@ -94,16 +94,16 @@ namespace System.Collections.Pooling
             public void Return<TKey, TValue>(IEnumerable<Dictionary<TKey, TValue>> items)
                 => DictionaryPool<TKey, TValue>.Return(items);
 
-            public ArrayDictionary<TKey, TValue> ArrayDictionary<TKey, TValue>() where TKey : IEquatable<TKey>
+            public ArrayDictionary<TKey, TValue> ArrayDictionary<TKey, TValue>()
                 => ArrayDictionaryPool<TKey, TValue>.Get();
 
-            public void Return<TKey, TValue>(ArrayDictionary<TKey, TValue> item) where TKey : IEquatable<TKey>
+            public void Return<TKey, TValue>(ArrayDictionary<TKey, TValue> item)
                 => ArrayDictionaryPool<TKey, TValue>.Return(item);
 
-            public void Return<TKey, TValue>(params ArrayDictionary<TKey, TValue>[] items) where TKey : IEquatable<TKey>
+            public void Return<TKey, TValue>(params ArrayDictionary<TKey, TValue>[] items)
                 => ArrayDictionaryPool<TKey, TValue>.Return(items);
 
-            public void Return<TKey, TValue>(IEnumerable<ArrayDictionary<TKey, TValue>> items) where TKey : IEquatable<TKey>
+            public void Return<TKey, TValue>(IEnumerable<ArrayDictionary<TKey, TValue>> items)
                 => ArrayDictionaryPool<TKey, TValue>.Return(items);
         }
     }

@@ -2,7 +2,7 @@
 
 namespace System.Collections.ArrayBased
 {
-    public readonly struct ReadArrayDictionary<TKey, TValue> where TKey : IEquatable<TKey>
+    public readonly struct ReadArrayDictionary<TKey, TValue>
     {
         private readonly ArrayDictionary<TKey, TValue> source;
 

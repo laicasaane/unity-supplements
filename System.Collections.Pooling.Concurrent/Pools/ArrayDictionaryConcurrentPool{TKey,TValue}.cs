@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace System.Collections.Pooling.Concurrent
 {
-    public static class ArrayDictionaryConcurrentPool<TKey, TValue> where TKey : IEquatable<TKey>
+    public static class ArrayDictionaryConcurrentPool<TKey, TValue>
     {
         private static readonly ConcurrentPool<ArrayDictionary<TKey, TValue>> _pool = new ConcurrentPool<ArrayDictionary<TKey, TValue>>();
 

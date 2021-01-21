@@ -35,7 +35,7 @@ namespace System.Collections.ArrayBased
         public ArrayList(int initialSize) : this((uint)initialSize)
         { }
 
-        public ArrayList(T[] collection)
+        public ArrayList(params T[] collection)
         {
             this.buffer = new T[collection.Length];
             Array.Copy(collection, this.buffer, collection.Length);
@@ -545,25 +545,24 @@ namespace System.Collections.ArrayBased
         public struct Enumerator
         {
             private readonly T[] buffer;
-            private readonly uint size;
+            private readonly uint count;
 
-            private int counter;
+            private uint index;
 
-            public T Current => this.buffer[(uint)this.counter - 1];
+            public T Current => this.buffer[this.index - 1];
 
-            public Enumerator(T[] buffer, uint size)
+            public Enumerator(T[] buffer, uint count)
             {
-                this.size = size;
-                this.counter = 0;
                 this.buffer = buffer;
+                this.count = count;
+                this.index = 0;
             }
 
             public bool MoveNext()
             {
-                if (this.counter < this.size)
+                if (this.index < this.count)
                 {
-                    this.counter++;
-
+                    this.index += 1;
                     return true;
                 }
 
@@ -572,7 +571,7 @@ namespace System.Collections.ArrayBased
 
             public void Reset()
             {
-                this.counter = 0;
+                this.index = 0;
             }
         }
     }

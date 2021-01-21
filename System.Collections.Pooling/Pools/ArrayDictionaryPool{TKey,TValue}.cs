@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace System.Collections.Pooling
 {
-    public static class ArrayDictionaryPool<TKey, TValue> where TKey : IEquatable<TKey>
+    public static class ArrayDictionaryPool<TKey, TValue>
     {
         private static readonly Pool<ArrayDictionary<TKey, TValue>> _pool = new Pool<ArrayDictionary<TKey, TValue>>();
 

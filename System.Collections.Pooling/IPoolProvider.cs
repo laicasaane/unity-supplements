@@ -63,12 +63,12 @@ namespace System.Collections.Pooling
 
         void Return<TKey, TValue>(IEnumerable<Dictionary<TKey, TValue>> items);
 
-        ArrayDictionary<TKey, TValue> ArrayDictionary<TKey, TValue>() where TKey : IEquatable<TKey>;
+        ArrayDictionary<TKey, TValue> ArrayDictionary<TKey, TValue>();
 
-        void Return<TKey, TValue>(ArrayDictionary<TKey, TValue> item) where TKey : IEquatable<TKey>;
+        void Return<TKey, TValue>(ArrayDictionary<TKey, TValue> item);
 
-        void Return<TKey, TValue>(params ArrayDictionary<TKey, TValue>[] items) where TKey : IEquatable<TKey>;
+        void Return<TKey, TValue>(params ArrayDictionary<TKey, TValue>[] items);
 
-        void Return<TKey, TValue>(IEnumerable<ArrayDictionary<TKey, TValue>> items) where TKey : IEquatable<TKey>;
+        void Return<TKey, TValue>(IEnumerable<ArrayDictionary<TKey, TValue>> items);
     }
 }
