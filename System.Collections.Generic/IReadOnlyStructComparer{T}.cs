@@ -1,7 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public interface IReadOnlyStructComparer<T> : IComparer<T> where T : struct
+    public interface IReadOnlyStructComparer<T> : IComparerIn<T> where T : struct
     {
-        int Compare(in T x, in T y);
     }
 }
