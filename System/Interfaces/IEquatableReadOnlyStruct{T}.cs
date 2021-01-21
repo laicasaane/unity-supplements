@@ -1,7 +1,6 @@
 ﻿namespace System
 {
-    public interface IEquatableReadOnlyStruct<T> : IEquatable<T> where T : struct
+    public interface IEquatableReadOnlyStruct<T> : IEquatableIn<T> where T : struct
     {
-        bool Equals(in T other);
     }
 }
