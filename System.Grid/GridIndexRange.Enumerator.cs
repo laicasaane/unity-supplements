@@ -30,8 +30,17 @@ namespace System.Grid
 
                 this.fromEnd = range.IsFromEnd;
                 this.byRow = range.Direction == GridDirection.Row;
-                this.current = this.fromEnd ? this.end : this.start;
-                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+
+                if (this.fromEnd)
+                {
+                    this.current = this.end;
+                    this.flag = (sbyte)(this.current == this.start ? 1 : -1);
+                }
+                else
+                {
+                    this.current = this.start;
+                    this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+                }
             }
 
             public Enumerator(bool rowFirst)
