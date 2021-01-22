@@ -15,7 +15,7 @@ namespace System.Collections.ArrayBased
     /// The only slower operation is resizing the memory on Add, as this implementation needs to use two separate arrays
     /// compared to the standard dictionary.
     /// </summary>
-    public sealed class ArrayDictionary<TKey, TValue>
+    public sealed partial class ArrayDictionary<TKey, TValue>
     {
         private readonly IEqualityComparer<TKey> comparer;
 
@@ -42,9 +42,14 @@ namespace System.Collections.ArrayBased
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => AddValue(key, value, out _);
         }
+
         public IEqualityComparer<TKey> Comparer => this.comparer;
 
-        public uint Count => this.freeValueCellIndex;
+        public uint Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.freeValueCellIndex;
+        }
 
         public Node[] UnsafeKeys
         {
@@ -186,8 +191,26 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        public void CopyValuesTo(TValue[] tasks, uint index)
-            => Array.Copy(this.values, 0, tasks, index, this.Count);
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+
+            if ((uint)arrayIndex >= (uint)array.Length)
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+
+            if (array.Length - arrayIndex < this.Count)
+                throw new ArgumentException("The number of elements in the source is greater than the available space from index to the end of the destination array.");
+
+            foreach (var kv in this)
+            {
+                array[arrayIndex++] = kv;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyValuesTo(TValue[] array, uint arrayIndex)
+            => Array.Copy(this.values, 0, array, arrayIndex, this.Count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue[] GetValuesArray(out uint count)
@@ -1000,6 +1023,9 @@ namespace System.Collections.ArrayBased
                 key = this.key;
                 value = this.values[this.index];
             }
+
+            public static implicit operator KeyValuePair<TKey, TValue>(in KeyValuePair kv)
+                => new KeyValuePair<TKey, TValue>(kv.Key, kv.Value);
         }
 
         public struct Enumerator
@@ -1042,6 +1068,12 @@ namespace System.Collections.ArrayBased
                 }
 
                 return false;
+            }
+
+            public void Reset()
+            {
+                this.index = 0;
+                this.first = true;
             }
 
             public KeyValuePair Current

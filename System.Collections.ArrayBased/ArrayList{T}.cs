@@ -6,12 +6,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Helpers;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 
 namespace System.Collections.ArrayBased
 {
-    [Serializable]
-    public class ArrayList<T> : ISerializable
+    public partial class ArrayList<T>
     {
         private T[] buffer;
         private uint count;
@@ -82,26 +80,6 @@ namespace System.Collections.ArrayBased
             source.CopyTo(this.buffer, 0);
 
             this.count = source.Count;
-        }
-
-        protected ArrayList(SerializationInfo info, StreamingContext context)
-        {
-            var buffer = info.GetValueOrDefault<T[]>(nameof(this.buffer));
-
-            if (buffer == null)
-            {
-                this.count = 0;
-                this.buffer = new T[0];
-                return;
-            }
-
-            this.count = (uint)buffer.Length;
-            this.buffer = buffer;
-        }
-
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            info.AddValue(nameof(this.buffer), this.buffer);
         }
 
         public ref T this[int index]
@@ -205,7 +183,7 @@ namespace System.Collections.ArrayBased
         {
             var comp = EqualityComparer<T>.Default;
 
-            for (uint index = 0; index < this.count; index++)
+            for (var index = 0u; index < this.count; index++)
                 if (comp.Equals(this.buffer[index], item))
                     return true;
 
@@ -217,11 +195,87 @@ namespace System.Collections.ArrayBased
         {
             var comp = EqualityComparer<T>.Default;
 
-            for (uint index = 0; index < this.count; index++)
+            for (var index = 0u; index < this.count; index++)
                 if (comp.Equals(this.buffer[index], item))
                     return true;
 
             return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(T item, IEqualityComparer<T> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            for (var index = 0u; index < this.count; index++)
+                if (comparer.Equals(this.buffer[index], item))
+                    return true;
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(in T item, IEqualityComparerIn<T> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            for (var index = 0u; index < this.count; index++)
+                if (comparer.Equals(in this.buffer[index], in item))
+                    return true;
+
+            return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(T item)
+        {
+            var comp = EqualityComparer<T>.Default;
+
+            for (var index = 0u; index < this.count; index++)
+                if (comp.Equals(this.buffer[index], item))
+                    return index;
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(in T item)
+        {
+            var comp = EqualityComparer<T>.Default;
+
+            for (var index = 0u; index < this.count; index++)
+                if (comp.Equals(this.buffer[index], item))
+                    return index;
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(T item, IEqualityComparer<T> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            for (var index = 0u; index < this.count; index++)
+                if (comparer.Equals(this.buffer[index], item))
+                    return index;
+
+            return null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(in T item, IEqualityComparerIn<T> comparer)
+        {
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
+
+            for (var index = 0u; index < this.count; index++)
+                if (comparer.Equals(in this.buffer[index], in item))
+                    return index;
+
+            return null;
         }
 
         /// <summary>
@@ -353,6 +407,50 @@ namespace System.Collections.ArrayBased
             ++this.count;
 
             this.buffer[index] = item;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Remove(T item)
+        {
+            var indexTemp = IndexOf(item);
+
+            if (!indexTemp.HasValue)
+                return false;
+
+            var index = indexTemp.Value;
+
+            if (index >= this.count)
+                throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+            if (index == --this.count)
+                return false;
+
+            Array.Copy(this.buffer, index + 1, this.buffer, index, this.count - index);
+
+            this.buffer[this.count] = default;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Remove(in T item)
+        {
+            var indexTemp = IndexOf(in item);
+
+            if (!indexTemp.HasValue)
+                return false;
+
+            var index = indexTemp.Value;
+
+            if (index >= this.count)
+                throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+            if (index == --this.count)
+                return false;
+
+            Array.Copy(this.buffer, index + 1, this.buffer, index, this.count - index);
+
+            this.buffer[this.count] = default;
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -515,7 +613,7 @@ namespace System.Collections.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AllocateMore()
         {
-            var newLength = (int)((this.buffer.Length + 1) * 1.5f);
+            var newLength = (uint)((this.buffer.Length + 1) * 1.5f);
             var newList = new T[newLength];
             if (this.count > 0) Array.Copy(this.buffer, newList, this.count);
             this.buffer = newList;
@@ -527,7 +625,7 @@ namespace System.Collections.ArrayBased
             if (newSize <= this.buffer.Length)
                 return;
 
-            var newLength = (int)(newSize * 1.5f);
+            var newLength = (uint)(newSize * 1.5f);
             var newList = new T[newLength];
             if (this.count > 0) Array.Copy(this.buffer, newList, this.count);
             this.buffer = newList;

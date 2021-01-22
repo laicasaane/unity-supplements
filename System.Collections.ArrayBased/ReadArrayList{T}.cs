@@ -1,6 +1,7 @@
 ﻿// Based on
 // https://github.com/sebas77/Svelto.Common/blob/master/DataStructures/Arrays/FasterReadOnlyList.cs
 
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.ArrayBased
@@ -35,8 +36,20 @@ namespace System.Collections.ArrayBased
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public T[] ToArrayFast(out uint count)
-            => GetSource().GetBufferArray(out count);
+        public T[] ToArray()
+            => GetSource().ToArray();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ReadArray1<T> ToArrayFast()
+        {
+            var buffer = GetSource().GetBufferArray(out var count);
+            var length = buffer.Length;
+
+            if (count < length)
+                length = (int)count;
+
+            return new ReadArray1<T>(buffer, length, count);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array, int arrayIndex)
@@ -45,6 +58,42 @@ namespace System.Collections.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ArrayList<T>.Enumerator GetEnumerator()
             => GetSource().GetEnumerator();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(in T item)
+            => GetSource().Contains(in item);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(in T item, IEqualityComparerIn<T> comparer)
+            => GetSource().Contains(in item, comparer);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(T item)
+            => GetSource().Contains(item);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Contains(T item, IEqualityComparer<T> comparer)
+            => GetSource().Contains(item, comparer);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(in T item)
+            => GetSource().IndexOf(in item);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(in T item, IEqualityComparerIn<T> comparer)
+            => GetSource().IndexOf(in item, comparer);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(T item)
+            => GetSource().IndexOf(item);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint? IndexOf(T item, IEqualityComparer<T> comparer)
+            => GetSource().IndexOf(item, comparer);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ref readonly T Peek()
+            => ref GetSource().Peek();
 
         public static ReadArrayList<T> Empty { get; } = new ReadArrayList<T>(ArrayList<T>.Empty);
 
