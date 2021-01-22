@@ -25,7 +25,9 @@
 - [RefPredicate](./System/Delegates/RefPredicate.cs)
 
 ### Interface
+- [IComparableIn\<T>](./System/Interfaces/IComparableIn%7BT%7D.cs)
 - [IComparableReadOnlyStruct\<T>](./System/Interfaces/IComparableReadOnlyStruct%7BT%7D.cs)
+- [IEquatableIn\<T>](./System/Interfaces/IEquatableIn%7BT%7D.cs)
 - [IEquatableReadOnlyStruct\<T>](./System/Interfaces/IEquatableReadOnlyStruct%7BT%7D.cs)
 
 ### Index & Length
@@ -105,7 +107,9 @@
 ## System.Collections.Generics
 
 ### Interface
+- [IEqualityComparerIn\<T>](./System.Collections.Generic/IEqualityComparerIn%7BT%7D.cs)
 - [IReadOnlyStructEqualityComparer\<T>](./System.Collections.Generic/IReadOnlyStructEqualityComparer%7BT%7D.cs)
+- [IComparerIn\<T>](./System.Collections.Generic/IComparerIn%7BT%7D.cs)
 - [IReadOnlyStructComparer\<T>](./System.Collections.Generic/IReadOnlyStructComparer%7BT%7D.cs)
 
 ### Extensions
@@ -148,10 +152,13 @@
 ## System.Collections.ArrayBased
 
 - [ArrayList\<T>](./System.Collections.ArrayBased/ArrayList%7BT%7D.cs)
+- [ArrayList\<T>.Collection](./System.Collections.ArrayBased/ArrayList%7BT%7D.Collection.cs)
 - [ArrayDictionary\<TKey, TValue>](./System.Collections.ArrayBased/ArrayDictionary%7BTKey,TValue%7D.cs)
+- [ArrayDictionary\<TKey, TValue>.Collection](./System.Collections.ArrayBased/ArrayDictionary%7BTKey,TValue%7D.Collection.cs)
 - [ReadArrayList\<T>](./System.Collections.ArrayBased/ReadArrayList%7BT%7D.cs)
 - [ReadArrayDictionary\<TKey, TValue>](./System.Collections.ArrayBased/ReadArrayDictionary%7BTKey,TValue%7D.cs)
 - [RefReadArrayList\<T>](./System.Collections.ArrayBased/RefReadArrayList%7BT%7D.cs)
+- [Extensions](./System.Collections.ArrayBased/Extensions)
 
 ## System.Collections.Pooling
 
