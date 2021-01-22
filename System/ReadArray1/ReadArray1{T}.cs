@@ -59,7 +59,25 @@ namespace System
             this.LongLength = (uint)source.LongLength;
         }
 
-        internal ReadArray1(T[] source, int length, uint longLength)
+        public ReadArray1(T[] source, uint longLength)
+        {
+            if (source == null)
+            {
+                this = default;
+                return;
+            }
+
+            var length = source.Length;
+
+            if (longLength < length)
+                length = (int)longLength;
+
+            this.source = source;
+            this.Length = length;
+            this.LongLength = Math.Min((uint)source.LongLength, longLength);
+        }
+
+        public ReadArray1(T[] source, int length, uint longLength)
         {
             if (source == null)
             {

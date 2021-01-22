@@ -66,13 +66,13 @@ namespace System.Collections.ArrayBased
         public ReadArray1<Node> Keys
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.valuesInfo;
+            get => new ReadArray1<Node>(this.valuesInfo, this.Count);
         }
 
         public ReadArray1<TValue> Values
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.values;
+            get => new ReadArray1<TValue>(this.values, this.Count);
         }
 
         public ArrayDictionary()
