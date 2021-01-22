@@ -66,8 +66,15 @@
 - [IRangeEnumerator\<T>](./System/Range/IRangeEnumerator%7BT%7D.cs)
 - [ReadRange\<T>](./System/Range/ReadRange%7BT%7D.cs)
 - [ReadRange\<TValue, TEnumerator>](./System/Range/ReadRange%7BTValue%2CTEnumerator%7D.cs)
+- [ByteRange](./System/Range/ByteRange.cs)
+- [SByteRange](./System/Range/SByteRange.cs)
+- [ShortRange](./System/Range/ShortRange.cs)
+- [UShortRange](./System/Range/UShortRange.cs)
 - [IntRange](./System/Range/IntRange.cs)
 - [UIntRange](./System/Range/UIntRange.cs)
+- [LongRange](./System/Range/LongRange.cs)
+- [ULongRange](./System/Range/ULongRange.cs)
+- [CharRange](./System/Range/CharRange.cs)
 
 ### Misc.
 - [Converter](./System/Converter.cs)
