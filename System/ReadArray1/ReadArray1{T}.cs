@@ -8,20 +8,30 @@ namespace System
     {
         private readonly T[] source;
 
-        public int Length => GetSource().Length;
+        public readonly int Length;
+        public readonly uint LongLength;
 
-        int IReadOnlyCollection<T>.Count => GetSource().Length;
+        int IReadOnlyCollection<T>.Count => this.Length;
 
         public ref readonly T this[int index]
         {
             get
             {
-                var source = GetSource();
-
-                if ((uint)index >= (uint)source.Length)
+                if ((uint)index >= (uint)this.Length)
                     throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-                return ref source[index];
+                return ref this.source[index];
+            }
+        }
+
+        public ref readonly T this[uint index]
+        {
+            get
+            {
+                if (index >= this.LongLength)
+                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+                return ref this.source[index];
             }
         }
 
@@ -29,12 +39,10 @@ namespace System
         {
             get
             {
-                var source = GetSource();
-
-                if ((uint)index >= (uint)source.Length)
+                if ((uint)index >= (uint)this.Length)
                     throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
-                return source[index];
+                return this.source[index];
             }
         }
 
@@ -47,6 +55,21 @@ namespace System
             }
 
             this.source = source;
+            this.Length = source.Length;
+            this.LongLength = (uint)source.LongLength;
+        }
+
+        internal ReadArray1(T[] source, int length, uint longLength)
+        {
+            if (source == null)
+            {
+                this = default;
+                return;
+            }
+
+            this.source = source;
+            this.Length = Math.Min(source.Length, length);
+            this.LongLength = Math.Min((uint)source.LongLength, longLength);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -75,7 +98,7 @@ namespace System
             return source == otherSource;
         }
 
-        public void CopyTo(Array array, long index)
+        public void CopyTo(Array array, uint index)
             => GetSource().CopyTo(array, index);
 
         public void CopyTo(Array array, int index)
@@ -84,12 +107,13 @@ namespace System
         public T[] ToArray()
         {
             var source = GetSource();
+            var length = Math.Min(source.LongLength, this.LongLength);
 
-            if (source.Length == 0)
+            if (length == 0)
                 return Array.Empty<T>();
 
-            var array = new T[source.Length];
-            Array.Copy(source, 0, array, 0, source.Length);
+            var array = new T[length];
+            Array.Copy(source, 0, array, 0, length);
 
             return array;
         }
@@ -122,22 +146,34 @@ namespace System
         public struct Enumerator : IEnumerator<T>
         {
             private readonly T[] source;
-            private readonly int end;
-            private int current;
+            private readonly uint length;
+
+            private uint current;
+            private bool first;
 
             internal Enumerator(in ReadArray1<T> array)
             {
                 this.source = array.GetSource();
-                this.end = this.source.Length;
-                this.current = -1;
+                this.length = (uint)Math.Min(this.source.LongLength, array.LongLength);
+                this.current = 0;
+                this.first = true;
             }
 
             public bool MoveNext()
             {
-                if (this.current < this.end)
+                if (this.length == 0)
+                    return false;
+
+                if (this.first)
+                {
+                    this.first = false;
+                    return true;
+                }
+
+                if (this.current < this.length - 1)
                 {
                     this.current++;
-                    return (this.current < this.end);
+                    return true;
                 }
 
                 return false;
@@ -147,10 +183,7 @@ namespace System
             {
                 get
                 {
-                    if (this.current < 0)
-                        throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumNotStarted();
-
-                    if (this.current >= this.end)
+                    if (this.current >= this.length)
                         throw ThrowHelper.GetInvalidOperationException_InvalidOperation_EnumEnded();
 
                     return this.source[this.current];
@@ -162,7 +195,8 @@ namespace System
 
             void IEnumerator.Reset()
             {
-                this.current = -1;
+                this.current = 0;
+                this.first = true;
             }
 
             public void Dispose()
