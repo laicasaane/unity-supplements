@@ -7,7 +7,7 @@
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);
 
-            self.GetRange(start + 1, end - start, output, allowDuplicate, allowNull);
+            self.GetRange(start, end - start + 1, output, allowDuplicate, allowNull);
         }
 
         public static void GetRange<T>(this IEnumerator<T> self, int offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
