@@ -14,7 +14,37 @@ namespace System.Collections.ArrayBased
                 (!allowOverwrite && self.ContainsKey(key)))
                 return;
 
-            self[key] = value;
+            self.Set(key, value);
+        }
+
+        public static void Add<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in TKey key, TValue value, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || key == null ||
+                (!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(in key)))
+                return;
+
+            self.Set(in key, value);
+        }
+
+        public static void Add<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, TKey key, in TValue value, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || key == null ||
+                (!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(key)))
+                return;
+
+            self.Set(key, in value);
+        }
+
+        public static void Add<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in TKey key, in TValue value, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || key == null ||
+                (!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(in key)))
+                return;
+
+            self.Set(in key, in value);
         }
 
         public static void Add<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in KeyValuePair<TKey, TValue> kvp, bool allowOverwrite, bool allowNullValue = false)
@@ -27,6 +57,42 @@ namespace System.Collections.ArrayBased
             self[kvp.Key] = kvp.Value;
         }
 
+        public static void AddIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in KeyValuePair<TKey, TValue> kvp, bool allowOverwrite, bool allowNullValue = false)
+        {
+            var (key, value) = kvp;
+
+            if (self == null || key == null ||
+                (!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(key)))
+                return;
+
+            self.Set(in key, in value);
+        }
+
+        public static void AddInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in KeyValuePair<TKey, TValue> kvp, bool allowOverwrite, bool allowNullValue = false)
+        {
+            var (key, value) = kvp;
+
+            if (self == null || key == null ||
+                (!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(key)))
+                return;
+
+            self.Set(in key, value);
+        }
+
+        public static void AddInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in KeyValuePair<TKey, TValue> kvp, bool allowOverwrite, bool allowNullValue = false)
+        {
+            var (key, value) = kvp;
+
+            if (self == null || key == null ||
+                (!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(key)))
+                return;
+
+            self.Set(key, in value);
+        }
+
         public static void Add<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, object item, bool allowOverwrite, bool allowNullValue = false)
         {
             if (self == null || !(item is KeyValuePair<TKey, TValue> kvp))
@@ -36,8 +102,53 @@ namespace System.Collections.ArrayBased
                 (!allowOverwrite && self.ContainsKey(kvp.Key)))
                 return;
 
-            self[kvp.Key] = kvp.Value;
+            self.Set(kvp.Key, kvp.Value);
         }
+
+        public static void AddIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, object item, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || !(item is KeyValuePair<TKey, TValue> kvp))
+                return;
+
+            var (key, value) = kvp;
+
+            if ((!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(in key)))
+                return;
+
+            self.Set(in key, in value);
+        }
+
+        public static void AddInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, object item, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || !(item is KeyValuePair<TKey, TValue> kvp))
+                return;
+
+            var (key, value) = kvp;
+
+            if ((!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(in key)))
+                return;
+
+            self.Set(in key, value);
+        }
+
+        public static void AddInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, object item, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || !(item is KeyValuePair<TKey, TValue> kvp))
+                return;
+
+            var (key, value) = kvp;
+
+            if ((!allowNullValue && value == null) ||
+                (!allowOverwrite && self.ContainsKey(key)))
+                return;
+
+            self.Set(key, in value);
+        }
+
+        public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source)
+            => self.AddRange(source, true);
 
         public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source, bool allowOverwrite, bool allowNullValue = false)
         {
@@ -49,7 +160,7 @@ namespace System.Collections.ArrayBased
                 foreach (var kv in source)
                 {
                     if (allowNullValue || kv.Value != null)
-                        self[kv.Key] = kv.Value;
+                        self.Set(kv.Key, kv.Value);
                 }
 
                 return;
@@ -58,7 +169,85 @@ namespace System.Collections.ArrayBased
             foreach (var kv in source)
             {
                 if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self[kv.Key] = kv.Value;
+                    self.Set(kv.Key, kv.Value);
+            }
+        }
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source)
+            => self.AddRangeIn(source, true);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || source == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var (key, value) in source)
+                {
+                    if (allowNullValue || value != null)
+                        self.Set(in key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var (key, value) in source)
+            {
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, in value);
+            }
+        }
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source)
+            => self.AddRangeInKey(source, true);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || source == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var (key, value) in source)
+                {
+                    if (allowNullValue || value != null)
+                        self.Set(in key, value);
+                }
+
+                return;
+            }
+
+            foreach (var (key, value) in source)
+            {
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, value);
+            }
+        }
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source)
+            => self.AddRangeInValue(source, true);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || source == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var (key, value) in source)
+                {
+                    if (allowNullValue || value != null)
+                        self.Set(key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var (key, value) in source)
+            {
+                if ((allowNullValue || value != null) && !self.ContainsKey(key))
+                    self.Set(key, in value);
             }
         }
 
@@ -66,12 +255,6 @@ namespace System.Collections.ArrayBased
             => self.AddRange(collection, true);
 
         public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection, bool allowOverwrite, bool allowNullValue = false)
-            => self.AddRange(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
-
-        public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection)
-           => self.AddRange(collection, true);
-
-        public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection, bool allowOverwrite, bool allowNullValue = false)
             => self.AddRange(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
 
         public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator)
@@ -89,7 +272,7 @@ namespace System.Collections.ArrayBased
                     var kv = enumerator.Current;
 
                     if (allowNullValue || kv.Value != null)
-                        self[kv.Key] = kv.Value;
+                        self.Set(kv.Key, kv.Value);
                 }
 
                 return;
@@ -100,9 +283,123 @@ namespace System.Collections.ArrayBased
                 var kv = enumerator.Current;
 
                 if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self[kv.Key] = kv.Value;
+                    self.Set(kv.Key, kv.Value);
             }
         }
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            => self.AddRangeIn(collection, true);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRangeIn(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator)
+            => self.AddRangeIn(enumerator, true);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || enumerator == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                while (enumerator.MoveNext())
+                {
+                    var (key, value) = enumerator.Current;
+
+                    if (allowNullValue || value != null)
+                        self.Set(in key, in value);
+                }
+
+                return;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                var (key, value) = enumerator.Current;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, in value);
+            }
+        }
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            => self.AddRangeInKey(collection, true);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRangeInKey(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator)
+            => self.AddRangeInKey(enumerator, true);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || enumerator == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                while (enumerator.MoveNext())
+                {
+                    var (key, value) = enumerator.Current;
+
+                    if (allowNullValue || value != null)
+                        self.Set(in key, value);
+                }
+
+                return;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                var (key, value) = enumerator.Current;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, value);
+            }
+        }
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection)
+            => self.AddRangeInValue(collection, true);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<KeyValuePair<TKey, TValue>> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRangeInValue(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator)
+            => self.AddRangeInValue(enumerator, true);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<KeyValuePair<TKey, TValue>> enumerator, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || enumerator == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                while (enumerator.MoveNext())
+                {
+                    var (key, value) = enumerator.Current;
+
+                    if (allowNullValue || value != null)
+                        self.Set(key, in value);
+                }
+
+                return;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                var (key, value) = enumerator.Current;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(key))
+                    self.Set(key, in value);
+            }
+        }
+
+        public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection)
+           => self.AddRange(collection, true);
+
+        public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRange(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
 
         public static void AddRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator)
             => self.AddRange(enumerator, true);
@@ -120,7 +417,7 @@ namespace System.Collections.ArrayBased
                         continue;
 
                     if (allowNullValue || kv.Value != null)
-                        self[kv.Key] = kv.Value;
+                        self.Set(kv.Key, kv.Value);
                 }
 
                 return;
@@ -132,7 +429,133 @@ namespace System.Collections.ArrayBased
                     continue;
 
                 if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self[kv.Key] = kv.Value;
+                    self.Set(kv.Key, kv.Value);
+            }
+        }
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection)
+           => self.AddRangeIn(collection, true);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRangeIn(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator)
+            => self.AddRangeIn(enumerator, true);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || enumerator == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (!(enumerator.Current is KeyValuePair<TKey, TValue> kv))
+                        continue;
+
+                    var (key, value) = kv;
+
+                    if (allowNullValue || value != null)
+                        self.Set(in key, in value);
+                }
+
+                return;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                if (!(enumerator.Current is KeyValuePair<TKey, TValue> kv))
+                    continue;
+
+                var (key, value) = kv;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, in value);
+            }
+        }
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection)
+           => self.AddRangeInKey(collection, true);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRangeInKey(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator)
+            => self.AddRangeInKey(enumerator, true);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || enumerator == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (!(enumerator.Current is KeyValuePair<TKey, TValue> kv))
+                        continue;
+
+                    var (key, value) = kv;
+
+                    if (allowNullValue || value != null)
+                        self.Set(in key, value);
+                }
+
+                return;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                if (!(enumerator.Current is KeyValuePair<TKey, TValue> kv))
+                    continue;
+
+                var (key, value) = kv;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, value);
+            }
+        }
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection)
+           => self.AddRangeInValue(collection, true);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<object> collection, bool allowOverwrite, bool allowNullValue = false)
+            => self.AddRangeInValue(collection?.GetEnumerator(), allowOverwrite, allowNullValue);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator)
+            => self.AddRangeInValue(enumerator, true);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerator<object> enumerator, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || enumerator == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (!(enumerator.Current is KeyValuePair<TKey, TValue> kv))
+                        continue;
+
+                    var (key, value) = kv;
+
+                    if (allowNullValue || value != null)
+                        self.Set(key, in value);
+                }
+
+                return;
+            }
+
+            while (enumerator.MoveNext())
+            {
+                if (!(enumerator.Current is KeyValuePair<TKey, TValue> kv))
+                    continue;
+
+                var (key, value) = kv;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(key))
+                    self.Set(key, in value);
             }
         }
 
@@ -152,7 +575,7 @@ namespace System.Collections.ArrayBased
                 foreach (var kv in items)
                 {
                     if (allowNullValue || kv.Value != null)
-                        self[kv.Key] = kv.Value;
+                        self.Set(kv.Key, kv.Value);
                 }
 
                 return;
@@ -161,7 +584,94 @@ namespace System.Collections.ArrayBased
             foreach (var kv in items)
             {
                 if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self[kv.Key] = kv.Value;
+                    self.Set(kv.Key, kv.Value);
+            }
+        }
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, params KeyValuePair<TKey, TValue>[] items)
+            => self.AddRangeIn(true, items);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowNullValue, params KeyValuePair<TKey, TValue>[] items)
+            => self.AddRangeIn(true, allowNullValue, items);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowOverwrite, bool allowNullValue, params KeyValuePair<TKey, TValue>[] items)
+        {
+            if (self == null || items == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var (key, value) in items)
+                {
+                    if (allowNullValue || value != null)
+                        self.Set(in key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var (key, value) in items)
+            {
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, in value);
+            }
+        }
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, params KeyValuePair<TKey, TValue>[] items)
+            => self.AddRangeInKey(true, items);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowNullValue, params KeyValuePair<TKey, TValue>[] items)
+            => self.AddRangeInKey(true, allowNullValue, items);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowOverwrite, bool allowNullValue, params KeyValuePair<TKey, TValue>[] items)
+        {
+            if (self == null || items == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var (key, value) in items)
+                {
+                    if (allowNullValue || value != null)
+                        self.Set(in key, value);
+                }
+
+                return;
+            }
+
+            foreach (var (key, value) in items)
+            {
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, value);
+            }
+        }
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, params KeyValuePair<TKey, TValue>[] items)
+            => self.AddRangeInValue(true, items);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowNullValue, params KeyValuePair<TKey, TValue>[] items)
+            => self.AddRangeInValue(true, allowNullValue, items);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowOverwrite, bool allowNullValue, params KeyValuePair<TKey, TValue>[] items)
+        {
+            if (self == null || items == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var (key, value) in items)
+                {
+                    if (allowNullValue || value != null)
+                        self.Set(key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var (key, value) in items)
+            {
+                if ((allowNullValue || value != null) && !self.ContainsKey(key))
+                    self.Set(key, in value);
             }
         }
 
@@ -184,7 +694,7 @@ namespace System.Collections.ArrayBased
                         continue;
 
                     if (allowNullValue || kv.Value != null)
-                        self[kv.Key] = kv.Value;
+                        self.Set(kv.Key, kv.Value);
                 }
 
                 return;
@@ -196,7 +706,124 @@ namespace System.Collections.ArrayBased
                     continue;
 
                 if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self[kv.Key] = kv.Value;
+                    self.Set(kv.Key, kv.Value);
+            }
+        }
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, params object[] items)
+            => self.AddRangeIn(true, items);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowNullValue, params object[] items)
+            => self.AddRangeIn(true, allowNullValue, items);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowOverwrite, bool allowNullValue, params object[] items)
+        {
+            if (self == null || items == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var item in items)
+                {
+                    if (!(item is KeyValuePair<TKey, TValue> kv))
+                        continue;
+
+                    var (key, value) = kv;
+
+                    if (allowNullValue || value != null)
+                        self.Set(in key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                if (!(item is KeyValuePair<TKey, TValue> kv))
+                    continue;
+
+                var (key, value) = kv;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, in value);
+            }
+        }
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, params object[] items)
+            => self.AddRangeInKey(true, items);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowNullValue, params object[] items)
+            => self.AddRangeInKey(true, allowNullValue, items);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowOverwrite, bool allowNullValue, params object[] items)
+        {
+            if (self == null || items == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var item in items)
+                {
+                    if (!(item is KeyValuePair<TKey, TValue> kv))
+                        continue;
+
+                    var (key, value) = kv;
+
+                    if (allowNullValue || value != null)
+                        self.Set(in key, value);
+                }
+
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                if (!(item is KeyValuePair<TKey, TValue> kv))
+                    continue;
+
+                var (key, value) = kv;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(in key))
+                    self.Set(in key, value);
+            }
+        }
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, params object[] items)
+            => self.AddRangeInValue(true, items);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowNullValue, params object[] items)
+            => self.AddRangeInValue(true, allowNullValue, items);
+
+        public static void AddRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, bool allowOverwrite, bool allowNullValue, params object[] items)
+        {
+            if (self == null || items == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                foreach (var item in items)
+                {
+                    if (!(item is KeyValuePair<TKey, TValue> kv))
+                        continue;
+
+                    var (key, value) = kv;
+
+                    if (allowNullValue || value != null)
+                        self.Set(key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var item in items)
+            {
+                if (!(item is KeyValuePair<TKey, TValue> kv))
+                    continue;
+
+                var (key, value) = kv;
+
+                if ((allowNullValue || value != null) && !self.ContainsKey(key))
+                    self.Set(key, in value);
             }
         }
 
@@ -245,7 +872,7 @@ namespace System.Collections.ArrayBased
                         continue;
 
                     if (allowNull || value != null)
-                        output.Add(key, value);
+                        output.Set(key, value);
                 }
 
                 return;
@@ -258,7 +885,100 @@ namespace System.Collections.ArrayBased
                     continue;
 
                 if ((allowNull || value != null) && !output.ContainsValue(value))
-                    output.Add(key, value);
+                    output.Set(key, value);
+            }
+        }
+
+        public static void GetRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || keys == null || output == null)
+                return;
+
+            if (allowDuplicateValue)
+            {
+                foreach (var key in keys)
+                {
+                    if (output.ContainsKey(in key) ||
+                        !self.TryGetValue(key, out var value))
+                        continue;
+
+                    if (allowNull || value != null)
+                        output.Set(in key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var key in keys)
+            {
+                if (output.ContainsKey(in key) ||
+                    !self.TryGetValue(key, out var value))
+                    continue;
+
+                if ((allowNull || value != null) && !output.ContainsValue(in value))
+                    output.Set(in key, in value);
+            }
+        }
+
+        public static void GetRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || keys == null || output == null)
+                return;
+
+            if (allowDuplicateValue)
+            {
+                foreach (var key in keys)
+                {
+                    if (output.ContainsKey(in key) ||
+                        !self.TryGetValue(key, out var value))
+                        continue;
+
+                    if (allowNull || value != null)
+                        output.Set(in key, value);
+                }
+
+                return;
+            }
+
+            foreach (var key in keys)
+            {
+                if (output.ContainsKey(in key) ||
+                    !self.TryGetValue(key, out var value))
+                    continue;
+
+                if ((allowNull || value != null) && !output.ContainsValue(value))
+                    output.Set(in key, value);
+            }
+        }
+
+        public static void GetRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || keys == null || output == null)
+                return;
+
+            if (allowDuplicateValue)
+            {
+                foreach (var key in keys)
+                {
+                    if (output.ContainsKey(key) ||
+                        !self.TryGetValue(key, out var value))
+                        continue;
+
+                    if (allowNull || value != null)
+                        output.Set(key, in value);
+                }
+
+                return;
+            }
+
+            foreach (var key in keys)
+            {
+                if (output.ContainsKey(key) ||
+                    !self.TryGetValue(key, out var value))
+                    continue;
+
+                if ((allowNull || value != null) && !output.ContainsValue(in value))
+                    output.Set(key, in value);
             }
         }
 

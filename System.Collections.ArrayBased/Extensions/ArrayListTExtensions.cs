@@ -56,6 +56,9 @@ namespace System.Collections.ArrayBased
             self.Add(in itemT);
         }
 
+        public static void AddRange<T>(this ArrayList<T> self, ArrayList<T> source)
+            => self.AddRange(source, true);
+
         public static void AddRange<T>(this ArrayList<T> self, ArrayList<T> source, bool allowDuplicate, bool allowNull = false)
         {
             if (self == null || source == null)
@@ -82,6 +85,9 @@ namespace System.Collections.ArrayBased
                     self.Add(item);
             }
         }
+
+        public static void AddRangeIn<T>(this ArrayList<T> self, ArrayList<T> source)
+            => self.AddRangeIn(source, true);
 
         public static void AddRangeIn<T>(this ArrayList<T> self, ArrayList<T> source, bool allowDuplicate, bool allowNull = false)
         {
