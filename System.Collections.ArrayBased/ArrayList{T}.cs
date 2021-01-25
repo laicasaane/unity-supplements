@@ -283,7 +283,7 @@ namespace System.Collections.ArrayBased
         /// Use <see cref="ResetToReuse"/> or <see cref="Clear"/> to clear the entire list completely.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void ShallowClear()
         {
 #if DEBUG
             if (TypeCache<T>.Type.IsClass)

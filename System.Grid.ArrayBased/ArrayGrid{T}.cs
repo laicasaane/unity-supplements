@@ -284,10 +284,10 @@ namespace System.Grid.ArrayBased
             this.data.Clear();
         }
 
-        public void FastClear()
+        public void ShallowClear()
         {
             this.Size = GridSize.Zero;
-            this.data.FastClear();
+            this.data.ShallowClear();
         }
 
         public bool ContainsIndex(in GridIndex index)

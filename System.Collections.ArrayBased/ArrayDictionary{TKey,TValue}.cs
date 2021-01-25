@@ -277,7 +277,7 @@ namespace System.Collections.ArrayBased
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void FastClear()
+        public void ShallowClear()
         {
             if (this.freeValueCellIndex == 0) return;
 
