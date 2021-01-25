@@ -125,7 +125,7 @@ namespace System
 
         /// <summary>
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static ByteRange Normal(byte a, byte b)
             => a > b ? new ByteRange(b, a) : new ByteRange(a, b);
@@ -145,16 +145,16 @@ namespace System
         public static implicit operator ByteRange(in (byte start, byte end, bool fromEnd) value)
             => new ByteRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator ReadRange<byte, Enumerator>(in ByteRange value)
-            => new ReadRange<byte, Enumerator>(value.Start, value.End, value.IsFromEnd);
+        public static implicit operator ReadRange<byte, Enumerator.Default>(in ByteRange value)
+            => new ReadRange<byte, Enumerator.Default>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<byte>(in ByteRange value)
-            => new ReadRange<byte>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<byte>(value.Start, value.End, value.IsFromEnd, new Enumerator.Default());
 
         public static implicit operator ByteRange(in ReadRange<byte> value)
             => new ByteRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator ByteRange(in ReadRange<byte, Enumerator> value)
+        public static implicit operator ByteRange(in ReadRange<byte, Enumerator.Default> value)
             => new ByteRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in ByteRange lhs, in ByteRange rhs)
@@ -165,7 +165,7 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public struct Enumerator : IEnumerator<byte>, IRangeEnumerator<byte>
+        public struct Enumerator : IEnumerator<byte>
         {
             private readonly byte start;
             private readonly byte end;
@@ -175,23 +175,27 @@ namespace System
             private sbyte flag;
 
             public Enumerator(in ByteRange range)
-            {
-                var increasing = range.Start <= range.End;
+                : this(range.Start, range.End, range.IsFromEnd)
+            { }
 
-                if (range.IsFromEnd)
+            public Enumerator(byte start, byte end, bool fromEnd)
+            {
+                var increasing = start <= end;
+
+                if (fromEnd)
                 {
-                    this.start = range.End;
-                    this.end = range.Start;
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.start = range.Start;
-                    this.end = range.End;
+                    this.start = start;
+                    this.end = end;
                 }
 
                 this.sign = (sbyte)(increasing
-                            ? (range.IsFromEnd ? -1 : 1)
-                            : (range.IsFromEnd ? 1 : -1));
+                            ? (fromEnd ? -1 : 1)
+                            : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
                 this.flag = (sbyte)(this.current == this.end ? 1 : -1);
@@ -247,35 +251,10 @@ namespace System
                 this.flag = -1;
             }
 
-            public IEnumerator<byte> Enumerate(byte start, byte end, bool fromEnd)
+            public readonly struct Default : IRangeEnumerator<byte>
             {
-                var increasing = start <= end;
-
-                return increasing
-                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
-                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
-            }
-
-            private IEnumerator<byte> EnumerateIncreasing(byte start, byte end)
-            {
-                for (var i = start;; i++)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
-            }
-
-            private IEnumerator<byte> EnumerateDecreasing(byte start, byte end)
-            {
-                for (var i = start;; i--)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
+                public IEnumerator<byte> Enumerate(byte start, byte end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd);
             }
         }
     }

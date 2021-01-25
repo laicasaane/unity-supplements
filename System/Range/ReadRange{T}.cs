@@ -133,9 +133,7 @@ namespace System
             => Normal(this.Start, this.End, this.enumerator, comparer);
 
         /// <summary>
-        /// Create a normal range from (a, b).
-        /// If a &lt;= b, then a is the <see cref="Start"/> value, and b is the <see cref="End"/> value.
-        /// Otherwise, they are swapped.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static ReadRange<T> Normal(T a, T b, IComparer<T> comparer)
         {

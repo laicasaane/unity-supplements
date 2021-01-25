@@ -62,10 +62,10 @@ namespace System.Grid
             => new GridIndexRange(this.Start, this.End, this.IsFromEnd, GridDirection.Column);
 
         public GridIndexRange FromStart()
-            => new GridIndexRange(this.Start, this.End, false);
+            => new GridIndexRange(this.Start, this.End, false, this.Direction);
 
         public GridIndexRange FromEnd()
-            => new GridIndexRange(this.Start, this.End, true);
+            => new GridIndexRange(this.Start, this.End, true, this.Direction);
 
         IRange<GridIndex> IRange<GridIndex>.FromStart()
             => FromStart();
@@ -147,7 +147,7 @@ namespace System.Grid
         }
 
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static GridIndexRange Normal(in GridIndex a, in GridIndex b, bool fromEnd = false, GridDirection direction = default)
         {
@@ -185,22 +185,19 @@ namespace System.Grid
         public static implicit operator GridIndexRange(in (GridIndex start, GridIndex end, bool fromEnd, GridDirection direction) value)
             => new GridIndexRange(value.start, value.end, value.fromEnd, value.direction);
 
-        public static implicit operator ReadRange<GridIndex, Enumerator>(in GridIndexRange value)
-            => new ReadRange<GridIndex, Enumerator>(value.Start, value.End, value.IsFromEnd);
-
-        public static implicit operator ReadRange<GridIndex>(in GridIndexRange value)
-            => new ReadRange<GridIndex>(value.Start, value.End, value.IsFromEnd, new Enumerator());
-
         public static implicit operator GridIndexRange(in ReadRange<GridIndex> value)
             => new GridIndexRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator GridIndexRange(in ReadRange<GridIndex, Enumerator> value)
-            => new GridIndexRange(value.Start, value.End, value.IsFromEnd);
-
         public static bool operator ==(in GridIndexRange lhs, in GridIndexRange rhs)
-            => lhs.Equals(in rhs);
+            => lhs.Start == rhs.Start &&
+               lhs.End == rhs.End &&
+               lhs.IsFromEnd == rhs.IsFromEnd &&
+               lhs.Direction == rhs.Direction;
 
         public static bool operator !=(in GridIndexRange lhs, in GridIndexRange rhs)
-            => !lhs.Equals(in rhs);
+            => lhs.Start != rhs.Start ||
+               lhs.End != rhs.End ||
+               lhs.IsFromEnd != rhs.IsFromEnd ||
+               lhs.Direction != rhs.Direction;
     }
 }

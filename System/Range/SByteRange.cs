@@ -119,7 +119,7 @@ namespace System
             => Normal(this.Start, this.End);
 
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static SByteRange Normal(sbyte a, sbyte b)
             => a > b ? new SByteRange(b, a) : new SByteRange(a, b);
@@ -139,16 +139,16 @@ namespace System
         public static implicit operator SByteRange(in (sbyte start, sbyte end, bool fromEnd) value)
             => new SByteRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator ReadRange<sbyte, Enumerator>(in SByteRange value)
-            => new ReadRange<sbyte, Enumerator>(value.Start, value.End, value.IsFromEnd);
+        public static implicit operator ReadRange<sbyte, Enumerator.Default>(in SByteRange value)
+            => new ReadRange<sbyte, Enumerator.Default>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<sbyte>(in SByteRange value)
-            => new ReadRange<sbyte>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<sbyte>(value.Start, value.End, value.IsFromEnd, new Enumerator.Default());
 
         public static implicit operator SByteRange(in ReadRange<sbyte> value)
             => new SByteRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator SByteRange(in ReadRange<sbyte, Enumerator> value)
+        public static implicit operator SByteRange(in ReadRange<sbyte, Enumerator.Default> value)
             => new SByteRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in SByteRange lhs, in SByteRange rhs)
@@ -159,7 +159,7 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public struct Enumerator : IEnumerator<sbyte>, IRangeEnumerator<sbyte>
+        public struct Enumerator : IEnumerator<sbyte>
         {
             private readonly sbyte start;
             private readonly sbyte end;
@@ -169,23 +169,27 @@ namespace System
             private sbyte flag;
 
             public Enumerator(in SByteRange range)
-            {
-                var increasing = range.Start <= range.End;
+                : this(range.Start, range.End, range.IsFromEnd)
+            { }
 
-                if (range.IsFromEnd)
+            public Enumerator(sbyte start, sbyte end, bool fromEnd)
+            {
+                var increasing = start <= end;
+
+                if (fromEnd)
                 {
-                    this.start = range.End;
-                    this.end = range.Start;
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.start = range.Start;
-                    this.end = range.End;
+                    this.start = start;
+                    this.end = end;
                 }
 
                 this.sign = (sbyte)(increasing
-                            ? (range.IsFromEnd ? -1 : 1)
-                            : (range.IsFromEnd ? 1 : -1));
+                            ? (fromEnd ? -1 : 1)
+                            : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
                 this.flag = (sbyte)(this.current == this.end ? 1 : -1);
@@ -241,29 +245,10 @@ namespace System
                 this.flag = -1;
             }
 
-            public IEnumerator<sbyte> Enumerate(sbyte start, sbyte end, bool fromEnd)
+            public readonly struct Default : IRangeEnumerator<sbyte>
             {
-                var increasing = start <= end;
-
-                return increasing
-                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
-                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
-            }
-
-            private IEnumerator<sbyte> EnumerateIncreasing(sbyte start, sbyte end)
-            {
-                for (var i = start; i <= end; i++)
-                {
-                    yield return i;
-                }
-            }
-
-            private IEnumerator<sbyte> EnumerateDecreasing(sbyte start, sbyte end)
-            {
-                for (var i = start; i >= end; i--)
-                {
-                    yield return i;
-                }
+                public IEnumerator<sbyte> Enumerate(sbyte start, sbyte end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd);
             }
         }
     }

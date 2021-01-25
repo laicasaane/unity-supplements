@@ -125,7 +125,7 @@ namespace System
 
         /// <summary>
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static CharRange Normal(char a, char b)
             => a > b ? new CharRange(b, a) : new CharRange(a, b);
@@ -145,16 +145,16 @@ namespace System
         public static implicit operator CharRange(in (char start, char end, bool fromEnd) value)
             => new CharRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator ReadRange<char, Enumerator>(in CharRange value)
-            => new ReadRange<char, Enumerator>(value.Start, value.End, value.IsFromEnd);
+        public static implicit operator ReadRange<char, Enumerator.Default>(in CharRange value)
+            => new ReadRange<char, Enumerator.Default>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<char>(in CharRange value)
-            => new ReadRange<char>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<char>(value.Start, value.End, value.IsFromEnd, new Enumerator.Default());
 
         public static implicit operator CharRange(in ReadRange<char> value)
             => new CharRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator CharRange(in ReadRange<char, Enumerator> value)
+        public static implicit operator CharRange(in ReadRange<char, Enumerator.Default> value)
             => new CharRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in CharRange lhs, in CharRange rhs)
@@ -165,7 +165,7 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public struct Enumerator : IEnumerator<char>, IRangeEnumerator<char>
+        public struct Enumerator : IEnumerator<char>
         {
             private readonly char start;
             private readonly char end;
@@ -175,23 +175,27 @@ namespace System
             private sbyte flag;
 
             public Enumerator(in CharRange range)
-            {
-                var increasing = range.Start <= range.End;
+                : this(range.Start, range.End, range.IsFromEnd)
+            { }
 
-                if (range.IsFromEnd)
+            public Enumerator(char start, char end, bool fromEnd)
+            {
+                var increasing = start <= end;
+
+                if (fromEnd)
                 {
-                    this.start = range.End;
-                    this.end = range.Start;
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.start = range.Start;
-                    this.end = range.End;
+                    this.start = start;
+                    this.end = end;
                 }
 
                 this.sign = (sbyte)(increasing
-                            ? (range.IsFromEnd ? -1 : 1)
-                            : (range.IsFromEnd ? 1 : -1));
+                            ? (fromEnd ? -1 : 1)
+                            : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
                 this.flag = (sbyte)(this.current == this.end ? 1 : -1);
@@ -247,35 +251,10 @@ namespace System
                 this.flag = -1;
             }
 
-            public IEnumerator<char> Enumerate(char start, char end, bool fromEnd)
+            public readonly struct Default : IRangeEnumerator<char>
             {
-                var increasing = start <= end;
-
-                return increasing
-                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
-                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
-            }
-
-            private IEnumerator<char> EnumerateIncreasing(char start, char end)
-            {
-                for (var i = start;; i++)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
-            }
-
-            private IEnumerator<char> EnumerateDecreasing(char start, char end)
-            {
-                for (var i = start;; i--)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
+                public IEnumerator<char> Enumerate(char start, char end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd);
             }
         }
     }

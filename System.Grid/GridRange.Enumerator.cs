@@ -7,66 +7,198 @@ namespace System.Grid
     {
         public struct Enumerator : IEnumerator<GridIndex>
         {
+            private readonly GridSize size;
             private readonly GridIndex start, end;
-            private readonly GridIndex min, max;
-            private readonly bool fromEnd, byRow;
+            private readonly int startValue, endValue;
+            private readonly sbyte rowSign, colSign, compare;
+            private readonly bool byRow, clamped;
 
             private GridIndex current;
             private sbyte flag;
 
             public Enumerator(in GridRange range)
+                : this(range.Size, range.Clamped, range.Start, range.End, range.IsFromEnd, range.Direction)
+            { }
+
+            public Enumerator(in GridSize size, bool clamped, in GridIndex start, in GridIndex end, bool fromEnd, GridDirection direction)
             {
-                this.fromEnd = range.IsFromEnd;
-                this.byRow = range.Direction == GridDirection.Row;
+                var cStart = size.ClampIndex(start);
+                var cEnd = size.ClampIndex(end);
 
-                var size = (GridSize)range.Size;
+                this.size = size;
+                this.byRow = direction == GridDirection.Row;
+                this.clamped = clamped;
 
-                if (range.Clamped)
+                var startIndex = cStart.ToIndex1(this.size.Column);
+                var endIndex = cEnd.ToIndex1(this.size.Column);
+                var increasing = startIndex <= endIndex;
+
+                if (fromEnd)
                 {
-                    var rowIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
-                    var colIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
-
-                    this.start = size.ClampIndex(new GridIndex(
-                        rowIncreasing ? range.Start.Row : range.End.Row,
-                        colIncreasing ? range.Start.Column : range.End.Column
-                    ));
-
-                    this.end = size.ClampIndex(new GridIndex(
-                        rowIncreasing ? range.End.Row : range.Start.Row,
-                        colIncreasing ? range.End.Column : range.Start.Column
-                    ));
-
-                    this.min = this.start;
-                    this.max = this.end;
+                    this.start = cEnd;
+                    this.end = cStart;
                 }
                 else
                 {
-                    var start1 = range.Start.ToIndex1(size);
-                    var end1 = range.End.ToIndex1(size);
-
-                    this.start = start1 > end1 ? range.End : range.Start;
-                    this.end = start1 > end1 ? range.Start : range.End;
-
-                    this.min = GridIndex.Zero;
-                    this.max = range.Size - GridIndex.One;
+                    this.start = cStart;
+                    this.end = cEnd;
                 }
 
-                if (this.fromEnd)
+                this.current = this.start;
+
+                if (clamped)
                 {
-                    this.current = this.end;
-                    this.flag = (sbyte)(this.current == this.start ? 1 : -1);
+                    if (increasing)
+                    {
+                        if (fromEnd)
+                        {
+                            if (this.byRow)
+                            {
+                                this.rowSign = -1;
+                                this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+                                this.startValue = Math.Max(this.start.Row, this.end.Row);
+                                this.endValue = Math.Min(this.start.Row, this.end.Row);
+
+                                if (this.start.Column.CompareTo(this.end.Column) < 0)
+                                {
+                                    this.startValue -= 1;
+                                    this.compare = 0;
+                                }
+                                else
+                                {
+                                    this.compare = -1;
+                                }
+                            }
+                            else
+                            {
+                                this.rowSign = this.colSign = this.compare = -1;
+                                this.startValue = Math.Max(this.start.Column, this.end.Column);
+                                this.endValue = Math.Min(this.start.Column, this.end.Column);
+                            }
+                        }
+                        else
+                        {
+                            if (this.byRow)
+                            {
+                                this.rowSign = 1;
+                                this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+
+                                this.startValue = Math.Min(this.start.Row, this.end.Row);
+                                this.endValue = Math.Max(this.start.Row, this.end.Row);
+
+                                if (this.start.Column.CompareTo(this.end.Column) > 0)
+                                {
+                                    this.startValue += 1;
+                                    this.compare = 0;
+                                }
+                                else
+                                {
+                                    this.compare = 1;
+                                }
+                            }
+                            else
+                            {
+                                this.rowSign = this.colSign = this.compare = 1;
+                                this.startValue = Math.Min(this.start.Column, this.end.Column);
+                                this.endValue = Math.Max(this.start.Column, this.end.Column);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (fromEnd)
+                        {
+                            if (this.byRow)
+                            {
+                                this.rowSign = 1;
+                                this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+                                this.startValue = Math.Min(this.start.Row, this.end.Row);
+                                this.endValue = Math.Max(this.start.Row, this.end.Row);
+
+                                if (this.start.Column.CompareTo(this.end.Column) > 0)
+                                {
+                                    this.startValue += 1;
+                                    this.compare = 0;
+                                }
+                                else
+                                {
+                                    this.compare = 1;
+                                }
+                            }
+                            else
+                            {
+                                this.rowSign = this.colSign = this.compare = 1;
+                                this.startValue = Math.Min(this.start.Column, this.end.Column);
+                                this.endValue = Math.Max(this.start.Column, this.end.Column);
+                            }
+                        }
+                        else
+                        {
+                            if (this.byRow)
+                            {
+                                this.rowSign = -1;
+                                this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+                                this.startValue = Math.Max(this.start.Row, this.end.Row);
+                                this.endValue = Math.Min(this.start.Row, this.end.Row);
+
+                                if (this.start.Column.CompareTo(this.end.Column) < 0)
+                                {
+                                    this.startValue -= 1;
+                                    this.compare = 0;
+                                }
+                                else
+                                {
+                                    this.compare = -1;
+                                }
+                            }
+                            else
+                            {
+                                this.rowSign = this.colSign = this.compare = -1;
+                                this.startValue = Math.Max(this.start.Column, this.end.Column);
+                                this.endValue = Math.Min(this.start.Column, this.end.Column);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    this.current = this.start;
-                    this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+                    this.startValue = this.endValue = default;
+                    this.compare = default;
+                    this.rowSign = this.colSign = (sbyte)(increasing
+                                                          ? (fromEnd ? -1 : 1)
+                                                          : (fromEnd ?  1 : -1));
                 }
+
+                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+            }
+
+            public Enumerator(GridDirection direction)
+            {
+                this.size = default;
+                this.byRow = direction == GridDirection.Row;
+                this.clamped = default;
+                this.current = this.start = this.end = default;
+                this.startValue = this.endValue = default;
+                this.rowSign = this.colSign = this.compare = this.flag = default;
             }
 
             public bool MoveNext()
             {
                 if (this.flag == 0)
-                    return this.fromEnd ? MoveNextFromEnd() : MoveNextFromStart();
+                {
+                    if (this.current == this.end)
+                    {
+                        this.flag = 1;
+                        return false;
+                    }
+
+                    if (this.clamped)
+                        MoveNextClamped();
+                    else
+                        MoveNextUnclamped();
+
+                    return true;
+                }
 
                 if (this.flag < 0)
                 {
@@ -77,78 +209,40 @@ namespace System.Grid
                 return false;
             }
 
-            private bool MoveNextFromStart()
+            private void MoveNextClamped()
             {
-                if (this.current == this.end)
-                {
-                    this.flag = 1;
-                    return false;
-                }
-
                 int row, col;
 
                 if (this.byRow)
                 {
-                    row = this.current.Row + 1;
+                    row = this.current.Row + this.rowSign;
                     col = this.current.Column;
 
-                    if (row > this.max.Row)
+                    if (row.CompareTo(this.endValue) == this.compare && col != this.end.Column)
                     {
-                        col += 1;
-                        row = this.min.Row;
+                        col += this.colSign;
+                        row = this.startValue;
                     }
                 }
                 else
                 {
-                    col = this.current.Column + 1;
+                    col = this.current.Column + this.colSign;
                     row = this.current.Row;
 
-                    if (col > this.max.Column)
+                    if (col.CompareTo(this.endValue) == this.compare)
                     {
-                        row += 1;
-                        col = this.min.Column;
+                        row += this.rowSign;
+                        col = this.startValue;
                     }
                 }
 
                 this.current = new GridIndex(row, col);
-                return true;
             }
 
-            private bool MoveNextFromEnd()
+            private void MoveNextUnclamped()
             {
-                if (this.current == this.start)
-                {
-                    this.flag = 1;
-                    return false;
-                }
-
-                int row, col;
-
-                if (this.byRow)
-                {
-                    row = this.current.Row - 1;
-                    col = this.current.Column;
-
-                    if (row < this.min.Row)
-                    {
-                        col -= 1;
-                        row = this.max.Row;
-                    }
-                }
-                else
-                {
-                    col = this.current.Column - 1;
-                    row = this.current.Row;
-
-                    if (col < this.min.Column)
-                    {
-                        row -= 1;
-                        col = this.max.Column;
-                    }
-                }
-
-                this.current = new GridIndex(row, col);
-                return true;
+                var index1 = this.size.Index1Of(this.current);
+                this.current = GridIndex.Convert(index1 + this.colSign, this.size.Column);
             }
 
             public GridIndex Current
@@ -165,17 +259,17 @@ namespace System.Grid
                 }
             }
 
-            public void Dispose()
-            {
-            }
-
             object IEnumerator.Current
                 => this.Current;
 
-            void IEnumerator.Reset()
+            public void Reset()
             {
-                this.current = this.fromEnd ? this.end : this.start;
+                this.current = this.start;
                 this.flag = -1;
+            }
+
+            public void Dispose()
+            {
             }
         }
     }

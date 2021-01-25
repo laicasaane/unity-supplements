@@ -125,7 +125,7 @@ namespace System
 
         /// <summary>
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static UShortRange Normal(ushort a, ushort b)
             => a > b ? new UShortRange(b, a) : new UShortRange(a, b);
@@ -145,16 +145,16 @@ namespace System
         public static implicit operator UShortRange(in (ushort start, ushort end, bool fromEnd) value)
             => new UShortRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator ReadRange<ushort, Enumerator>(in UShortRange value)
-            => new ReadRange<ushort, Enumerator>(value.Start, value.End, value.IsFromEnd);
+        public static implicit operator ReadRange<ushort, Enumerator.Default>(in UShortRange value)
+            => new ReadRange<ushort, Enumerator.Default>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<ushort>(in UShortRange value)
-            => new ReadRange<ushort>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<ushort>(value.Start, value.End, value.IsFromEnd, new Enumerator.Default());
 
         public static implicit operator UShortRange(in ReadRange<ushort> value)
             => new UShortRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator UShortRange(in ReadRange<ushort, Enumerator> value)
+        public static implicit operator UShortRange(in ReadRange<ushort, Enumerator.Default> value)
             => new UShortRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in UShortRange lhs, in UShortRange rhs)
@@ -165,7 +165,7 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public struct Enumerator : IEnumerator<ushort>, IRangeEnumerator<ushort>
+        public struct Enumerator : IEnumerator<ushort>
         {
             private readonly ushort start;
             private readonly ushort end;
@@ -175,23 +175,27 @@ namespace System
             private sbyte flag;
 
             public Enumerator(in UShortRange range)
-            {
-                var increasing = range.Start <= range.End;
+                : this(range.Start, range.End, range.IsFromEnd)
+            { }
 
-                if (range.IsFromEnd)
+            public Enumerator(ushort start, ushort end, bool fromEnd)
+            {
+                var increasing = start <= end;
+
+                if (fromEnd)
                 {
-                    this.start = range.End;
-                    this.end = range.Start;
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.start = range.Start;
-                    this.end = range.End;
+                    this.start = start;
+                    this.end = end;
                 }
 
                 this.sign = (sbyte)(increasing
-                            ? (range.IsFromEnd ? -1 : 1)
-                            : (range.IsFromEnd ? 1 : -1));
+                            ? (fromEnd ? -1 : 1)
+                            : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
                 this.flag = (sbyte)(this.current == this.end ? 1 : -1);
@@ -247,35 +251,10 @@ namespace System
                 this.flag = -1;
             }
 
-            public IEnumerator<ushort> Enumerate(ushort start, ushort end, bool fromEnd)
+            public readonly struct Default : IRangeEnumerator<ushort>
             {
-                var increasing = start <= end;
-
-                return increasing
-                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
-                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
-            }
-
-            private IEnumerator<ushort> EnumerateIncreasing(ushort start, ushort end)
-            {
-                for (var i = start; ; i++)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
-            }
-
-            private IEnumerator<ushort> EnumerateDecreasing(ushort start, ushort end)
-            {
-                for (var i = start; ; i--)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
+                public IEnumerator<ushort> Enumerate(ushort start, ushort end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd);
             }
         }
     }

@@ -125,7 +125,7 @@ namespace System
 
         /// <summary>
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static ULongRange Normal(ulong a, ulong b)
             => a > b ? new ULongRange(b, a) : new ULongRange(a, b);
@@ -145,16 +145,16 @@ namespace System
         public static implicit operator ULongRange(in (ulong start, ulong end, bool fromEnd) value)
             => new ULongRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator ReadRange<ulong, Enumerator>(in ULongRange value)
-            => new ReadRange<ulong, Enumerator>(value.Start, value.End, value.IsFromEnd);
+        public static implicit operator ReadRange<ulong, Enumerator.Default>(in ULongRange value)
+            => new ReadRange<ulong, Enumerator.Default>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<ulong>(in ULongRange value)
-            => new ReadRange<ulong>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<ulong>(value.Start, value.End, value.IsFromEnd, new Enumerator.Default());
 
         public static implicit operator ULongRange(in ReadRange<ulong> value)
             => new ULongRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator ULongRange(in ReadRange<ulong, Enumerator> value)
+        public static implicit operator ULongRange(in ReadRange<ulong, Enumerator.Default> value)
             => new ULongRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in ULongRange lhs, in ULongRange rhs)
@@ -165,7 +165,7 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public struct Enumerator : IEnumerator<ulong>, IRangeEnumerator<ulong>
+        public struct Enumerator : IEnumerator<ulong>
         {
             private readonly ulong start;
             private readonly ulong end;
@@ -175,23 +175,27 @@ namespace System
             private sbyte flag;
 
             public Enumerator(in ULongRange range)
-            {
-                var increasing = range.Start <= range.End;
+                 : this(range.Start, range.End, range.IsFromEnd)
+            { }
 
-                if (range.IsFromEnd)
+            public Enumerator(ulong start, ulong end, bool fromEnd)
+            {
+                var increasing = start <= end;
+
+                if (fromEnd)
                 {
-                    this.start = range.End;
-                    this.end = range.Start;
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.start = range.Start;
-                    this.end = range.End;
+                    this.start = start;
+                    this.end = end;
                 }
 
                 this.sign = (sbyte)(increasing
-                            ? (range.IsFromEnd ? -1 : 1)
-                            : (range.IsFromEnd ? 1 : -1));
+                            ? (fromEnd ? -1 : 1)
+                            : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
                 this.flag = (sbyte)(this.current == this.end ? 1 : -1);
@@ -247,35 +251,10 @@ namespace System
                 this.flag = -1;
             }
 
-            public IEnumerator<ulong> Enumerate(ulong start, ulong end, bool fromEnd)
+            public readonly struct Default : IRangeEnumerator<ulong>
             {
-                var increasing = start <= end;
-
-                return increasing
-                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
-                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
-            }
-
-            private IEnumerator<ulong> EnumerateIncreasing(ulong start, ulong end)
-            {
-                for (var i = start; ; i++)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
-            }
-
-            private IEnumerator<ulong> EnumerateDecreasing(ulong start, ulong end)
-            {
-                for (var i = start; ; i--)
-                {
-                    yield return i;
-
-                    if (i == end)
-                        yield break;
-                }
+                public IEnumerator<ulong> Enumerate(ulong start, ulong end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd);
             }
         }
     }

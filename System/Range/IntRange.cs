@@ -119,7 +119,7 @@ namespace System
             => Normal(this.Start, this.End);
 
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static IntRange Normal(int a, int b)
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
@@ -139,16 +139,16 @@ namespace System
         public static implicit operator IntRange(in (int start, int end, bool fromEnd) value)
             => new IntRange(value.start, value.end, value.fromEnd);
 
-        public static implicit operator ReadRange<int, Enumerator>(in IntRange value)
-            => new ReadRange<int, Enumerator>(value.Start, value.End, value.IsFromEnd);
+        public static implicit operator ReadRange<int, Enumerator.Default>(in IntRange value)
+            => new ReadRange<int, Enumerator.Default>(value.Start, value.End, value.IsFromEnd);
 
         public static implicit operator ReadRange<int>(in IntRange value)
-            => new ReadRange<int>(value.Start, value.End, value.IsFromEnd, new Enumerator());
+            => new ReadRange<int>(value.Start, value.End, value.IsFromEnd, new Enumerator.Default());
 
         public static implicit operator IntRange(in ReadRange<int> value)
             => new IntRange(value.Start, value.End, value.IsFromEnd);
 
-        public static implicit operator IntRange(in ReadRange<int, Enumerator> value)
+        public static implicit operator IntRange(in ReadRange<int, Enumerator.Default> value)
             => new IntRange(value.Start, value.End, value.IsFromEnd);
 
         public static bool operator ==(in IntRange lhs, in IntRange rhs)
@@ -159,7 +159,7 @@ namespace System
             => lhs.Start != rhs.Start || lhs.End != rhs.End ||
                lhs.IsFromEnd != rhs.IsFromEnd;
 
-        public struct Enumerator : IEnumerator<int>, IRangeEnumerator<int>
+        public struct Enumerator : IEnumerator<int>
         {
             private readonly int start;
             private readonly int end;
@@ -169,23 +169,27 @@ namespace System
             private sbyte flag;
 
             public Enumerator(in IntRange range)
-            {
-                var increasing = range.Start <= range.End;
+                : this(range.Start, range.End, range.IsFromEnd)
+            { }
 
-                if (range.IsFromEnd)
+            public Enumerator(int start, int end, bool fromEnd)
+            {
+                var increasing = start <= end;
+
+                if (fromEnd)
                 {
-                    this.start = range.End;
-                    this.end = range.Start;
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.start = range.Start;
-                    this.end = range.End;
+                    this.start = start;
+                    this.end = end;
                 }
 
                 this.sign = (sbyte)(increasing
-                            ? (range.IsFromEnd ? -1 : 1)
-                            : (range.IsFromEnd ? 1 : -1));
+                            ? (fromEnd ? -1 : 1)
+                            : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
                 this.flag = (sbyte)(this.current == this.end ? 1 : -1);
@@ -241,29 +245,10 @@ namespace System
                 this.flag = -1;
             }
 
-            public IEnumerator<int> Enumerate(int start, int end, bool fromEnd)
+            public readonly struct Default : IRangeEnumerator<int>
             {
-                var increasing = start <= end;
-
-                return increasing
-                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
-                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
-            }
-
-            private IEnumerator<int> EnumerateIncreasing(int start, int end)
-            {
-                for (var i = start; i <= end; i++)
-                {
-                    yield return i;
-                }
-            }
-
-            private IEnumerator<int> EnumerateDecreasing(int start, int end)
-            {
-                for (var i = start; i >= end; i--)
-                {
-                    yield return i;
-                }
+                public IEnumerator<int> Enumerate(int start, int end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd);
             }
         }
     }

@@ -119,7 +119,7 @@ namespace System
             => Normal(this.Start, this.End, comparer);
 
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static ReadRange<TValue, TEnumerator> Normal(TValue a, TValue b, IComparer<TValue> comparer)
         {

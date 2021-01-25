@@ -79,7 +79,7 @@ namespace System.Grid
             => value.Row < this.value.Row && value.Column < this.value.Column;
 
         public int Index1Of(in GridIndex value)
-            => value.ToIndex1(this.value);
+            => value.ToIndex1(this.value.Column);
 
         public GridIndex LastIndex()
             => this.value - GridIndex.One;

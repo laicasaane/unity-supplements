@@ -7,8 +7,11 @@ namespace System.Grid
     public readonly partial struct GridRange : IRange<GridIndex, GridRange.Enumerator>,
                                                IEquatableReadOnlyStruct<GridRange>, ISerializable
     {
-        public GridIndex Size { get; }
+        public GridSize Size { get; }
 
+        /// <summary>
+        /// Should iterate only within the boundary of <see cref="Start"/> and <see cref="End"/>.
+        /// </summary>
         public bool Clamped { get; }
 
         public GridIndex Start { get; }
@@ -17,9 +20,13 @@ namespace System.Grid
 
         public bool IsFromEnd { get; }
 
+        /// <summary>
+        /// <para>Iterate by <see cref="GridDirection.Column"/> or <see cref="GridDirection.Row"/>.</para>
+        /// <para>If <see cref="Clamped"/> == false, the direction will always be <see cref="GridDirection.Column"/>.</para>
+        /// </summary>
         public GridDirection Direction { get; }
 
-        public GridRange(in GridIndex size, in GridIndex start, in GridIndex end, bool fromEnd = false, GridDirection direction = default)
+        public GridRange(in GridSize size, in GridIndex start, in GridIndex end, bool fromEnd = false, GridDirection direction = default)
         {
             this.Size = size;
             this.Clamped = true;
@@ -29,7 +36,16 @@ namespace System.Grid
             this.Direction = direction;
         }
 
-        public GridRange(in GridIndex size, bool clamped, in GridIndex start, in GridIndex end, bool fromEnd = false, GridDirection direction = default)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="size"></param>
+        /// <param name="clamped">Should iterate only within the boundary of <see cref="Start"/> and <see cref="End"/>.</param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="fromEnd"></param>
+        /// <param name="direction">Iterate by <see cref="GridDirection.Column"/> or <see cref="GridDirection.Row"/>.</param>
+        public GridRange(in GridSize size, bool clamped, in GridIndex start, in GridIndex end, bool fromEnd = false, GridDirection direction = default)
         {
             this.Size = size;
             this.Clamped = clamped;
@@ -59,7 +75,7 @@ namespace System.Grid
             info.AddValue(nameof(this.Direction), this.Direction);
         }
 
-        public void Deconstruct(out GridIndex size, out bool clamped, out GridIndex start, out GridIndex end, out bool fromEnd, out GridDirection direction)
+        public void Deconstruct(out GridSize size, out bool clamped, out GridIndex start, out GridIndex end, out bool fromEnd, out GridDirection direction)
         {
             size = this.Size;
             clamped = this.Clamped;
@@ -69,7 +85,7 @@ namespace System.Grid
             direction = this.Direction;
         }
 
-        public GridRange With(in GridIndex? Size = null, bool? Clamped = null, in GridIndex? Start = null,
+        public GridRange With(in GridSize? Size = null, bool? Clamped = null, in GridIndex? Start = null,
                               in GridIndex? End = null, bool? IsFromEnd = null, GridDirection? Direction = null)
             => new GridRange(
                 Size ?? this.Size,
@@ -87,10 +103,10 @@ namespace System.Grid
             => new GridRange(this.Size, this.Clamped, this.Start, this.End, this.IsFromEnd, GridDirection.Column);
 
         public GridRange FromStart()
-            => new GridRange(this.Size, this.Clamped, this.Start, this.End, false);
+            => new GridRange(this.Size, this.Clamped, this.Start, this.End, false, this.Direction);
 
         public GridRange FromEnd()
-            => new GridRange(this.Size, this.Clamped, this.Start, this.End, true);
+            => new GridRange(this.Size, this.Clamped, this.Start, this.End, true, this.Direction);
 
         IRange<GridIndex> IRange<GridIndex>.FromStart()
             => FromStart();
@@ -99,20 +115,20 @@ namespace System.Grid
             => FromEnd();
 
         public GridRange Clamp()
-            => new GridRange(this.Size, true, this.Start, this.End, this.IsFromEnd);
+            => new GridRange(this.Size, true, this.Start, this.End, this.IsFromEnd, this.Direction);
 
         public GridRange Unclamp()
-            => new GridRange(this.Size, false, this.Start, this.End, this.IsFromEnd);
+            => new GridRange(this.Size, false, this.Start, this.End, this.IsFromEnd, this.Direction);
 
         public bool Contains(in GridIndex value)
         {
             if (this.Clamped)
             {
-                var containsRow = this.Start.Row.CompareTo(this.End.Row) <= 0
+                var containsRow = this.Start.Row <= this.End.Row
                                   ? value.Row >= this.Start.Row && value.Row <= this.End.Row
                                   : value.Row >= this.End.Row && value.Row <= this.Start.Row;
 
-                var containsCol = this.Start.Column.CompareTo(this.End.Column) <= 0
+                var containsCol = this.Start.Column <= this.End.Column
                                   ? value.Column >= this.Start.Column && value.Column <= this.End.Column
                                   : value.Column >= this.End.Column && value.Column <= this.Start.Column;
 
@@ -262,9 +278,9 @@ namespace System.Grid
         }
 
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
-        public static GridRange Normal(in GridIndex size, bool clamped, in GridIndex a, in GridIndex b, bool fromEnd = false, GridDirection direction = default)
+        public static GridRange Normal(in GridSize size, bool clamped, in GridIndex a, in GridIndex b, bool fromEnd = false, GridDirection direction = default)
         {
             GridIndex start, end;
 
@@ -299,43 +315,56 @@ namespace System.Grid
         public static GridRange FromSize(in GridIndex value, bool fromEnd = false)
             => new GridRange(value, GridIndex.Zero, value - GridIndex.One, fromEnd);
 
-        public static GridRange FromStart(in GridIndex size, in GridIndex start, in GridIndex end)
+        public static GridRange FromStart(in GridSize size, in GridIndex start, in GridIndex end)
             => new GridRange(size, start, end, false);
 
-        public static GridRange FromEnd(in GridIndex size, in GridIndex start, in GridIndex end)
+        public static GridRange FromEnd(in GridSize size, in GridIndex start, in GridIndex end)
             => new GridRange(size, start, end, true);
 
-        public static GridRange FromStart(in GridIndex size, bool clamped, in GridIndex start, in GridIndex end)
+        public static GridRange FromSize(in GridIndex value, bool clamped, bool fromEnd = false)
+            => new GridRange(value, clamped, GridIndex.Zero, value - GridIndex.One, fromEnd);
+
+        public static GridRange FromStart(in GridSize size, bool clamped, in GridIndex start, in GridIndex end)
             => new GridRange(size, clamped, start, end, false);
 
-        public static GridRange FromEnd(in GridIndex size, bool clamped, in GridIndex start, in GridIndex end)
+        public static GridRange FromEnd(in GridSize size, bool clamped, in GridIndex start, in GridIndex end)
             => new GridRange(size, clamped, start, end, true);
 
-        public static implicit operator GridRange(in (GridIndex size, GridIndex start, GridIndex end) value)
+        public static implicit operator GridRange(in (GridSize size, GridIndex start, GridIndex end) value)
             => new GridRange(value.size, value.start, value.end);
 
-        public static implicit operator GridRange(in (GridIndex size, GridIndex start, GridIndex end, bool fromEnd) value)
+        public static implicit operator GridRange(in (GridSize size, GridIndex start, GridIndex end, bool fromEnd) value)
             => new GridRange(value.size, value.start, value.end, value.fromEnd);
 
-        public static implicit operator GridRange(in (GridIndex size, GridIndex start, GridIndex end, bool fromEnd, GridDirection direction) value)
+        public static implicit operator GridRange(in (GridSize size, GridIndex start, GridIndex end, bool fromEnd, GridDirection direction) value)
             => new GridRange(value.size, value.start, value.end, value.fromEnd, value.direction);
 
-        public static implicit operator GridRange(in (GridIndex size, bool clamped, GridIndex start, GridIndex end) value)
+        public static implicit operator GridRange(in (GridSize size, bool clamped, GridIndex start, GridIndex end) value)
             => new GridRange(value.size, value.clamped, value.start, value.end);
 
-        public static implicit operator GridRange(in (GridIndex size, bool clamped, GridIndex start, GridIndex end, bool fromEnd) value)
+        public static implicit operator GridRange(in (GridSize size, bool clamped, GridIndex start, GridIndex end, bool fromEnd) value)
             => new GridRange(value.size, value.clamped, value.start, value.end, value.fromEnd);
 
-        public static implicit operator GridRange(in (GridIndex size, bool clamped, GridIndex start, GridIndex end, bool fromEnd, GridDirection direction) value)
+        public static implicit operator GridRange(in (GridSize size, bool clamped, GridIndex start, GridIndex end, bool fromEnd, GridDirection direction) value)
             => new GridRange(value.size, value.clamped, value.start, value.end, value.fromEnd, value.direction);
 
         public static implicit operator GridIndexRange(in GridRange value)
-            => new GridIndexRange(value.Start, value.End, value.IsFromEnd);
+            => new GridIndexRange(value.Start, value.End, value.IsFromEnd, value.Direction);
 
         public static bool operator ==(in GridRange lhs, in GridRange rhs)
-            => lhs.Equals(in rhs);
+            => lhs.Size == rhs.Size &&
+               lhs.Clamped == rhs.Clamped &&
+               lhs.Start == rhs.Start &&
+               lhs.End == rhs.End &&
+               lhs.IsFromEnd == rhs.IsFromEnd &&
+               lhs.Direction == rhs.Direction;
 
         public static bool operator !=(in GridRange lhs, in GridRange rhs)
-            => !lhs.Equals(in rhs);
+            => lhs.Size != rhs.Size ||
+               lhs.Clamped != rhs.Clamped ||
+               lhs.Start != rhs.Start ||
+               lhs.End != rhs.End ||
+               lhs.IsFromEnd != rhs.IsFromEnd ||
+               lhs.Direction != rhs.Direction;
     }
 }

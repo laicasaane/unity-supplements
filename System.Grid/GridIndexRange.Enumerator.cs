@@ -5,57 +5,224 @@ namespace System.Grid
 {
     public partial struct GridIndexRange
     {
-        public struct Enumerator : IEnumerator<GridIndex>, IRangeEnumerator<GridIndex>
+
+        public static implicit operator ReadRange<GridIndex, Enumerator.ColumnFirst>(in GridIndexRange value)
+            => new ReadRange<GridIndex, Enumerator.ColumnFirst>(value.Start, value.End, value.IsFromEnd);
+
+        public static implicit operator ReadRange<GridIndex, Enumerator.RowFirst>(in GridIndexRange value)
+            => new ReadRange<GridIndex, Enumerator.RowFirst>(value.Start, value.End, value.IsFromEnd);
+
+        public static implicit operator ReadRange<GridIndex>(in GridIndexRange value)
+        {
+            if (value.Direction == GridDirection.Row)
+                return new ReadRange<GridIndex>(value.Start, value.End, value.IsFromEnd, new Enumerator.RowFirst());
+            else
+                return new ReadRange<GridIndex>(value.Start, value.End, value.IsFromEnd, new Enumerator.ColumnFirst());
+        }
+
+        public static implicit operator GridIndexRange(in ReadRange<GridIndex, Enumerator.ColumnFirst> value)
+            => new GridIndexRange(value.Start, value.End, value.IsFromEnd, GridDirection.Column);
+
+        public static implicit operator GridIndexRange(in ReadRange<GridIndex, Enumerator.RowFirst> value)
+            => new GridIndexRange(value.Start, value.End, value.IsFromEnd, GridDirection.Row);
+
+        public struct Enumerator : IEnumerator<GridIndex>
         {
             private readonly GridIndex start, end;
-            private readonly bool fromEnd, byRow;
+            private readonly int startValue, endValue, colCount;
+            private readonly sbyte rowSign, colSign, compare;
+            private readonly bool byRow;
 
             private GridIndex current;
             private sbyte flag;
 
             public Enumerator(in GridIndexRange range)
+                : this(range.Start, range.End, range.IsFromEnd, range.Direction)
+            { }
+
+            public Enumerator(in GridIndex start, in GridIndex end, bool fromEnd, GridDirection direction)
             {
-                var rowIncreasing = range.Start.Row.CompareTo(range.End.Row) <= 0;
-                var colIncreasing = range.Start.Column.CompareTo(range.End.Column) <= 0;
+                this.byRow = direction == GridDirection.Row;
+                this.colCount = Math.Max(start.Column, end.Column) + 1;
+                this.colSign = default;
 
-                this.start = new GridIndex(
-                    rowIncreasing ? range.Start.Row : range.End.Row,
-                    colIncreasing ? range.Start.Column : range.End.Column
-                );
-
-                this.end = new GridIndex(
-                    rowIncreasing ? range.End.Row : range.Start.Row,
-                    colIncreasing ? range.End.Column : range.Start.Column
-                );
-
-                this.fromEnd = range.IsFromEnd;
-                this.byRow = range.Direction == GridDirection.Row;
-
-                if (this.fromEnd)
+                if (fromEnd)
                 {
-                    this.current = this.end;
-                    this.flag = (sbyte)(this.current == this.start ? 1 : -1);
+                    this.start = end;
+                    this.end = start;
                 }
                 else
                 {
-                    this.current = this.start;
-                    this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+                    this.start = start;
+                    this.end = end;
                 }
+
+                var startIndex = start.ToIndex1(this.colCount);
+                var endIndex = end.ToIndex1(this.colCount);
+                var increasing = startIndex <= endIndex;
+
+                if (increasing)
+                {
+                    if (fromEnd)
+                    {
+                        if (this.byRow)
+                        {
+                            this.rowSign = -1;
+                            this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+                            this.startValue = Math.Max(this.start.Row, this.end.Row);
+                            this.endValue = Math.Min(this.start.Row, this.end.Row);
+
+                            if (this.start.Column.CompareTo(this.end.Column) < 0)
+                            {
+                                this.startValue -= 1;
+                                this.compare = 0;
+                            }
+                            else
+                            {
+                                this.compare = -1;
+                            }
+                        }
+                        else
+                        {
+                            this.rowSign = this.colSign = this.compare = -1;
+                            this.startValue = Math.Max(this.start.Column, this.end.Column);
+                            this.endValue = Math.Min(this.start.Column, this.end.Column);
+                        }
+                    }
+                    else
+                    {
+                        if (this.byRow)
+                        {
+                            this.rowSign = 1;
+                            this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+
+                            this.startValue = Math.Min(this.start.Row, this.end.Row);
+                            this.endValue = Math.Max(this.start.Row, this.end.Row);
+
+                            if (this.start.Column.CompareTo(this.end.Column) > 0)
+                            {
+                                this.startValue += 1;
+                                this.compare = 0;
+                            }
+                            else
+                            {
+                                this.compare = 1;
+                            }
+                        }
+                        else
+                        {
+                            this.rowSign = this.colSign = this.compare = 1;
+                            this.startValue = Math.Min(this.start.Column, this.end.Column);
+                            this.endValue = Math.Max(this.start.Column, this.end.Column);
+                        }
+                    }
+                }
+                else
+                {
+                    if (fromEnd)
+                    {
+                        if (this.byRow)
+                        {
+                            this.rowSign = 1;
+                            this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+                            this.startValue = Math.Min(this.start.Row, this.end.Row);
+                            this.endValue = Math.Max(this.start.Row, this.end.Row);
+
+                            if (this.start.Column.CompareTo(this.end.Column) > 0)
+                            {
+                                this.startValue += 1;
+                                this.compare = 0;
+                            }
+                            else
+                            {
+                                this.compare = 1;
+                            }
+                        }
+                        else
+                        {
+                            this.rowSign = this.colSign = this.compare = 1;
+                            this.startValue = Math.Min(this.start.Column, this.end.Column);
+                            this.endValue = Math.Max(this.start.Column, this.end.Column);
+                        }
+                    }
+                    else
+                    {
+                        if (this.byRow)
+                        {
+                            this.rowSign = -1;
+                            this.colSign = (sbyte)(this.start.Column.CompareTo(this.end.Column) * -1);
+                            this.startValue = Math.Max(this.start.Row, this.end.Row);
+                            this.endValue = Math.Min(this.start.Row, this.end.Row);
+
+                            if (this.start.Column.CompareTo(this.end.Column) < 0)
+                            {
+                                this.startValue -= 1;
+                                this.compare = 0;
+                            }
+                            else
+                            {
+                                this.compare = -1;
+                            }
+                        }
+                        else
+                        {
+                            this.rowSign = this.colSign = this.compare = -1;
+                            this.startValue = Math.Max(this.start.Column, this.end.Column);
+                            this.endValue = Math.Min(this.start.Column, this.end.Column);
+                        }
+                    }
+                }
+
+                this.current = this.start;
+                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
             }
 
-            public Enumerator(bool rowFirst)
+            public Enumerator(GridDirection direction)
             {
-                this.byRow = rowFirst;
-                this.start = this.end = default;
-                this.fromEnd = default;
-                this.current = default;
-                this.flag = default;
+                this.byRow = direction == GridDirection.Row;
+                this.current = this.start = this.end = default;
+                this.startValue = this.endValue = this.colCount = default;
+                this.rowSign = this.colSign = this.compare = this.flag = default;
             }
 
             public bool MoveNext()
             {
                 if (this.flag == 0)
-                    return this.fromEnd ? MoveNextFromEnd() : MoveNextFromStart();
+                {
+                    if (this.current == this.end)
+                    {
+                        this.flag = 1;
+                        return false;
+                    }
+
+                    int row, col;
+
+                    if (this.byRow)
+                    {
+                        row = this.current.Row + this.rowSign;
+                        col = this.current.Column;
+
+                        if (row.CompareTo(this.endValue) == this.compare && col != this.end.Column)
+                        {
+                            col += this.colSign;
+                            row = this.startValue;
+                        }
+                    }
+                    else
+                    {
+                        col = this.current.Column + this.colSign;
+                        row = this.current.Row;
+
+                        if (col.CompareTo(this.endValue) == this.compare)
+                        {
+                            row += this.rowSign;
+                            col = this.startValue;
+                        }
+                    }
+
+                    this.current = new GridIndex(row, col);
+                    return true;
+                }
 
                 if (this.flag < 0)
                 {
@@ -64,80 +231,6 @@ namespace System.Grid
                 }
 
                 return false;
-            }
-
-            private bool MoveNextFromStart()
-            {
-                if (this.current == this.end)
-                {
-                    this.flag = 1;
-                    return false;
-                }
-
-                int row, col;
-
-                if (this.byRow)
-                {
-                    row = this.current.Row + 1;
-                    col = this.current.Column;
-
-                    if (row > this.end.Row)
-                    {
-                        col += 1;
-                        row = this.start.Row;
-                    }
-                }
-                else
-                {
-                    col = this.current.Column + 1;
-                    row = this.current.Row;
-
-                    if (col > this.end.Column)
-                    {
-                        row += 1;
-                        col = this.start.Column;
-                    }
-                }
-
-                this.current = new GridIndex(row, col);
-                return true;
-            }
-
-            private bool MoveNextFromEnd()
-            {
-                if (this.current == this.start)
-                {
-                    this.flag = 1;
-                    return false;
-                }
-
-                int row, col;
-
-                if (this.byRow)
-                {
-                    row = this.current.Row - 1;
-                    col = this.current.Column;
-
-                    if (row < this.start.Row)
-                    {
-                        col -= 1;
-                        row = this.end.Row;
-                    }
-                }
-                else
-                {
-                    col = this.current.Column - 1;
-                    row = this.current.Row;
-
-                    if (col < this.start.Column)
-                    {
-                        row -= 1;
-                        col = this.end.Column;
-                    }
-                }
-
-                this.current = new GridIndex(row, col);
-                return true;
             }
 
             public GridIndex Current
@@ -154,83 +247,29 @@ namespace System.Grid
                 }
             }
 
+            object IEnumerator.Current
+                => this.Current;
+
+            public void Reset()
+            {
+                this.current = this.start;
+                this.flag = -1;
+            }
+
             public void Dispose()
             {
             }
 
-            object IEnumerator.Current
-                => this.Current;
-
-            void IEnumerator.Reset()
+            public readonly struct ColumnFirst : IRangeEnumerator<GridIndex>
             {
-                this.current = this.fromEnd ? this.end : this.start;
-                this.flag = -1;
+                public IEnumerator<GridIndex> Enumerate(GridIndex start, GridIndex end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd, GridDirection.Row);
             }
 
-            public IEnumerator<GridIndex> Enumerate(GridIndex start, GridIndex end, bool fromEnd)
+            public readonly struct RowFirst : IRangeEnumerator<GridIndex>
             {
-                var rowIncreasing = start.Row.CompareTo(end.Row) <= 0;
-                var colIncreasing = start.Column.CompareTo(end.Column) <= 0;
-
-                var newStart = new GridIndex(
-                    rowIncreasing ? start.Row : end.Row,
-                    colIncreasing ? start.Column : end.Column
-                );
-
-                var newEnd = new GridIndex(
-                    rowIncreasing ? end.Row : start.Row,
-                    colIncreasing ? end.Column : start.Column
-                );
-
-                return fromEnd ? EnumerateFromEnd(newStart, newEnd) : EnumerateFromStart(newStart, newEnd);
-            }
-
-            private IEnumerator<GridIndex> EnumerateFromStart(GridIndex start, GridIndex end)
-            {
-                if (this.byRow)
-                {
-                    for (var c = start.Column; c <= end.Column; c++)
-                    {
-                        for (var r = start.Row; r <= end.Row; r++)
-                        {
-                            yield return new GridIndex(r, c);
-                        }
-                    }
-                }
-                else
-                {
-                    for (var r = start.Row; r <= end.Row; r++)
-                    {
-                        for (var c = start.Column; c <= end.Column; c++)
-                        {
-                            yield return new GridIndex(r, c);
-                        }
-                    }
-                }
-            }
-
-            private IEnumerator<GridIndex> EnumerateFromEnd(GridIndex start, GridIndex end)
-            {
-                if (this.byRow)
-                {
-                    for (var c = end.Column; c >= start.Column; c--)
-                    {
-                        for (var r = end.Row; r >= start.Row; r--)
-                        {
-                            yield return new GridIndex(r, c);
-                        }
-                    }
-                }
-                else
-                {
-                    for (var r = end.Row; r >= start.Row; r--)
-                    {
-                        for (var c = end.Column; c >= start.Column; c--)
-                        {
-                            yield return new GridIndex(r, c);
-                        }
-                    }
-                }
+                public IEnumerator<GridIndex> Enumerate(GridIndex start, GridIndex end, bool fromEnd)
+                    => new Enumerator(start, end, fromEnd, GridDirection.Row);
             }
         }
     }

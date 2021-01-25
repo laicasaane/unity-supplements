@@ -125,7 +125,7 @@ namespace System
 
         /// <summary>
         /// <summary>
-        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than or equal to <see cref="End"/>.
+        /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static UIntRange Normal(uint a, uint b)
             => a > b ? new UIntRange(b, a) : new UIntRange(a, b);
