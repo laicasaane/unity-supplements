@@ -163,34 +163,47 @@ namespace System
         {
             private readonly short start;
             private readonly short end;
-            private readonly bool fromEnd;
+            private readonly sbyte sign;
 
             private short current;
-            private short flag;
+            private sbyte flag;
 
             public Enumerator(in ShortRange range)
             {
                 var increasing = range.Start <= range.End;
-                this.start = increasing ? range.Start : range.End;
-                this.end = increasing ? range.End : range.Start;
-                this.fromEnd = range.IsFromEnd;
 
-                if (this.fromEnd)
+                if (range.IsFromEnd)
                 {
-                    this.current = this.end;
-                    this.flag = (short)(this.current == this.start ? 1 : -1);
+                    this.start = range.End;
+                    this.end = range.Start;
                 }
                 else
                 {
-                    this.current = this.start;
-                    this.flag = (short)(this.current == this.end ? 1 : -1);
+                    this.start = range.Start;
+                    this.end = range.End;
                 }
+
+                this.sign = (sbyte)(increasing
+                            ? (range.IsFromEnd ? -1 : 1)
+                            : (range.IsFromEnd ? 1 : -1));
+
+                this.current = this.start;
+                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
             }
 
             public bool MoveNext()
             {
                 if (this.flag == 0)
-                    return this.fromEnd ? MoveNextFromEnd() : MoveNextFromStart();
+                {
+                    if (this.current == this.end)
+                    {
+                        this.flag = 1;
+                        return false;
+                    }
+
+                    this.current += this.sign;
+                    return true;
+                }
 
                 if (this.flag < 0)
                 {
@@ -199,30 +212,6 @@ namespace System
                 }
 
                 return false;
-            }
-
-            private bool MoveNextFromStart()
-            {
-                if (this.current == this.end)
-                {
-                    this.flag = 1;
-                    return false;
-                }
-
-                this.current++;
-                return true;
-            }
-
-            private bool MoveNextFromEnd()
-            {
-                if (this.current == this.start)
-                {
-                    this.flag = 1;
-                    return false;
-                }
-
-                this.current--;
-                return true;
             }
 
             public short Current
@@ -248,20 +237,20 @@ namespace System
 
             void IEnumerator.Reset()
             {
-                this.current = this.fromEnd ? this.end : this.start;
+                this.current = this.start;
                 this.flag = -1;
             }
 
             public IEnumerator<short> Enumerate(short start, short end, bool fromEnd)
             {
                 var increasing = start <= end;
-                var newStart = increasing ? start : end;
-                var newEnd = increasing ? end : start;
 
-                return fromEnd ? EnumerateFromEnd(newStart, newEnd) : EnumerateFromStart(newStart, newEnd);
+                return increasing
+                       ? (fromEnd ? EnumerateDecreasing(end, start) : EnumerateIncreasing(start, end))
+                       : (fromEnd ? EnumerateIncreasing(end, start) : EnumerateDecreasing(start, end));
             }
 
-            private IEnumerator<short> EnumerateFromStart(short start, short end)
+            private IEnumerator<short> EnumerateIncreasing(short start, short end)
             {
                 for (var i = start; i <= end; i++)
                 {
@@ -269,9 +258,9 @@ namespace System
                 }
             }
 
-            private IEnumerator<short> EnumerateFromEnd(short start, short end)
+            private IEnumerator<short> EnumerateDecreasing(short start, short end)
             {
-                for (var i = end; i >= start; i--)
+                for (var i = start; i >= end; i--)
                 {
                     yield return i;
                 }
