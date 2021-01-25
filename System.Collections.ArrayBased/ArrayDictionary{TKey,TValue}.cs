@@ -15,12 +15,12 @@ namespace System.Collections.ArrayBased
     /// The only slower operation is resizing the memory on Add, as this implementation needs to use two separate arrays
     /// compared to the standard dictionary.
     /// </summary>
-    public sealed partial class ArrayDictionary<TKey, TValue>
+    public partial class ArrayDictionary<TKey, TValue>
     {
         private readonly IEqualityComparer<TKey> comparer;
 
+        private Node[] keys;
         private TValue[] values;
-        private Node[] valuesInfo;
         private int[] buckets;
         private uint freeValueCellIndex;
         private uint collisions;
@@ -54,7 +54,7 @@ namespace System.Collections.ArrayBased
         public Node[] UnsafeKeys
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.valuesInfo;
+            get => this.keys;
         }
 
         public TValue[] UnsafeValues
@@ -66,7 +66,7 @@ namespace System.Collections.ArrayBased
         public ReadArray1<Node> Keys
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ReadArray1<Node>(this.valuesInfo, this.Count);
+            get => new ReadArray1<Node>(this.keys, this.Count);
         }
 
         public ReadArray1<TValue> Values
@@ -78,7 +78,7 @@ namespace System.Collections.ArrayBased
         public ArrayDictionary()
         {
             this.comparer = EqualityComparer<TKey>.Default;
-            this.valuesInfo = new Node[1];
+            this.keys = new Node[1];
             this.values = new TValue[1];
             this.buckets = new int[3];
         }
@@ -86,7 +86,7 @@ namespace System.Collections.ArrayBased
         public ArrayDictionary(IEqualityComparer<TKey> comparer)
         {
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
-            this.valuesInfo = new Node[1];
+            this.keys = new Node[1];
             this.values = new TValue[1];
             this.buckets = new int[3];
         }
@@ -94,7 +94,7 @@ namespace System.Collections.ArrayBased
         public ArrayDictionary(uint size)
         {
             this.comparer = EqualityComparer<TKey>.Default;
-            this.valuesInfo = new Node[size];
+            this.keys = new Node[size];
             this.values = new TValue[size];
             this.buckets = new int[HashHelpers.GetPrime((int)size)];
         }
@@ -102,7 +102,7 @@ namespace System.Collections.ArrayBased
         public ArrayDictionary(uint size, IEqualityComparer<TKey> comparer)
         {
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
-            this.valuesInfo = new Node[size];
+            this.keys = new Node[size];
             this.values = new TValue[size];
             this.buckets = new int[HashHelpers.GetPrime((int)size)];
         }
@@ -117,8 +117,8 @@ namespace System.Collections.ArrayBased
             this.values = new TValue[source.values.Length];
             Array.Copy(source.values, this.values, this.values.Length);
 
-            this.valuesInfo = new Node[source.valuesInfo.Length];
-            Array.Copy(source.valuesInfo, this.valuesInfo, this.valuesInfo.Length);
+            this.keys = new Node[source.keys.Length];
+            Array.Copy(source.keys, this.keys, this.keys.Length);
 
             this.buckets = new int[source.buckets.Length];
             Array.Copy(source.buckets, this.buckets, this.buckets.Length);
@@ -133,7 +133,7 @@ namespace System.Collections.ArrayBased
                 throw new ArgumentNullException(nameof(source));
 
             this.comparer = EqualityComparer<TKey>.Default;
-            this.valuesInfo = new Node[source.Length];
+            this.keys = new Node[source.Length];
             this.values = new TValue[source.Length];
             this.buckets = new int[HashHelpers.GetPrime(source.Length)];
 
@@ -149,7 +149,7 @@ namespace System.Collections.ArrayBased
                 throw new ArgumentNullException(nameof(source));
 
             this.comparer = EqualityComparer<TKey>.Default;
-            this.valuesInfo = new Node[source.Count];
+            this.keys = new Node[source.Count];
             this.values = new TValue[source.Count];
             this.buckets = new int[HashHelpers.GetPrime(source.Count)];
 
@@ -165,7 +165,7 @@ namespace System.Collections.ArrayBased
                 throw new ArgumentNullException(nameof(source));
 
             this.comparer = EqualityComparer<TKey>.Default;
-            this.valuesInfo = new Node[source.Count];
+            this.keys = new Node[source.Count];
             this.values = new TValue[source.Count];
             this.buckets = new int[HashHelpers.GetPrime(source.Count)];
 
@@ -181,7 +181,7 @@ namespace System.Collections.ArrayBased
                 throw new ArgumentNullException(nameof(source));
 
             this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
-            this.valuesInfo = new Node[source.Count];
+            this.keys = new Node[source.Count];
             this.values = new TValue[source.Count];
             this.buckets = new int[HashHelpers.GetPrime(source.Count)];
 
@@ -273,7 +273,7 @@ namespace System.Collections.ArrayBased
 
             Array.Clear(this.buckets, 0, this.buckets.Length);
             Array.Clear(this.values, 0, this.values.Length);
-            Array.Clear(this.valuesInfo, 0, this.valuesInfo.Length);
+            Array.Clear(this.keys, 0, this.keys.Length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -284,7 +284,7 @@ namespace System.Collections.ArrayBased
             this.freeValueCellIndex = 0;
 
             Array.Clear(this.buckets, 0, this.buckets.Length);
-            Array.Clear(this.valuesInfo, 0, this.valuesInfo.Length);
+            Array.Clear(this.keys, 0, this.keys.Length);
         }
 
         public bool ContainsValue(TValue value)
@@ -458,8 +458,30 @@ namespace System.Collections.ArrayBased
             if (this.values.Length < size)
             {
                 Array.Resize(ref this.values, (int)size);
-                Array.Resize(ref this.valuesInfo, (int)size);
+                Array.Resize(ref this.keys, (int)size);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint GetIndex(TKey key)
+        {
+            if (TryGetIndex(key, out var findIndex)) return findIndex;
+
+            throw new ArrayDictionaryException("Key not found");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public uint GetIndex(in TKey key)
+        {
+            if (TryGetIndex(in key, out var findIndex)) return findIndex;
+
+            throw new ArrayDictionaryException("Key not found");
+        }
+
+        public void Trim()
+        {
+            Array.Resize(ref this.values, (int)Math.Max(this.freeValueCellIndex, 1));
+            Array.Resize(ref this.keys, (int)Math.Max(this.freeValueCellIndex, 1));
         }
 
         private bool AddValue(TKey key, TValue value, out uint indexSet)
@@ -472,7 +494,7 @@ namespace System.Collections.ArrayBased
                 var expandPrime = HashHelpers.ExpandPrime((int)this.freeValueCellIndex);
 
                 Array.Resize(ref this.values, expandPrime);
-                Array.Resize(ref this.valuesInfo, expandPrime);
+                Array.Resize(ref this.keys, expandPrime);
             }
 
             //buckets value -1 means it's empty
@@ -480,7 +502,7 @@ namespace System.Collections.ArrayBased
 
             if (valueIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                this.valuesInfo[this.freeValueCellIndex] = new Node(ref key, hash);
+                this.keys[this.freeValueCellIndex] = new Node(ref key, hash);
             else //collision or already exists
             {
                 var currentValueIndex = valueIndex;
@@ -488,7 +510,7 @@ namespace System.Collections.ArrayBased
                 {
                     //must check if the key already exists in the dictionary
                     //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                    ref var node = ref this.valuesInfo[currentValueIndex];
+                    ref var node = ref this.keys[currentValueIndex];
                     if (node.Hash == hash &&
                         this.comparer.Equals(node.Key, key) == true)
                     {
@@ -504,10 +526,10 @@ namespace System.Collections.ArrayBased
                 //oops collision!
                 this.collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                this.valuesInfo[this.freeValueCellIndex] = new Node(ref key, hash, valueIndex);
+                this.keys[this.freeValueCellIndex] = new Node(ref key, hash, valueIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                this.valuesInfo[valueIndex].Next = (int)this.freeValueCellIndex;
+                this.keys[valueIndex].Next = (int)this.freeValueCellIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -536,7 +558,7 @@ namespace System.Collections.ArrayBased
                 for (var newValueIndex = 0; newValueIndex < this.freeValueCellIndex; newValueIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    ref var node = ref this.valuesInfo[newValueIndex];
+                    ref var node = ref this.keys[newValueIndex];
                     bucketIndex = Reduce((uint)node.Hash, (uint)this.buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
@@ -557,7 +579,7 @@ namespace System.Collections.ArrayBased
                         node.Previous = existingValueIndex;
                         node.Next = -1;
                         //and update the previous next index to the new one
-                        this.valuesInfo[existingValueIndex].Next = newValueIndex;
+                        this.keys[existingValueIndex].Next = newValueIndex;
                     }
                     else
                     {
@@ -582,7 +604,7 @@ namespace System.Collections.ArrayBased
                 var expandPrime = HashHelpers.ExpandPrime((int)this.freeValueCellIndex);
 
                 Array.Resize(ref this.values, expandPrime);
-                Array.Resize(ref this.valuesInfo, expandPrime);
+                Array.Resize(ref this.keys, expandPrime);
             }
 
             //buckets value -1 means it's empty
@@ -590,7 +612,7 @@ namespace System.Collections.ArrayBased
 
             if (valueIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                this.valuesInfo[this.freeValueCellIndex] = new Node(ref key, hash);
+                this.keys[this.freeValueCellIndex] = new Node(ref key, hash);
             else //collision or already exists
             {
                 var currentValueIndex = valueIndex;
@@ -598,7 +620,7 @@ namespace System.Collections.ArrayBased
                 {
                     //must check if the key already exists in the dictionary
                     //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                    ref var node = ref this.valuesInfo[currentValueIndex];
+                    ref var node = ref this.keys[currentValueIndex];
                     if (node.Hash == hash &&
                         this.comparer.Equals(node.Key, key) == true)
                     {
@@ -614,10 +636,10 @@ namespace System.Collections.ArrayBased
                 //oops collision!
                 this.collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                this.valuesInfo[this.freeValueCellIndex] = new Node(ref key, hash, valueIndex);
+                this.keys[this.freeValueCellIndex] = new Node(ref key, hash, valueIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                this.valuesInfo[valueIndex].Next = (int)this.freeValueCellIndex;
+                this.keys[valueIndex].Next = (int)this.freeValueCellIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -646,7 +668,7 @@ namespace System.Collections.ArrayBased
                 for (var newValueIndex = 0; newValueIndex < this.freeValueCellIndex; newValueIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    ref var node = ref this.valuesInfo[newValueIndex];
+                    ref var node = ref this.keys[newValueIndex];
                     bucketIndex = Reduce((uint)node.Hash, (uint)this.buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
@@ -667,7 +689,7 @@ namespace System.Collections.ArrayBased
                         node.Previous = existingValueIndex;
                         node.Next = -1;
                         //and update the previous next index to the new one
-                        this.valuesInfo[existingValueIndex].Next = newValueIndex;
+                        this.keys[existingValueIndex].Next = newValueIndex;
                     }
                     else
                     {
@@ -684,7 +706,7 @@ namespace System.Collections.ArrayBased
 
         public bool Remove(TKey key)
         {
-            var hash = Hash(key);
+            var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             //find the bucket
@@ -694,7 +716,7 @@ namespace System.Collections.ArrayBased
             //point anymore to the cell to remove
             while (indexToValueToRemove != -1)
             {
-                ref var node = ref this.valuesInfo[indexToValueToRemove];
+                ref var node = ref this.keys[indexToValueToRemove];
                 if (node.Hash == hash &&
                     this.comparer.Equals(node.Key, key) == true)
                 {
@@ -718,7 +740,7 @@ namespace System.Collections.ArrayBased
                     else if (node.Next == -1)
                         throw new InvalidOperationException("if the bucket points to another cell, next MUST exists");
 
-                    UpdateLinkedList(indexToValueToRemove, this.valuesInfo);
+                    UpdateLinkedList(indexToValueToRemove, this.keys);
 
                     break;
                 }
@@ -745,7 +767,7 @@ namespace System.Collections.ArrayBased
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 var movingBucketIndex =
-                    Reduce((uint)this.valuesInfo[this.freeValueCellIndex].Hash, (uint)this.buckets.Length);
+                    Reduce((uint)this.keys[this.freeValueCellIndex].Hash, (uint)this.buckets.Length);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
@@ -754,17 +776,17 @@ namespace System.Collections.ArrayBased
 
                 //otherwise it means that there was more than one key with the same hash (collision), so
                 //we need to update the linked list and its pointers
-                var next = this.valuesInfo[this.freeValueCellIndex].Next;
-                var previous = this.valuesInfo[this.freeValueCellIndex].Previous;
+                var next = this.keys[this.freeValueCellIndex].Next;
+                var previous = this.keys[this.freeValueCellIndex].Previous;
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
-                    this.valuesInfo[next].Previous = indexToValueToRemove;
+                    this.keys[next].Previous = indexToValueToRemove;
                 if (previous != -1)
-                    this.valuesInfo[previous].Next = indexToValueToRemove;
+                    this.keys[previous].Next = indexToValueToRemove;
 
                 //finally, actually move the values
-                this.valuesInfo[indexToValueToRemove] = this.valuesInfo[this.freeValueCellIndex];
+                this.keys[indexToValueToRemove] = this.keys[this.freeValueCellIndex];
                 this.values[indexToValueToRemove] = this.values[this.freeValueCellIndex];
             }
 
@@ -773,7 +795,7 @@ namespace System.Collections.ArrayBased
 
         public bool Remove(in TKey key)
         {
-            var hash = Hash(key);
+            var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             //find the bucket
@@ -783,7 +805,7 @@ namespace System.Collections.ArrayBased
             //point anymore to the cell to remove
             while (indexToValueToRemove != -1)
             {
-                ref var node = ref this.valuesInfo[indexToValueToRemove];
+                ref var node = ref this.keys[indexToValueToRemove];
                 if (node.Hash == hash &&
                     this.comparer.Equals(node.Key, key) == true)
                 {
@@ -807,7 +829,7 @@ namespace System.Collections.ArrayBased
                     else if (node.Next == -1)
                         throw new InvalidOperationException("if the bucket points to another cell, next MUST exists");
 
-                    UpdateLinkedList(indexToValueToRemove, this.valuesInfo);
+                    UpdateLinkedList(indexToValueToRemove, this.keys);
 
                     break;
                 }
@@ -834,7 +856,7 @@ namespace System.Collections.ArrayBased
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 var movingBucketIndex =
-                    Reduce((uint)this.valuesInfo[this.freeValueCellIndex].Hash, (uint)this.buckets.Length);
+                    Reduce((uint)this.keys[this.freeValueCellIndex].Hash, (uint)this.buckets.Length);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
@@ -843,27 +865,21 @@ namespace System.Collections.ArrayBased
 
                 //otherwise it means that there was more than one key with the same hash (collision), so
                 //we need to update the linked list and its pointers
-                var next = this.valuesInfo[this.freeValueCellIndex].Next;
-                var previous = this.valuesInfo[this.freeValueCellIndex].Previous;
+                var next = this.keys[this.freeValueCellIndex].Next;
+                var previous = this.keys[this.freeValueCellIndex].Previous;
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
-                    this.valuesInfo[next].Previous = indexToValueToRemove;
+                    this.keys[next].Previous = indexToValueToRemove;
                 if (previous != -1)
-                    this.valuesInfo[previous].Next = indexToValueToRemove;
+                    this.keys[previous].Next = indexToValueToRemove;
 
                 //finally, actually move the values
-                this.valuesInfo[indexToValueToRemove] = this.valuesInfo[this.freeValueCellIndex];
+                this.keys[indexToValueToRemove] = this.keys[this.freeValueCellIndex];
                 this.values[indexToValueToRemove] = this.values[this.freeValueCellIndex];
             }
 
             return true;
-        }
-
-        public void Trim()
-        {
-            Array.Resize(ref this.values, (int)Math.Max(this.freeValueCellIndex, 1));
-            Array.Resize(ref this.valuesInfo, (int)Math.Max(this.freeValueCellIndex, 1));
         }
 
         //I store all the index with an offset + 1, so that in the bucket list 0 means actually not existing.
@@ -871,7 +887,7 @@ namespace System.Collections.ArrayBased
         //I avoid to initialize the array to -1
         public bool TryGetIndex(TKey key, out uint findIndex)
         {
-            var hash = Hash(key);
+            var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             var valueIndex = this.buckets[bucketIndex] - 1;
@@ -880,7 +896,7 @@ namespace System.Collections.ArrayBased
             while (valueIndex != -1)
             {
                 //for some reason this is way faster than using Comparer<TKey>.default, should investigate
-                ref var node = ref this.valuesInfo[valueIndex];
+                ref var node = ref this.keys[valueIndex];
 
                 if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
                 {
@@ -901,7 +917,7 @@ namespace System.Collections.ArrayBased
         //I avoid to initialize the array to -1
         public bool TryGetIndex(in TKey key, out uint findIndex)
         {
-            var hash = Hash(in key);
+            var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             var valueIndex = this.buckets[bucketIndex] - 1;
@@ -910,7 +926,7 @@ namespace System.Collections.ArrayBased
             while (valueIndex != -1)
             {
                 //for some reason this is way faster than using Comparer<TKey>.default, should investigate
-                ref var node = ref this.valuesInfo[valueIndex];
+                ref var node = ref this.keys[valueIndex];
 
                 if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
                 {
@@ -926,35 +942,7 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint GetIndex(TKey key)
-        {
-            if (TryGetIndex(key, out var findIndex)) return findIndex;
-
-            throw new ArrayDictionaryException("Key not found");
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint GetIndex(in TKey key)
-        {
-            if (TryGetIndex(in key, out var findIndex)) return findIndex;
-
-            throw new ArrayDictionaryException("Key not found");
-        }
-
         internal static readonly ArrayDictionary<TKey, TValue> Empty = new ArrayDictionary<TKey, TValue>();
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int Hash(TKey key)
-        {
-            return key.GetHashCode();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int Hash(in TKey key)
-        {
-            return key.GetHashCode();
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint Reduce(uint x, uint N)
@@ -999,6 +987,9 @@ namespace System.Collections.ArrayBased
                 this.Previous = -1;
                 this.Next = -1;
             }
+
+            public static implicit operator TKey(in Node node)
+                => node.Key;
         }
 
         public readonly ref struct KeyValuePair
@@ -1077,7 +1068,7 @@ namespace System.Collections.ArrayBased
             }
 
             public KeyValuePair Current
-                => new KeyValuePair(this.source.valuesInfo[this.index].Key, this.source.UnsafeValues, this.index);
+                => new KeyValuePair(this.source.keys[this.index].Key, this.source.UnsafeValues, this.index);
         }
     }
 
