@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace System.Collections.ArrayBased
 {
@@ -27,7 +28,17 @@ namespace System.Collections.ArrayBased
             get => GetSource()[in key];
         }
 
-        public uint Count => GetSource().Count;
+        public KeyValuePair<TKey, TValue> this[uint index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource()[index];
+        }
+
+        public uint Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Count;
+        }
 
         public ReadArray1<ArrayDictionary<TKey, TValue>.Node> Keys
         {
@@ -66,11 +77,11 @@ namespace System.Collections.ArrayBased
             => GetSource().GetIndex(in key);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(TKey key)
+        public ref readonly TValue GetValueByRef(TKey key)
             => ref GetSource().GetValueByRef(key);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ref TValue GetValueByRef(in TKey key)
+        public ref readonly TValue GetValueByRef(in TKey key)
             => ref GetSource().GetValueByRef(in key);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -92,6 +103,14 @@ namespace System.Collections.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(in TKey key, out TValue result)
             => GetSource().TryGetValue(in key, out result);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetKeyValueAt(uint index, out TKey key, out TValue value)
+            => GetSource().GetKeyValueAt(index, out key, out value);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetKeyValueAt(uint index, out TKey key, out TValue value)
+            => GetSource().TryGetKeyValueAt(index, out key, out value);
 
         public static ReadArrayDictionary<TKey, TValue> Empty { get; }
             = new ReadArrayDictionary<TKey, TValue>(ArrayDictionary<TKey, TValue>.Empty);

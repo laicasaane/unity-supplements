@@ -7,7 +7,11 @@ namespace System.Collections.Generic
         private readonly HashSet<T> source;
         private readonly bool hasSource;
 
-        public int Count => GetSource().Count;
+        public int Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Count;
+        }
 
         public ReadHashSet(HashSet<T> source)
         {
@@ -19,6 +23,7 @@ namespace System.Collections.Generic
         internal HashSet<T> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
             => GetSource().GetHashCode();
 
@@ -41,42 +46,55 @@ namespace System.Collections.Generic
             return source == otherSource;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
             => GetSource().Contains(item);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array, int arrayIndex, int count)
             => GetSource().CopyTo(array, arrayIndex, count);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array, int arrayIndex)
             => GetSource().CopyTo(array, arrayIndex);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array)
             => GetSource().CopyTo(array);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsProperSubsetOf(IEnumerable<T> other)
             => GetSource().IsProperSubsetOf(other);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsProperSupersetOf(IEnumerable<T> other)
             => GetSource().IsProperSupersetOf(other);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsSubsetOf(IEnumerable<T> other)
             => GetSource().IsSubsetOf(other);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool IsSupersetOf(IEnumerable<T> other)
             => GetSource().IsSupersetOf(other);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Overlaps(IEnumerable<T> other)
             => GetSource().Overlaps(other);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool SetEquals(IEnumerable<T> other)
             => GetSource().SetEquals(other);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public HashSet<T>.Enumerator GetEnumerator()
             => GetSource().GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 

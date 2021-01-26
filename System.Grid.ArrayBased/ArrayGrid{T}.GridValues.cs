@@ -51,7 +51,7 @@ namespace System.Grid.ArrayBased
                     get
                     {
                         var key = this.enumerator.Current;
-                        this.source.TryGetValue(key, out var value);
+                        this.source.TryGetValue(in key, out var value);
                         return value;
                     }
                 }

@@ -14,9 +14,17 @@ namespace System.Collections.ArrayBased
         private T[] buffer;
         private uint count;
 
-        public uint Count => this.count;
+        public uint Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.count;
+        }
 
-        public uint Capacity => (uint)this.buffer.Length;
+        public uint Capacity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (uint)this.buffer.Length;
+        }
 
         public ArrayList()
         {

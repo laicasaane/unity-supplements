@@ -36,6 +36,26 @@ namespace System.Grid
 
         void GetValues(IEnumerator<GridIndex> indices, ICollection<T> output);
 
+        void GetValues(ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridIndex pivot, int extend, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridIndexRange range, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(in GridRange range, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output, bool allowDuplicate);
+
+        void GetValues(IEnumerator<GridIndex> indices, ICollection<T> output, bool allowDuplicate);
+
         IGridValues<T> GetValues();
 
         IGridValues<T> GetValues(in GridIndex pivot, int extend);

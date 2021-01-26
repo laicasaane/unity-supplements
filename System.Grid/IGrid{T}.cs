@@ -14,6 +14,14 @@ namespace System.Grid
 
         void Initialize(IGrid<T> source);
 
+        void Set(in GridIndex index, T value);
+
+        void Set(in GridIndex index, in T value);
+
+        bool TrySet(in GridIndex index, T value);
+
+        bool TrySet(in GridIndex index, in T value);
+
         void Clear();
     }
 }

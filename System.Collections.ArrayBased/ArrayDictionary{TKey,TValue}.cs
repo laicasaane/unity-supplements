@@ -43,6 +43,18 @@ namespace System.Collections.ArrayBased
             set => AddValue(key, value, out _);
         }
 
+        public KeyValuePair<TKey, TValue> this[uint index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (index >= this.freeValueCellIndex)
+                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+                return new KeyValuePair<TKey, TValue>(this.keys[index], this.values[index]);
+            }
+        }
+
         public IEqualityComparer<TKey> Comparer => this.comparer;
 
         public uint Count
@@ -85,34 +97,26 @@ namespace System.Collections.ArrayBased
 
         public ArrayDictionary(IEqualityComparer<TKey> comparer)
         {
-            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.comparer = comparer ?? EqualityComparer<TKey>.Default;
             this.keys = new Node[1];
             this.values = new TValue[1];
             this.buckets = new int[3];
         }
 
-        public ArrayDictionary(uint size)
+        public ArrayDictionary(uint size, IEqualityComparer<TKey> comparer = null)
         {
-            this.comparer = EqualityComparer<TKey>.Default;
+            this.comparer = comparer ?? EqualityComparer<TKey>.Default;
             this.keys = new Node[size];
             this.values = new TValue[size];
             this.buckets = new int[HashHelpers.GetPrime((int)size)];
         }
 
-        public ArrayDictionary(uint size, IEqualityComparer<TKey> comparer)
-        {
-            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
-            this.keys = new Node[size];
-            this.values = new TValue[size];
-            this.buckets = new int[HashHelpers.GetPrime((int)size)];
-        }
-
-        public ArrayDictionary(ArrayDictionary<TKey, TValue> source)
+        public ArrayDictionary(ArrayDictionary<TKey, TValue> source, IEqualityComparer<TKey> comparer = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            this.comparer = source.comparer ?? EqualityComparer<TKey>.Default;
+            this.comparer = comparer ?? source.comparer ?? EqualityComparer<TKey>.Default;
 
             this.values = new TValue[source.values.Length];
             Array.Copy(source.values, this.values, this.values.Length);
@@ -127,60 +131,16 @@ namespace System.Collections.ArrayBased
             this.collisions = source.collisions;
         }
 
-        public ArrayDictionary(params (TKey Key, TValue Value)[] source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            this.comparer = EqualityComparer<TKey>.Default;
-            this.keys = new Node[source.Length];
-            this.values = new TValue[source.Length];
-            this.buckets = new int[HashHelpers.GetPrime(source.Length)];
-
-            foreach (var (key, value) in source)
-            {
-                AddValue(key, value, out _);
-            }
-        }
-
-        public ArrayDictionary(ICollection<(TKey Key, TValue Value)> source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            this.comparer = EqualityComparer<TKey>.Default;
-            this.keys = new Node[source.Count];
-            this.values = new TValue[source.Count];
-            this.buckets = new int[HashHelpers.GetPrime(source.Count)];
-
-            foreach (var (key, value) in source)
-            {
-                AddValue(key, value, out _);
-            }
-        }
-
         public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            this.comparer = EqualityComparer<TKey>.Default;
-            this.keys = new Node[source.Count];
-            this.values = new TValue[source.Count];
-            this.buckets = new int[HashHelpers.GetPrime(source.Count)];
-
-            foreach (var kv in source)
-            {
-                AddValue(kv.Key, kv.Value, out _);
-            }
-        }
+            : this(source, null)
+        { }
 
         public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source, IEqualityComparer<TKey> comparer)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            this.comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            this.comparer = comparer ?? EqualityComparer<TKey>.Default;
             this.keys = new Node[source.Count];
             this.values = new TValue[source.Count];
             this.buckets = new int[HashHelpers.GetPrime(source.Count)];
@@ -385,6 +345,31 @@ namespace System.Collections.ArrayBased
 
             result = default;
             return false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetKeyValueAt(uint index, out TKey key, out TValue value)
+        {
+            if (index >= this.freeValueCellIndex)
+                throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+            key = this.keys[index];
+            value = this.values[index];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetKeyValueAt(uint index, out TKey key, out TValue value)
+        {
+            if (index >= this.freeValueCellIndex)
+            {
+                key = default;
+                value = default;
+                return false;
+            }
+
+            key = this.keys[index];
+            value = this.values[index];
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

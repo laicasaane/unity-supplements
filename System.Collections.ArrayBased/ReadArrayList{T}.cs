@@ -10,9 +10,17 @@ namespace System.Collections.ArrayBased
     {
         private readonly ArrayList<T> source;
 
-        public uint Count => GetSource().Count;
+        public uint Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Count;
+        }
 
-        public uint Capacity => GetSource().Capacity;
+        public uint Capacity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Capacity;
+        }
 
         public ReadArrayList(ArrayList<T> list)
         {

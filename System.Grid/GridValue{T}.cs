@@ -15,6 +15,12 @@ namespace System.Grid
             this.Value = value;
         }
 
+        public GridValue(in GridIndex index, in T value)
+        {
+            this.Index = index;
+            this.Value = value;
+        }
+
         public void Deconstruct(out GridIndex index, out T value)
         {
             index = this.Index;

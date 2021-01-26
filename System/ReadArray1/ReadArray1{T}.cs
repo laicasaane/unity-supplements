@@ -11,10 +11,15 @@ namespace System
         public readonly int Length;
         public readonly uint LongLength;
 
-        int IReadOnlyCollection<T>.Count => this.Length;
+        int IReadOnlyCollection<T>.Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.Length;
+        }
 
         public ref readonly T this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if ((uint)index >= (uint)this.Length)
@@ -26,6 +31,7 @@ namespace System
 
         public ref readonly T this[uint index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if (index >= this.LongLength)
@@ -37,6 +43,7 @@ namespace System
 
         T IReadOnlyList<T>.this[int index]
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 if ((uint)index >= (uint)this.Length)
@@ -94,6 +101,7 @@ namespace System
         internal T[] GetSource()
             => this.source ?? _empty;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
             => GetSource().GetHashCode();
 
@@ -116,9 +124,11 @@ namespace System
             return source == otherSource;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Array array, uint index)
             => GetSource().CopyTo(array, index);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Array array, int index)
             => GetSource().CopyTo(array, index);
 
@@ -136,12 +146,15 @@ namespace System
             return array;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator()
             => new Enumerator(this);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
@@ -211,7 +224,7 @@ namespace System
             object IEnumerator.Current
                 => this.Current;
 
-            void IEnumerator.Reset()
+            public void Reset()
             {
                 this.current = 0;
                 this.first = true;

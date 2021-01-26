@@ -6,10 +6,17 @@ namespace System.Collections.Generic
     {
         private readonly List<T> source;
 
-        public int Count => GetSource().Count;
+        public int Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Count;
+        }
 
         public T this[int index]
-            => GetSource()[index];
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource()[index];
+        }
 
         public ReadList(List<T> source)
         {
@@ -20,6 +27,7 @@ namespace System.Collections.Generic
         internal List<T> GetSource()
             => this.source ?? _empty;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
             => GetSource().GetHashCode();
 
@@ -42,83 +50,111 @@ namespace System.Collections.Generic
             return source == otherSource;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int BinarySearch(T item)
             => GetSource().BinarySearch(item);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int BinarySearch(T item, IComparer<T> comparer)
             => GetSource().BinarySearch(item, comparer);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int BinarySearch(int index, int count, T item, IComparer<T> comparer)
             => GetSource().BinarySearch(index, count, item, comparer);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
             => GetSource().Contains(item);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
             => GetSource().ConvertAll(converter);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(int index, T[] array, int arrayIndex, int count)
             => GetSource().CopyTo(index, array, arrayIndex, count);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array, int arrayIndex)
             => GetSource().CopyTo(array, arrayIndex);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array)
             => GetSource().CopyTo(array);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Exists(Predicate<T> match)
             => GetSource().Exists(match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Find(Predicate<T> match)
             => GetSource().Find(match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<T> FindAll(Predicate<T> match)
             => GetSource().FindAll(match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindIndex(int startIndex, int count, Predicate<T> match)
             => GetSource().FindIndex(startIndex, count, match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindIndex(int startIndex, Predicate<T> match)
             => GetSource().FindIndex(startIndex, match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindIndex(Predicate<T> match)
             => GetSource().FindIndex(match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T FindLast(Predicate<T> match)
             => GetSource().FindLast(match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
             => GetSource().FindLastIndex(startIndex, count, match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindLastIndex(int startIndex, Predicate<T> match)
             => GetSource().FindLastIndex(startIndex, match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int FindLastIndex(Predicate<T> match)
             => GetSource().FindLastIndex(match);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ForEach(Action<T> action)
             => GetSource().ForEach(action);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<T> GetRange(int index, int count)
             => GetSource().GetRange(index, count);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(T item, int index, int count)
             => GetSource().IndexOf(item, index, count);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(T item, int index)
             => GetSource().IndexOf(item, index);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int IndexOf(T item)
             => GetSource().IndexOf(item);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LastIndexOf(T item)
             => GetSource().LastIndexOf(item);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LastIndexOf(T item, int index)
             => GetSource().LastIndexOf(item, index);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int LastIndexOf(T item, int index, int count)
             => GetSource().LastIndexOf(item, index, count);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TrueForAll(Predicate<T> match)
             => GetSource().TrueForAll(match);
 
@@ -135,12 +171,15 @@ namespace System.Collections.Generic
             return array;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator()
             => new Enumerator(this);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<T> IEnumerable<T>.GetEnumerator()
             => GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
 namespace System.Grid
@@ -245,57 +246,133 @@ namespace System.Grid
             => this.data.GetEnumerator();
 
         public void GetValues(ICollection<T> output)
+            => GetValues(output, false);
+
+        public void GetValues(ICollection<T> output, bool allowDuplicate)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var value in this.data.Values)
+            if (allowDuplicate)
             {
-                if (!output.Contains(value))
+                foreach (var value in this.data.Values)
+                {
                     output.Add(value);
+                }
+            }
+            else
+            {
+                foreach (var value in this.data.Values)
+                {
+                    if (!output.Contains(value))
+                        output.Add(value);
+                }
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
-            => GetValues(this.Size.IndexRange(pivot, extend), output);
+            => GetValues(pivot, extend, output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<T> output)
-            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
+            => GetValues(pivot, lowerExtend, upperExtend, output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output)
-            => GetValues(this.Size.IndexRange(pivot, extend), output);
+            => GetValues(pivot, extend, output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<T> output)
-            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
+            => GetValues(pivot, lowerExtend, upperExtend, output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output)
-            => GetValues(this.Size.IndexRange(pivot, byRow), output);
+            => GetValues(pivot, byRow, output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndexRange range, ICollection<T> output)
-        {
-            if (output == null)
-                throw new ArgumentNullException(nameof(output));
+            => GetValues(range, output, false);
 
-            foreach (var index in this.Size.ClampIndexRange(range))
-            {
-                if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
-                    output.Add(value);
-            }
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridRange range, ICollection<T> output)
+            => GetValues(range, output, false);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output)
+            => GetValues(indices, output, false);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output)
+            => GetValues(enumerator, output, false);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(in GridIndex pivot, int extend, ICollection<T> output, bool allowDuplicate)
+            => GetValues(this.Size.IndexRange(pivot, extend), output, allowDuplicate);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<T> output, bool allowDuplicate)
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output, allowDuplicate);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output, bool allowDuplicate)
+            => GetValues(this.Size.IndexRange(pivot, extend), output, allowDuplicate);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<T> output, bool allowDuplicate)
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output, allowDuplicate);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output, bool allowDuplicate)
+            => GetValues(this.Size.IndexRange(pivot, byRow), output, allowDuplicate);
+
+        public void GetValues(in GridIndexRange range, ICollection<T> output, bool allowDuplicate)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var index in this.Size.ClampIndexRange(range))
+            if (allowDuplicate)
             {
-                if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
-                    output.Add(value);
+                foreach (var index in this.Size.ClampIndexRange(range))
+                {
+                    if (this.data.TryGetValue(index, out var value))
+                        output.Add(value);
+                }
+            }
+            else
+            {
+                foreach (var index in this.Size.ClampIndexRange(range))
+                {
+                    if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
+                        output.Add(value);
+                }
             }
         }
 
-        public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output)
+        public void GetValues(in GridRange range, ICollection<T> output, bool allowDuplicate)
+        {
+            if (output == null)
+                throw new ArgumentNullException(nameof(output));
+
+            if (allowDuplicate)
+            {
+                foreach (var index in this.Size.ClampIndexRange(range))
+                {
+                    if (this.data.TryGetValue(index, out var value))
+                        output.Add(value);
+                }
+            }
+            else
+            {
+                foreach (var index in this.Size.ClampIndexRange(range))
+                {
+                    if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
+                        output.Add(value);
+                }
+            }
+        }
+
+        public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output, bool allowDuplicate)
         {
             if (indices == null)
                 throw new ArgumentNullException(nameof(indices));
@@ -303,14 +380,25 @@ namespace System.Grid
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var index in indices)
+            if (allowDuplicate)
             {
-                if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
-                    output.Add(value);
+                foreach (var index in indices)
+                {
+                    if (this.data.TryGetValue(index, out var value))
+                        output.Add(value);
+                }
+            }
+            else
+            {
+                foreach (var index in indices)
+                {
+                    if (this.data.TryGetValue(index, out var value) && !output.Contains(value))
+                        output.Add(value);
+                }
             }
         }
 
-        public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output)
+        public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output, bool allowDuplicate)
         {
             if (enumerator == null)
                 throw new ArgumentNullException(nameof(enumerator));
@@ -318,10 +406,21 @@ namespace System.Grid
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            while (enumerator.MoveNext())
+            if (allowDuplicate)
             {
-                if (this.data.TryGetValue(enumerator.Current, out var value) && !output.Contains(value))
-                    output.Add(value);
+                while (enumerator.MoveNext())
+                {
+                    if (this.data.TryGetValue(enumerator.Current, out var value))
+                        output.Add(value);
+                }
+            }
+            else
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (this.data.TryGetValue(enumerator.Current, out var value) && !output.Contains(value))
+                        output.Add(value);
+                }
             }
         }
 
@@ -440,10 +539,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                var data = new GridValue<T>(index, value);
-
-                if (!output.Contains(data))
-                    output.Add(data);
+                output.Add(new GridValue<T>(index, value));
             }
         }
 
@@ -457,10 +553,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                var data = new GridValue<T>(index, value);
-
-                if (!output.Contains(data))
-                    output.Add(data);
+                output.Add(new GridValue<T>(index, value));
             }
         }
 
@@ -477,10 +570,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                var data = new GridValue<T>(index, value);
-
-                if (!output.Contains(data))
-                    output.Add(data);
+                output.Add(new GridValue<T>(index, value));
             }
         }
 
@@ -499,10 +589,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                var data = new GridValue<T>(index, value);
-
-                if (!output.Contains(data))
-                    output.Add(data);
+                output.Add(new GridValue<T>(index, value));
             }
         }
 

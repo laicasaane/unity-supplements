@@ -12,21 +12,40 @@ namespace System.Collections.Generic
         private readonly bool hasSource;
 
         public TValue this[TKey key]
-            => GetSource()[key];
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource()[key];
+        }
 
         public ReadCollection<TKey> Keys
-            => new ReadCollection<TKey>(GetSource().Keys);
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ReadCollection<TKey>(GetSource().Keys);
+        }
 
         public ReadCollection<TValue> Values
-            => new ReadCollection<TValue>(GetSource().Values);
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => new ReadCollection<TValue>(GetSource().Values);
+        }
 
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys
-            => GetSource().Keys;
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Keys;
+        }
 
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
-            => GetSource().Values;
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Values;
+        }
 
-        public int Count => GetSource().Count;
+        public int Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => GetSource().Count;
+        }
 
         public ReadDictionary(Dictionary<TKey, TValue> source)
         {
@@ -38,6 +57,7 @@ namespace System.Collections.Generic
         internal Dictionary<TKey, TValue> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
             => GetSource().GetHashCode();
 
@@ -60,27 +80,35 @@ namespace System.Collections.Generic
             return source == otherSource;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
             => GetSource().ContainsKey(key);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsValue(TValue value)
             => GetSource().ContainsValue(value);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(TKey key, out TValue value)
             => GetSource().TryGetValue(key, out value);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetObjectData(SerializationInfo info, StreamingContext context)
             => GetSource().GetObjectData(info, context);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OnDeserialization(object sender)
             => GetSource().OnDeserialization(sender);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Dictionary<TKey, TValue>.Enumerator GetEnumerator()
             => GetSource().GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
             => GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 

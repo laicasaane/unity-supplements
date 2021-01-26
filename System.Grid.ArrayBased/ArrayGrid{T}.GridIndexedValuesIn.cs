@@ -6,12 +6,12 @@ namespace System.Grid.ArrayBased
 {
     public partial class ArrayGrid<T>
     {
-        public readonly struct GridIndexedValues : IGridIndexedValues<T>
+        public readonly struct GridIndexedValuesIn : IGridIndexedValues<T>
         {
             private readonly ArrayGrid<T> source;
             private readonly IEnumerator<GridIndex> enumerator;
 
-            public GridIndexedValues(ArrayGrid<T> grid, IEnumerator<GridIndex> enumerator)
+            public GridIndexedValuesIn(ArrayGrid<T> grid, IEnumerator<GridIndex> enumerator)
             {
                 this.source = grid;
                 this.enumerator = enumerator;
@@ -52,7 +52,7 @@ namespace System.Grid.ArrayBased
                     {
                         var key = this.enumerator.Current;
                         this.source.TryGetValue(in key, out var value);
-                        return new GridValue<T>(key, value);
+                        return new GridValue<T>(key, in value);
                     }
                 }
 

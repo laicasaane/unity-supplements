@@ -19,6 +19,7 @@ namespace System.Collections.Generic
         internal ICollection<T> GetSource()
             => this.hasSource ? (this.source ?? _empty) : _empty;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override int GetHashCode()
             => GetSource().GetHashCode();
 
@@ -41,15 +42,19 @@ namespace System.Collections.Generic
             return source == otherSource;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
             => GetSource().Contains(item);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array, int arrayIndex)
             => GetSource().CopyTo(array, arrayIndex);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerator<T> GetEnumerator()
             => GetSource().GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerator IEnumerable.GetEnumerator()
             => GetEnumerator();
 
