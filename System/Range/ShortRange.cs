@@ -74,7 +74,12 @@ namespace System
             => FromEnd();
 
         public short Count()
-            => (short)Math.Max(this.Start - this.End + 1, 0);
+        {
+            if (this.End > this.Start)
+                return (short)(this.End - this.Start + 1);
+
+            return (short)(this.Start - this.End + 1);
+        }
 
         public bool Contains(short value)
             => this.Start < this.End

@@ -74,7 +74,12 @@ namespace System
             => FromEnd();
 
         public sbyte Count()
-            => (sbyte)Math.Max(this.Start - this.End + 1, 0);
+        {
+            if (this.End > this.Start)
+                return (sbyte)(this.End - this.Start + 1);
+
+            return (sbyte)(this.Start - this.End + 1);
+        }
 
         public bool Contains(sbyte value)
             => this.Start < this.End
