@@ -251,7 +251,7 @@
             }
         }
 
-        public bool TryConvert<T>(object obj, out T result) where T : struct, Enum
+        public bool TryConvert<T>(object obj, out T result) where T : unmanaged, Enum
         {
             try
             {
@@ -266,7 +266,7 @@
             }
         }
 
-        public bool TryConvert<T>(object obj, bool ignoreCase, out T result) where T : struct, Enum
+        public bool TryConvert<T>(object obj, bool ignoreCase, out T result) where T : unmanaged, Enum
         {
             try
             {

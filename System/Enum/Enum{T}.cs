@@ -1,6 +1,6 @@
-﻿namespace System
+namespace System
 {
-    public static partial class Enum<T> where T : struct, Enum
+    public static partial class Enum<T> where T : unmanaged, Enum
     {
         public static Type Type { get; }
 

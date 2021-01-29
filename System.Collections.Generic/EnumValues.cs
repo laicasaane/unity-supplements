@@ -1,6 +1,6 @@
 ﻿namespace System.Collections.Generic
 {
-    public abstract class EnumValues<T> where T : struct, Enum
+    public abstract class EnumValues<T> where T : unmanaged, Enum
     {
         public static ReadArray1<T> Values => Enum<T>.Values;
 

@@ -4,7 +4,7 @@ namespace System
 {
     using ConcurrentPool = Collections.Pooling.Concurrent.ConcurrentPool;
 
-    public class EnumRandomizer<T> where T : struct, Enum
+    public class EnumRandomizer<T> where T : unmanaged, Enum
     {
         private static readonly Random _rand = new Random();
 
