@@ -18,5 +18,13 @@ namespace System.Collections.Pooling.Concurrent
 
         public static void Set<T>() where T : IConcurrentPoolProvider, new()
             => _provider = new T();
+
+        public static T Get<T>() where T : IConcurrentPoolProviderDecorator, new()
+        {
+            var decorator = new T();
+            decorator.Set(Provider);
+
+            return decorator;
+        }
     }
 }

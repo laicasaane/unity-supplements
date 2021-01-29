@@ -18,5 +18,13 @@ namespace System.Collections.Pooling
 
         public static void Set<T>() where T : IPoolProvider, new()
             => _provider = new T();
+
+        public static T Get<T>() where T : IPoolProviderDecorator, new()
+        {
+            var decorator = new T();
+            decorator.Set(Provider);
+
+            return decorator;
+        }
     }
 }

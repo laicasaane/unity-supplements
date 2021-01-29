@@ -7,7 +7,13 @@ namespace System.Collections.Pooling
         private static readonly PoolMap _poolMap = new PoolMap();
 
         public static T[] Get(int size)
+            => Get((long)size);
+
+        public static T[] Get(long size)
         {
+            if (size < 0)
+                throw new ArgumentOutOfRangeException(nameof(size), "Must be a positive number.");
+
             if (_poolMap.TryGetValue(size, out var pool))
             {
                 if (pool.Count > 0)
@@ -27,7 +33,7 @@ namespace System.Collections.Pooling
                 return;
 
             item.Clear();
-            Return(item.Length, item);
+            Return(item.LongLength, item);
         }
 
         public static void Return(params T[][] items)
@@ -41,7 +47,7 @@ namespace System.Collections.Pooling
                     continue;
 
                 item.Clear();
-                Return(item.Length, item);
+                Return(item.LongLength, item);
             }
         }
 
@@ -56,11 +62,11 @@ namespace System.Collections.Pooling
                     continue;
 
                 item.Clear();
-                Return(item.Length, item);
+                Return(item.LongLength, item);
             }
         }
 
-        private static void Return(int size, T[] item)
+        private static void Return(long size, T[] item)
         {
             if (!_poolMap.TryGetValue(size, out var pool))
             {
@@ -70,6 +76,6 @@ namespace System.Collections.Pooling
             pool.Enqueue(item);
         }
 
-        private class PoolMap : Dictionary<int, Queue<T[]>> { }
+        private class PoolMap : Dictionary<long, Queue<T[]>> { }
     }
 }

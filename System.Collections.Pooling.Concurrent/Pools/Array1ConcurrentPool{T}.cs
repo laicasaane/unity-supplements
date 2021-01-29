@@ -8,7 +8,13 @@ namespace System.Collections.Pooling.Concurrent
         private static readonly PoolMap _poolMap = new PoolMap();
 
         public static T[] Get(int size)
+            => Get((long)size);
+
+        public static T[] Get(long size)
         {
+            if (size < 0)
+                throw new ArgumentOutOfRangeException(nameof(size), "Must be a positive number.");
+
             if (_poolMap.TryGetValue(size, out var pool))
             {
                 if (pool.TryDequeue(out var item))
@@ -28,7 +34,7 @@ namespace System.Collections.Pooling.Concurrent
                 return;
 
             item.Clear();
-            Return(item.Length, item);
+            Return(item.LongLength, item);
         }
 
         public static void Return(params T[][] items)
@@ -42,7 +48,7 @@ namespace System.Collections.Pooling.Concurrent
                     continue;
 
                 item.Clear();
-                Return(item.Length, item);
+                Return(item.LongLength, item);
             }
         }
 
@@ -57,11 +63,11 @@ namespace System.Collections.Pooling.Concurrent
                     continue;
 
                 item.Clear();
-                Return(item.Length, item);
+                Return(item.LongLength, item);
             }
         }
 
-        private static void Return(int size, T[] item)
+        private static void Return(long size, T[] item)
         {
             if (!_poolMap.TryGetValue(size, out var pool))
             {
@@ -71,6 +77,6 @@ namespace System.Collections.Pooling.Concurrent
             pool.Enqueue(item);
         }
 
-        private class PoolMap : ConcurrentDictionary<int, ConcurrentQueue<T[]>> { }
+        private class PoolMap : ConcurrentDictionary<long, ConcurrentQueue<T[]>> { }
     }
 }
