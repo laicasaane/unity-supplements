@@ -7,8 +7,8 @@ namespace System
     public readonly struct ReadRange<TValue, TEnumerator> : IRange<TValue>,
                                                             IEquatableReadOnlyStruct<ReadRange<TValue, TEnumerator>>,
                                                             ISerializable
-        where TValue : unmanaged, IEquatable<TValue>
-        where TEnumerator : unmanaged, IRangeEnumerator<TValue>
+        where TValue : struct
+        where TEnumerator : struct, IRangeEnumerator<TValue>
     {
         public TValue Start { get; }
 

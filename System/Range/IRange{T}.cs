@@ -2,7 +2,7 @@
 
 namespace System
 {
-    public interface IRange<out T> where T : unmanaged, IEquatable<T>
+    public interface IRange<out T> where T : struct
     {
         T Start { get; }
 

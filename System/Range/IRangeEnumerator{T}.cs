@@ -2,7 +2,7 @@
 
 namespace System
 {
-    public interface IRangeEnumerator<T> where T : unmanaged, IEquatable<T>
+    public interface IRangeEnumerator<T> where T : struct
     {
         IEnumerator<T> Enumerate(T start, T end, bool fromEnd);
     }
