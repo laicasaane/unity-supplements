@@ -9,7 +9,7 @@ namespace System
         private readonly T[] source;
 
         public readonly int Length;
-        public readonly uint LongLength;
+        public readonly long LongLength;
 
         int IReadOnlyCollection<T>.Count
         {
@@ -30,6 +30,18 @@ namespace System
         }
 
         public ref readonly T this[uint index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get
+            {
+                if (index >= this.LongLength)
+                    throw ThrowHelper.GetArgumentOutOfRange_IndexException();
+
+                return ref this.source[index];
+            }
+        }
+
+        public ref readonly T this[long index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63,10 +75,10 @@ namespace System
 
             this.source = source;
             this.Length = source.Length;
-            this.LongLength = (uint)source.LongLength;
+            this.LongLength = source.LongLength;
         }
 
-        public ReadArray1(T[] source, uint longLength)
+        public ReadArray1(T[] source, long longLength)
         {
             if (source == null)
             {
@@ -81,10 +93,10 @@ namespace System
 
             this.source = source;
             this.Length = length;
-            this.LongLength = Math.Min((uint)source.LongLength, longLength);
+            this.LongLength = Math.Min(source.LongLength, longLength);
         }
 
-        public ReadArray1(T[] source, int length, uint longLength)
+        public ReadArray1(T[] source, int length, long longLength)
         {
             if (source == null)
             {
@@ -94,7 +106,7 @@ namespace System
 
             this.source = source;
             this.Length = Math.Min(source.Length, length);
-            this.LongLength = Math.Min((uint)source.LongLength, longLength);
+            this.LongLength = Math.Min(source.LongLength, longLength);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -177,15 +189,15 @@ namespace System
         public struct Enumerator : IEnumerator<T>
         {
             private readonly T[] source;
-            private readonly uint length;
+            private readonly long length;
 
-            private uint current;
+            private long current;
             private bool first;
 
             internal Enumerator(in ReadArray1<T> array)
             {
                 this.source = array.GetSource();
-                this.length = (uint)Math.Min(this.source.LongLength, array.LongLength);
+                this.length = Math.Min(this.source.LongLength, array.LongLength);
                 this.current = 0;
                 this.first = true;
             }
