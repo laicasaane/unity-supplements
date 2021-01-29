@@ -32,51 +32,64 @@ namespace System.Collections.ArrayBased
             this.buffer = new T[0];
         }
 
-        public ArrayList(uint initialSize)
+        public ArrayList(uint capacity)
         {
             this.count = 0;
-            this.buffer = new T[initialSize];
+            this.buffer = new T[capacity];
         }
 
-        public ArrayList(int initialSize) : this((uint)initialSize)
+        public ArrayList(int capacity)
+            : this((uint)capacity)
         { }
 
-        public ArrayList(params T[] collection)
+        public ArrayList(params T[] source)
         {
-            this.buffer = new T[collection.Length];
-            Array.Copy(collection, this.buffer, collection.Length);
+            this.buffer = new T[source.Length];
+            Array.Copy(source, this.buffer, source.Length);
 
-            this.count = (uint)collection.Length;
+            this.count = (uint)source.Length;
         }
 
-        public ArrayList(T[] collection, uint actualSize)
+        public ArrayList(T[] source, uint actualSize)
         {
             this.buffer = new T[actualSize];
-            Array.Copy(collection, this.buffer, actualSize);
+            Array.Copy(source, this.buffer, actualSize);
 
             this.count = actualSize;
         }
 
-        public ArrayList(ICollection<T> collection)
+        public ArrayList(ICollection<T> source)
         {
-            this.buffer = new T[collection.Count];
+            this.buffer = new T[source.Count];
 
-            collection.CopyTo(this.buffer, 0);
+            source.CopyTo(this.buffer, 0);
 
-            this.count = (uint)collection.Count;
+            this.count = (uint)source.Count;
         }
 
-        public ArrayList(ICollection<T> collection, int extraSize)
-        {
-            this.buffer = new T[(uint)collection.Count + (uint)extraSize];
-            collection.CopyTo(this.buffer, 0);
+        public ArrayList(ICollection<T> source, int extraCapacity)
+            : this(source, (uint)extraCapacity)
+        { }
 
-            this.count = (uint)collection.Count;
+        public ArrayList(ICollection<T> source, uint extraCapacity)
+        {
+            this.buffer = new T[(uint)source.Count + extraCapacity];
+            source.CopyTo(this.buffer, 0);
+
+            this.count = (uint)source.Count;
         }
 
-        public ArrayList(in ArrayList<T> source)
+        public ArrayList(ArrayList<T> source)
+            : this(source, 0)
+        { }
+
+        public ArrayList(ArrayList<T> source, int extraCapacity)
+            : this(source, (uint)extraCapacity)
+        { }
+
+        public ArrayList(ArrayList<T> source, uint extraCapacity)
         {
-            this.buffer = new T[source.count];
+            this.buffer = new T[source.count + extraCapacity];
             source.CopyTo(this.buffer, 0);
 
             this.count = source.count;
@@ -84,6 +97,14 @@ namespace System.Collections.ArrayBased
 
         public ArrayList(in ReadArrayList<T> source)
             : this(source.GetSource())
+        { }
+
+        public ArrayList(in ReadArrayList<T> source, int extraCapacity)
+            : this(source.GetSource(), (uint)extraCapacity)
+        { }
+
+        public ArrayList(in ReadArrayList<T> source, uint extraCapacity)
+            : this(source.GetSource(), extraCapacity)
         { }
 
         public ref T this[int index]

@@ -95,6 +95,18 @@ namespace System.Collections.ArrayBased
             this.buckets = new int[3];
         }
 
+        public ArrayDictionary(int capacity)
+            : this((uint)capacity)
+        { }
+
+        public ArrayDictionary(uint capacity)
+        {
+            this.comparer = EqualityComparer<TKey>.Default;
+            this.keys = new Node[capacity];
+            this.values = new TValue[capacity];
+            this.buckets = new int[HashHelpers.GetPrime((int)capacity)];
+        }
+
         public ArrayDictionary(IEqualityComparer<TKey> comparer)
         {
             this.comparer = comparer ?? EqualityComparer<TKey>.Default;
@@ -103,12 +115,16 @@ namespace System.Collections.ArrayBased
             this.buckets = new int[3];
         }
 
-        public ArrayDictionary(uint size, IEqualityComparer<TKey> comparer = null)
+        public ArrayDictionary(int capacity, IEqualityComparer<TKey> comparer)
+            : this((uint)capacity, comparer)
+        { }
+
+        public ArrayDictionary(uint capacity, IEqualityComparer<TKey> comparer)
         {
             this.comparer = comparer ?? EqualityComparer<TKey>.Default;
-            this.keys = new Node[size];
-            this.values = new TValue[size];
-            this.buckets = new int[HashHelpers.GetPrime((int)size)];
+            this.keys = new Node[capacity];
+            this.values = new TValue[capacity];
+            this.buckets = new int[HashHelpers.GetPrime((int)capacity)];
         }
 
         public ArrayDictionary(ArrayDictionary<TKey, TValue> source, IEqualityComparer<TKey> comparer = null)
@@ -135,11 +151,7 @@ namespace System.Collections.ArrayBased
             : this(source.GetSource(), comparer)
         { }
 
-        public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source)
-            : this(source, null)
-        { }
-
-        public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source, IEqualityComparer<TKey> comparer)
+        public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source, IEqualityComparer<TKey> comparer = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
