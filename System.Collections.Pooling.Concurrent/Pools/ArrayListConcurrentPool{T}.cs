@@ -11,41 +11,82 @@ namespace System.Collections.Pooling.Concurrent
             => _pool.Get();
 
         public static void Return(ArrayList<T> item)
+            => Return(false, item);
+
+        public static void Return(bool shallowClear, ArrayList<T> item)
         {
             if (item == null)
                 return;
 
-            item.Clear();
+            if (shallowClear)
+                item.ShallowClear();
+            else
+                item.Clear();
+
             _pool.Return(item);
         }
 
         public static void Return(params ArrayList<T>[] items)
+            => Return(false, items);
+
+        public static void Return(bool shallowClear, params ArrayList<T>[] items)
         {
             if (items == null)
                 return;
 
-            foreach (var item in items)
+            if (shallowClear)
             {
-                if (item == null)
-                    continue;
+                foreach (var item in items)
+                {
+                    if (item == null)
+                        continue;
 
-                item.Clear();
-                _pool.Return(item);
+                    item.ShallowClear();
+                    _pool.Return(item);
+                }
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    if (item == null)
+                        continue;
+
+                    item.Clear();
+                    _pool.Return(item);
+                }
             }
         }
 
         public static void Return(IEnumerable<ArrayList<T>> items)
+            => Return(false, items);
+
+        public static void Return(bool shallowClear, IEnumerable<ArrayList<T>> items)
         {
             if (items == null)
                 return;
 
-            foreach (var item in items)
+            if (shallowClear)
             {
-                if (item == null)
-                    continue;
+                foreach (var item in items)
+                {
+                    if (item == null)
+                        continue;
 
-                item.Clear();
-                _pool.Return(item);
+                    item.ShallowClear();
+                    _pool.Return(item);
+                }
+            }
+            else
+            {
+                foreach (var item in items)
+                {
+                    if (item == null)
+                        continue;
+
+                    item.Clear();
+                    _pool.Return(item);
+                }
             }
         }
     }
