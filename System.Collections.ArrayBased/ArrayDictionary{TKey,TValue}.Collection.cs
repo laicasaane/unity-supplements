@@ -102,8 +102,7 @@ namespace System.Collections.ArrayBased
                 }
 
                 public void Dispose()
-                {
-                }
+                    => this.source.Dispose();
 
                 [MethodImpl(MethodImplOptions.AggressiveInlining)]
                 public bool MoveNext()

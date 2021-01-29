@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace System.Collections.ArrayBased
 {
-    public partial class ArrayList<T>
+    public partial class ArrayList<T> : IEnumerable<T>
     {
         private T[] buffer;
         private uint count;
@@ -83,12 +83,8 @@ namespace System.Collections.ArrayBased
         }
 
         public ArrayList(in ReadArrayList<T> source)
-        {
-            this.buffer = new T[source.Count];
-            source.CopyTo(this.buffer, 0);
-
-            this.count = source.Count;
-        }
+            : this(source.GetSource())
+        { }
 
         public ref T this[int index]
         {
@@ -115,25 +111,21 @@ namespace System.Collections.ArrayBased
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ArrayList<T> Add(T item)
+        public void Add(T item)
         {
             if (this.count == this.buffer.Length)
                 AllocateMore();
 
             this.buffer[this.count++] = item;
-
-            return this;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ArrayList<T> Add(in T item)
+        public void Add(in T item)
         {
             if (this.count == this.buffer.Length)
                 AllocateMore();
 
             this.buffer[this.count++] = item;
-
-            return this;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -153,19 +145,21 @@ namespace System.Collections.ArrayBased
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ArrayList<T> AddRange(in ArrayList<T> items)
+        public void AddRange(ArrayList<T> items)
         {
             AddRange(items.buffer, items.count);
-
-            return this;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ArrayList<T> AddRange(in ReadArrayList<T> items)
+        public void AddRange(in ReadArrayList<T> items)
         {
             AddRange(items.GetSource().buffer, items.Count);
+        }
 
-            return this;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddRange(params T[] items)
+        {
+            AddRange(items, (uint)items.Length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -178,12 +172,6 @@ namespace System.Collections.ArrayBased
 
             Array.Copy(items, 0, this.buffer, this.count, count);
             this.count += count;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AddRange(T[] items)
-        {
-            AddRange(items, (uint)items.Length);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -643,12 +631,18 @@ namespace System.Collections.ArrayBased
         public Enumerator GetEnumerator()
             => new Enumerator(this.buffer, this.count);
 
+        IEnumerator<T> IEnumerable<T>.GetEnumerator()
+            => GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
+
         internal static readonly ArrayList<T> Empty = new ArrayList<T>();
 
         public static explicit operator ArrayList<T>(T[] array)
             => new ArrayList<T>(array);
 
-        public struct Enumerator
+        public struct Enumerator : IEnumerator<T>
         {
             private readonly T[] buffer;
             private readonly uint count;
@@ -656,6 +650,8 @@ namespace System.Collections.ArrayBased
             private uint index;
 
             public T Current => this.buffer[this.index - 1];
+
+            object IEnumerator.Current => this.Current;
 
             public Enumerator(T[] buffer, uint count)
             {
@@ -678,6 +674,10 @@ namespace System.Collections.ArrayBased
             public void Reset()
             {
                 this.index = 0;
+            }
+
+            public void Dispose()
+            {
             }
         }
     }

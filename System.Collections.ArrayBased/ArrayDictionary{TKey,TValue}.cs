@@ -15,7 +15,7 @@ namespace System.Collections.ArrayBased
     /// The only slower operation is resizing the memory on Add, as this implementation needs to use two separate arrays
     /// compared to the standard dictionary.
     /// </summary>
-    public partial class ArrayDictionary<TKey, TValue>
+    public partial class ArrayDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         private readonly IEqualityComparer<TKey> comparer;
 
@@ -130,6 +130,10 @@ namespace System.Collections.ArrayBased
             this.freeValueCellIndex = source.freeValueCellIndex;
             this.collisions = source.collisions;
         }
+
+        public ArrayDictionary(in ReadArrayDictionary<TKey, TValue> source, IEqualityComparer<TKey> comparer = null)
+            : this(source.GetSource(), comparer)
+        { }
 
         public ArrayDictionary(ICollection<KeyValuePair<TKey, TValue>> source)
             : this(source, null)
@@ -375,6 +379,12 @@ namespace System.Collections.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator()
             => new Enumerator(this);
+
+        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
+            => GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
 
         // TODO: can be optimized
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1004,7 +1014,7 @@ namespace System.Collections.ArrayBased
                 => new KeyValuePair<TKey, TValue>(kv.Key, kv.Value);
         }
 
-        public struct Enumerator
+        public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
             private readonly ArrayDictionary<TKey, TValue> source;
             private readonly uint count;
@@ -1052,8 +1062,18 @@ namespace System.Collections.ArrayBased
                 this.first = true;
             }
 
+            public void Dispose()
+            {
+            }
+
             public KeyValuePair Current
-                => new KeyValuePair(this.source.keys[this.index].Key, this.source.UnsafeValues, this.index);
+                => new KeyValuePair(this.source.UnsafeKeys[this.index], this.source.UnsafeValues, this.index);
+
+            KeyValuePair<TKey, TValue> IEnumerator<KeyValuePair<TKey, TValue>>.Current
+                => new KeyValuePair<TKey, TValue>(this.source.UnsafeKeys[this.index], this.source.UnsafeValues[this.index]);
+
+            object IEnumerator.Current
+                => new KeyValuePair<TKey, TValue>(this.source.UnsafeKeys[this.index], this.source.UnsafeValues[this.index]);
         }
     }
 

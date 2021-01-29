@@ -56,9 +56,6 @@ namespace System.Collections.ArrayBased
             self.Add(in itemT);
         }
 
-        public static void AddRange<T>(this ArrayList<T> self, ArrayList<T> source)
-            => self.AddRange(source, true);
-
         public static void AddRange<T>(this ArrayList<T> self, ArrayList<T> source, bool allowDuplicate, bool allowNull = false)
         {
             if (self == null || source == null)
@@ -86,9 +83,6 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        public static void AddRangeIn<T>(this ArrayList<T> self, ArrayList<T> source)
-            => self.AddRangeIn(source, true);
-
         public static void AddRangeIn<T>(this ArrayList<T> self, ArrayList<T> source, bool allowDuplicate, bool allowNull = false)
         {
             if (self == null || source == null)
@@ -115,6 +109,63 @@ namespace System.Collections.ArrayBased
                     self.Add(in item);
             }
         }
+
+        public static void AddRange<T>(this ArrayList<T> self, in ReadArrayList<T> source, bool allowDuplicate, bool allowNull = false)
+        {
+            if (self == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                for (var i = 0u; i < source.Count; i++)
+                {
+                    ref var item = ref source[i];
+
+                    if (allowNull || item != null)
+                        self.Add(item);
+                }
+
+                return;
+            }
+
+            for (var i = 0u; i < source.Count; i++)
+            {
+                ref var item = ref source[i];
+
+                if ((allowNull || item != null) && !self.Contains(item))
+                    self.Add(item);
+            }
+        }
+
+        public static void AddRangeIn<T>(this ArrayList<T> self, in ReadArrayList<T> source, bool allowDuplicate, bool allowNull = false)
+        {
+            if (self == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                for (var i = 0u; i < source.Count; i++)
+                {
+                    ref var item = ref source[i];
+
+                    if (allowNull || item != null)
+                        self.Add(in item);
+                }
+
+                return;
+            }
+
+            for (var i = 0u; i < source.Count; i++)
+            {
+                ref var item = ref source[i];
+
+                if ((allowNull || item != null) && !self.Contains(in item))
+                    self.Add(in item);
+            }
+        }
+
+        public static void AddRange<T>(this ArrayList<T> self, IEnumerable<T> collection)
+            => self.AddRange(collection?.GetEnumerator(), true);
 
         public static void AddRange<T>(this ArrayList<T> self, IEnumerable<T> collection, bool allowDuplicate, bool allowNull = false)
             => self.AddRange(collection?.GetEnumerator(), allowDuplicate, allowNull);
@@ -148,6 +199,9 @@ namespace System.Collections.ArrayBased
                     self.Add(item);
             }
         }
+
+        public static void AddRangeIn<T>(this ArrayList<T> self, IEnumerable<T> collection)
+            => self.AddRangeIn(collection?.GetEnumerator(), true);
 
         public static void AddRangeIn<T>(this ArrayList<T> self, IEnumerable<T> collection, bool allowDuplicate, bool allowNull = false)
             => self.AddRangeIn(collection?.GetEnumerator(), allowDuplicate, allowNull);
@@ -246,9 +300,6 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        public static void AddRange<T>(this ArrayList<T> self, params T[] items)
-            => self.AddRange(true, items);
-
         public static void AddRange<T>(this ArrayList<T> self, bool allowDuplicate, params T[] items)
             => self.AddRange(allowDuplicate, false, items);
 
@@ -274,9 +325,6 @@ namespace System.Collections.ArrayBased
                     self.Add(item);
             }
         }
-
-        public static void AddRangeIn<T>(this ArrayList<T> self, params T[] items)
-            => self.AddRangeIn(true, items);
 
         public static void AddRangeIn<T>(this ArrayList<T> self, bool allowDuplicate, params T[] items)
             => self.AddRangeIn(allowDuplicate, false, items);
