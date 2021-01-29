@@ -75,6 +75,15 @@
 - [LongRange](./System/Range/LongRange.cs)
 - [ULongRange](./System/Range/ULongRange.cs)
 - [CharRange](./System/Range/CharRange.cs)
+- [EnumByteRange\<T>](./System/Range/EnumByteRange%7BT%7D.cs)
+- [EnumSByteRange\<T>](./System/Range/EnumSByteRange%7BT%7D.cs)
+- [EnumShortRange\<T>](./System/Range/EnumShortRange%7BT%7D.cs)
+- [EnumUShortRange\<T>](./System/Range/EnumUShortRange%7BT%7D.cs)
+- [EnumIntRange\<T>](./System/Range/EnumIntRange%7BT%7D.cs)
+- [EnumUIntRange\<T>](./System/Range/EnumUIntRange%7BT%7D.cs)
+- [EnumLongRange\<T>](./System/Range/EnumLongRange%7BT%7D.cs)
+- [EnumULongRange\<T>](./System/Range/EnumULongRange%7BT%7D.cs)
+- [EnumRange\<T>](./System/Range/EnumRange%7BT%7D.cs)
 
 ### Misc.
 - [Converter](./System/Converter.cs)
@@ -154,6 +163,7 @@
 - [Randomizer.ICache\<T>](./System.Collections.Generic/Randomizer/Randomizer.Cache%7BT%7D.cs)
 
 ### Misc.
+- [Values\<T>](./System.Collections.Generic/Values.cs)
 - [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
 
 ## System.Collections.ArrayBased
