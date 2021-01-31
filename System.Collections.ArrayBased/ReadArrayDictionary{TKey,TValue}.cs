@@ -128,13 +128,23 @@ namespace System.Collections.ArrayBased
         public bool TryGetValue(in TKey key, out TValue result)
             => GetSource().TryGetValue(in key, out result);
 
+        [Obsolete("This method has been deprecated. Us GetAt instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetKeyValueAt(uint index, out TKey key, out TValue value)
             => GetSource().GetKeyValueAt(index, out key, out value);
 
+        [Obsolete("This method has been deprecated. Us TryGetAt instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetKeyValueAt(uint index, out TKey key, out TValue value)
             => GetSource().TryGetKeyValueAt(index, out key, out value);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void GetAt(uint index, out TKey key, out TValue value)
+            => GetSource().GetAt(index, out key, out value);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool TryGetAt(uint index, out TKey key, out TValue value)
+            => GetSource().TryGetAt(index, out key, out value);
 
         public static ReadArrayDictionary<TKey, TValue> Empty { get; }
             = new ReadArrayDictionary<TKey, TValue>(ArrayDictionary<TKey, TValue>.Empty);

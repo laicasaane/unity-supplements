@@ -382,7 +382,11 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
+        [Obsolete("This method has been deprecated. Us GetAt instead.")]
         public void GetKeyValueAt(uint index, out TKey key, out TValue value)
+            => GetAt(index, out key, out value);
+
+        public void GetAt(uint index, out TKey key, out TValue value)
         {
             if (index >= this.freeValueCellIndex)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
@@ -391,7 +395,11 @@ namespace System.Collections.ArrayBased
             value = this.values[index];
         }
 
+        [Obsolete("This method has been deprecated. Us TryGetAt instead.")]
         public bool TryGetKeyValueAt(uint index, out TKey key, out TValue value)
+            => TryGetAt(index, out key, out value);
+
+        public bool TryGetAt(uint index, out TKey key, out TValue value)
         {
             if (index >= this.freeValueCellIndex)
             {

@@ -1490,10 +1490,10 @@ namespace System.Grid.ArrayBased
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetAt(uint index, out GridIndex key, out T value)
-            => this.data.GetKeyValueAt(index, out key, out value);
+            => this.data.GetAt(index, out key, out value);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetAt(uint index, out GridIndex key, out T value)
-            => this.data.TryGetKeyValueAt(index, out key, out value);
+            => this.data.TryGetAt(index, out key, out value);
     }
 }
