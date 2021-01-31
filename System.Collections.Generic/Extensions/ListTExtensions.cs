@@ -157,12 +157,30 @@
             }
         }
 
-        public static void GetRange<T>(this List<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this List<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
-            var start = Math.Min(range.Start, range.End);
-            var end = Math.Max(range.Start, range.End);
+            if ((uint)range.Start >= (uint)self.Count)
+                throw new IndexOutOfRangeException(nameof(range.Start));
 
-            self.GetRange(start, end - start + 1, output, allowDuplicate, allowNull);
+            if ((uint)range.End >= (uint)self.Count)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    if (allowNull || self[i] != null)
+                        output.Add(self[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if ((allowNull || self[i] != null) && !output.Contains(self[i]))
+                    output.Add(self[i]);
+            }
         }
 
         public static void GetRange<T>(this List<T> self, int offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
@@ -193,12 +211,30 @@
             }
         }
 
-        public static void GetRange<T>(this IList<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this IList<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
-            var start = Math.Min(range.Start, range.End);
-            var end = Math.Max(range.Start, range.End);
+            if ((uint)range.Start >= (uint)self.Count)
+                throw new IndexOutOfRangeException(nameof(range.Start));
 
-            self.GetRange(start, end - start + 1, output, allowDuplicate, allowNull);
+            if ((uint)range.End >= (uint)self.Count)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    if (allowNull || self[i] != null)
+                        output.Add(self[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if ((allowNull || self[i] != null) && !output.Contains(self[i]))
+                    output.Add(self[i]);
+            }
         }
 
         public static void GetRange<T>(this IList<T> self, int offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
@@ -229,12 +265,30 @@
             }
         }
 
-        public static void GetRange<T>(this IReadOnlyList<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this IReadOnlyList<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
-            var start = Math.Min(range.Start, range.End);
-            var end = Math.Max(range.Start, range.End);
+            if ((uint)range.Start >= (uint)self.Count)
+                throw new IndexOutOfRangeException(nameof(range.Start));
 
-            self.GetRange(start, end - start + 1, output, allowDuplicate, allowNull);
+            if ((uint)range.End >= (uint)self.Count)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    if (allowNull || self[i] != null)
+                        output.Add(self[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if ((allowNull || self[i] != null) && !output.Contains(self[i]))
+                    output.Add(self[i]);
+            }
         }
 
         public static void GetRange<T>(this IReadOnlyList<T> self, int offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
@@ -270,7 +324,7 @@
             offset = Math.Max(offset, 0);
 
             if (offset > listCount)
-                throw new IndexOutOfRangeException(nameof(offset));
+                throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0)
                 count = listCount - offset;
@@ -278,7 +332,7 @@
                 count += offset;
 
             if (count > listCount)
-                throw new IndexOutOfRangeException(nameof(count));
+                throw new ArgumentOutOfRangeException(nameof(count));
         }
     }
 }

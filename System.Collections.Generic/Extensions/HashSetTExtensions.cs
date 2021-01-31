@@ -157,7 +157,7 @@ namespace System.Collections.Generic
             }
         }
 
-        public static void GetRange<T>(this HashSet<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this HashSet<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);
@@ -223,7 +223,7 @@ namespace System.Collections.Generic
             offset = Math.Max(offset, 0);
 
             if (offset > collectionCount)
-                throw new IndexOutOfRangeException(nameof(offset));
+                throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0)
                 count = collectionCount - offset;
@@ -231,7 +231,7 @@ namespace System.Collections.Generic
                 count += offset;
 
             if (count > collectionCount)
-                throw new IndexOutOfRangeException(nameof(count));
+                throw new ArgumentOutOfRangeException(nameof(count));
         }
     }
 }

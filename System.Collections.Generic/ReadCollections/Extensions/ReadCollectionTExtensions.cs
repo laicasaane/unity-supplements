@@ -5,7 +5,7 @@
         public static bool ValidateIndex<T>(in this ReadCollection<T> self, int index)
             => self != null && index >= 0 && index < self.Count;
 
-        public static void GetRange<T>(in this ReadCollection<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(in this ReadCollection<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);
@@ -21,17 +21,19 @@
             if (output == null || count == 0)
                 return;
 
+            var source = self.GetSource();
+
             offset = Math.Max(offset, 0);
 
-            if (offset > self.Count)
+            if (offset > source.Count)
                 throw new IndexOutOfRangeException(nameof(offset));
 
             if (count < 0)
-                count = self.Count - offset;
+                count = source.Count - offset;
             else
                 count += offset;
 
-            if (count > self.Count)
+            if (count > source.Count)
                 throw new IndexOutOfRangeException(nameof(count));
 
             var o = 0;
@@ -39,7 +41,7 @@
 
             if (allowDuplicate)
             {
-                foreach (var item in self)
+                foreach (var item in source)
                 {
                     if (o < offset)
                     {
@@ -59,7 +61,7 @@
                 return;
             }
 
-            foreach (var item in self)
+            foreach (var item in source)
             {
                 if (o < offset)
                 {

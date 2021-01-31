@@ -5,12 +5,32 @@
         public static bool ValidateIndex<T>(in this ReadList<T> self, int index)
             => self != null && index >= 0 && index < self.Count;
 
-        public static void GetRange<T>(in this ReadList<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(in this ReadList<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
-            var start = Math.Min(range.Start, range.End);
-            var end = Math.Max(range.Start, range.End);
+            var source = self.GetSource();
 
-            self.GetRange(start + 1, end - start, output, allowDuplicate, allowNull);
+            if (range.Start >= source.Count)
+                throw new IndexOutOfRangeException(nameof(range.Start));
+
+            if (range.End >= source.Count)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    if (allowNull || source[i] != null)
+                        output.Add(source[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if ((allowNull || source[i] != null) && !output.Contains(source[i]))
+                    output.Add(source[i]);
+            }
         }
 
         public static void GetRange<T>(in this ReadList<T> self, int offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
@@ -21,25 +41,27 @@
             if (output == null || count == 0)
                 return;
 
+            var source = self.GetSource();
+
             offset = Math.Max(offset, 0);
 
-            if (offset > self.Count)
+            if (offset > source.Count)
                 throw new IndexOutOfRangeException(nameof(offset));
 
             if (count < 0)
-                count = self.Count - offset;
+                count = source.Count - offset;
             else
                 count += offset;
 
-            if (count > self.Count)
+            if (count > source.Count)
                 throw new IndexOutOfRangeException(nameof(count));
 
             if (allowDuplicate)
             {
                 for (var i = offset; i < count; i++)
                 {
-                    if (allowNull || self[i] != null)
-                        output.Add(self[i]);
+                    if (allowNull || source[i] != null)
+                        output.Add(source[i]);
                 }
 
                 return;
@@ -47,8 +69,8 @@
 
             for (var i = offset; i < count; i++)
             {
-                if ((allowNull || self[i] != null) && !output.Contains(self[i]))
-                    output.Add(self[i]);
+                if ((allowNull || source[i] != null) && !output.Contains(source[i]))
+                    output.Add(source[i]);
             }
         }
     }

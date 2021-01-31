@@ -153,7 +153,7 @@
             }
         }
 
-        public static void PopRange<T>(this Stack<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void PopRange<T>(this Stack<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);

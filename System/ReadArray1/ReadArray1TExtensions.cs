@@ -7,6 +7,12 @@ namespace System
         public static bool ValidateIndex<T>(in this ReadArray1<T> self, int index)
            => self != null && index >= 0 && index < self.Length;
 
+        public static bool ValidateIndex<T>(in this ReadArray1<T> self, uint index)
+           => self != null && index >= 0 && index < self.LongLength;
+
+        public static bool ValidateIndex<T>(in this ReadArray1<T> self, long index)
+           => self != null && index >= 0 && index < self.LongLength;
+
         public static ReadArray1<T> Get<T, TResult>(in this ReadArray1<T> self, int index, out TResult value)
         {
             value = default;
@@ -32,12 +38,36 @@ namespace System
             return self;
         }
 
-        public static void GetRange<T>(in this ReadArray1<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(in this ReadArray1<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
-            var start = Math.Min(range.Start, range.End);
-            var end = Math.Max(range.Start, range.End);
+            var source = self.GetSource();
 
-            self.GetRange(start + 1, end - start, output, allowDuplicate, allowNull);
+            if ((uint)range.Start >= (uint)source.Length)
+                throw new IndexOutOfRangeException(nameof(range.Start));
+
+            if ((uint)range.End >= (uint)source.Length)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    ref var item = ref source[i];
+
+                    if (allowNull || item != null)
+                        output.Add(item);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                ref var item = ref source[i];
+
+                if ((allowNull || item != null) && !output.Contains(item))
+                    output.Add(item);
+            }
         }
 
         public static void GetRange<T>(in this ReadArray1<T> self, int offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
@@ -48,24 +78,26 @@ namespace System
             if (self == null || output == null || count == 0)
                 return;
 
+            var source = self.GetSource();
+
             offset = Math.Max(offset, 0);
 
-            if (offset > self.Length)
-                throw new IndexOutOfRangeException(nameof(offset));
+            if (offset > source.Length)
+                throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0)
-                count = self.Length - offset;
+                count = source.Length - offset;
             else
                 count += offset;
 
-            if (count > self.Length)
-                throw new IndexOutOfRangeException(nameof(count));
+            if (count > source.Length)
+                throw new ArgumentOutOfRangeException(nameof(count));
 
             if (allowDuplicate)
             {
                 for (var i = offset; i < count; i++)
                 {
-                    var item = self[i];
+                    ref var item = ref source[i];
 
                     if (allowNull || item != null)
                         output.Add(item);
@@ -76,7 +108,116 @@ namespace System
 
             for (var i = offset; i < count; i++)
             {
-                var item = self[i];
+                ref var item = ref source[i];
+
+                if ((allowNull || item != null) && !output.Contains(item))
+                    output.Add(item);
+            }
+        }
+
+        public static void GetRange<T>(in this ReadArray1<T> self, in LongRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            var source = self.GetSource();
+
+            if ((ulong)range.Start >= (ulong)source.LongLength)
+                throw new IndexOutOfRangeException(nameof(range.Start));
+
+            if ((ulong)range.End >= (ulong)source.LongLength)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    ref var item = ref source[i];
+
+                    if (allowNull || item != null)
+                        output.Add(item);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                ref var item = ref source[i];
+
+                if ((allowNull || item != null) && !output.Contains(item))
+                    output.Add(item);
+            }
+        }
+
+        public static void GetRange<T>(in this ReadArray1<T> self, long offset, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+            => self.GetRange(offset, -1, output, allowDuplicate, allowNull);
+
+        public static void GetRange<T>(in this ReadArray1<T> self, long offset, long count, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            if (self == null || output == null || count == 0)
+                return;
+
+            var source = self.GetSource();
+
+            offset = Math.Max(offset, 0);
+
+            if (offset > source.LongLength)
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0)
+                count = source.LongLength - offset;
+            else
+                count += offset;
+
+            if (count > source.LongLength)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            if (allowDuplicate)
+            {
+                for (var i = offset; i < count; i++)
+                {
+                    ref var item = ref source[i];
+
+                    if (allowNull || item != null)
+                        output.Add(item);
+                }
+
+                return;
+            }
+
+            for (var i = offset; i < count; i++)
+            {
+                ref var item = ref source[i];
+
+                if ((allowNull || item != null) && !output.Contains(item))
+                    output.Add(item);
+            }
+        }
+
+        public static void GetRange<T>(in this ReadArray1<T> self, in UIntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            var source = self.GetSource();
+
+            if (range.Start >= source.LongLength)
+                throw new IndexOutOfRangeException(nameof(range.Start));
+
+            if (range.End >= source.LongLength)
+                throw new IndexOutOfRangeException(nameof(range.End));
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    ref var item = ref source[i];
+
+                    if (allowNull || item != null)
+                        output.Add(item);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                ref var item = ref source[i];
 
                 if ((allowNull || item != null) && !output.Contains(item))
                     output.Add(item);

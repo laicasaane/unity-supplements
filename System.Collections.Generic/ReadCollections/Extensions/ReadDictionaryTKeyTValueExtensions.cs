@@ -7,12 +7,14 @@ namespace System.Collections.Generic
             if (keys == null || output == null)
                 return;
 
+            var source = self.GetSource();
+
             if (allowDuplicateValue)
             {
                 foreach (var key in keys)
                 {
                     if (output.ContainsKey(key) ||
-                        !self.TryGetValue(key, out var value))
+                        !source.TryGetValue(key, out var value))
                         continue;
 
                     if (allowNull || value != null)
@@ -25,7 +27,7 @@ namespace System.Collections.Generic
             foreach (var key in keys)
             {
                 if (output.ContainsKey(key) ||
-                    !self.TryGetValue(key, out var value))
+                    !source.TryGetValue(key, out var value))
                     continue;
 
                 if ((allowNull || value != null) && !output.ContainsValue(value))
@@ -38,10 +40,12 @@ namespace System.Collections.Generic
             if (keys == null || output == null)
                 return;
 
+            var source = self.GetSource();
+
             foreach (var key in keys)
             {
                 if (output.ContainsKey(key) ||
-                    !self.TryGetValue(key, out var value))
+                    !source.TryGetValue(key, out var value))
                     continue;
 
                 if (allowNull || value != null)
@@ -54,11 +58,13 @@ namespace System.Collections.Generic
             if (keys == null || output == null)
                 return;
 
+            var source = self.GetSource();
+
             if (allowDuplicate)
             {
                 foreach (var key in keys)
                 {
-                    if (!self.TryGetValue(key, out var value))
+                    if (!source.TryGetValue(key, out var value))
                         continue;
 
                     if (allowNull || value != null)
@@ -70,7 +76,7 @@ namespace System.Collections.Generic
 
             foreach (var key in keys)
             {
-                if (!self.TryGetValue(key, out var value))
+                if (!source.TryGetValue(key, out var value))
                     continue;
 
                 if ((allowNull || value != null) && !output.Contains(value))
@@ -83,11 +89,13 @@ namespace System.Collections.Generic
             if (keys == null || output == null)
                 return;
 
+            var source = self.GetSource();
+
             if (allowDuplicate)
             {
                 foreach (var key in keys)
                 {
-                    if (!self.TryGetValue(key, out var value))
+                    if (!source.TryGetValue(key, out var value))
                         continue;
 
                     if (allowNull || value != null)
@@ -99,7 +107,7 @@ namespace System.Collections.Generic
 
             foreach (var key in keys)
             {
-                if (!self.TryGetValue(key, out var value))
+                if (!source.TryGetValue(key, out var value))
                     continue;
 
                 var kvp = new KeyValuePair<TKey, TValue>(key, value);

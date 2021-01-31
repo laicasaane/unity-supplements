@@ -2,7 +2,7 @@
 {
     public static class IEnumerableTExtensions
     {
-        public static void GetRange<T>(this IEnumerable<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this IEnumerable<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);

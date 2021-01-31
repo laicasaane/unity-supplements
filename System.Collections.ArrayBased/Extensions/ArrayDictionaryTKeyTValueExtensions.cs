@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace System.Collections.ArrayBased
 {
@@ -85,19 +86,71 @@ namespace System.Collections.ArrayBased
 
             if (allowOverwrite)
             {
-                foreach (var kv in source)
+                for (var i = 0u; i < source.Count; i++)
                 {
-                    if (allowNullValue || kv.Value != null)
-                        self.Set(kv.Key, kv.Value);
+                    if (allowNullValue || source.UnsafeValues[i] != null)
+                        self.Set(source.UnsafeKeys[i].Key, source.UnsafeValues[i]);
                 }
 
                 return;
             }
 
-            foreach (var kv in source)
+            for (var i = 0u; i < source.Count; i++)
             {
-                if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self.Set(kv.Key, kv.Value);
+                if ((allowNullValue || source.UnsafeValues[i] != null) && !self.ContainsKey(source.UnsafeKeys[i].Key))
+                    self.Set(source.UnsafeKeys[i].Key, source.UnsafeValues[i]);
+            }
+        }
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source)
+            => self.AddRangeIn(source, true);
+
+        public static void AddRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || source == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                for (var i = 0u; i < source.Count; i++)
+                {
+                    if (allowNullValue || source.UnsafeValues[i] != null)
+                        self.Set(in source.UnsafeKeys[i].Key, in source.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            for (var i = 0u; i < source.Count; i++)
+            {
+                if ((allowNullValue || source.UnsafeValues[i] != null) && !self.ContainsKey(in source.UnsafeKeys[i].Key))
+                    self.Set(in source.UnsafeKeys[i].Key, in source.UnsafeValues[i]);
+            }
+        }
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source)
+            => self.AddRangeInKey(source, true);
+
+        public static void AddRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayDictionary<TKey, TValue> source, bool allowOverwrite, bool allowNullValue = false)
+        {
+            if (self == null || source == null)
+                return;
+
+            if (allowOverwrite)
+            {
+                for (var i = 0u; i < source.Count; i++)
+                {
+                    if (allowNullValue || source.UnsafeValues[i] != null)
+                        self.Set(in source.UnsafeKeys[i].Key, source.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            for (var i = 0u; i < source.Count; i++)
+            {
+                if ((allowNullValue || source.UnsafeValues[i] != null) && !self.ContainsKey(in source.UnsafeKeys[i].Key))
+                    self.Set(in source.UnsafeKeys[i].Key, source.UnsafeValues[i]);
             }
         }
 
@@ -111,19 +164,19 @@ namespace System.Collections.ArrayBased
 
             if (allowOverwrite)
             {
-                foreach (var kv in source)
+                for (var i = 0u; i < source.Count; i++)
                 {
-                    if (allowNullValue || kv.Value != null)
-                        self.Set(kv.Key, in kv.Value);
+                    if (allowNullValue || source.UnsafeValues[i] != null)
+                        self.Set(source.UnsafeKeys[i].Key, in source.UnsafeValues[i]);
                 }
 
                 return;
             }
 
-            foreach (var kv in source)
+            for (var i = 0u; i < source.Count; i++)
             {
-                if ((allowNullValue || kv.Value != null) && !self.ContainsKey(kv.Key))
-                    self.Set(kv.Key, in kv.Value);
+                if ((allowNullValue || source.UnsafeValues[i] != null) && !self.ContainsKey(source.UnsafeKeys[i].Key))
+                    self.Set(source.UnsafeKeys[i].Key, in source.UnsafeValues[i]);
             }
         }
 
@@ -436,35 +489,6 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        public static void GetRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ICollection<TValue> output, bool allowDuplicate = true, bool allowNull = false)
-        {
-            if (self == null || keys == null || output == null)
-                return;
-
-            if (allowDuplicate)
-            {
-                foreach (var key in keys)
-                {
-                    if (!self.TryGetValue(key, out var value))
-                        continue;
-
-                    if (allowNull || value != null)
-                        output.Add(value);
-                }
-
-                return;
-            }
-
-            foreach (var key in keys)
-            {
-                if (!self.TryGetValue(key, out var value))
-                    continue;
-
-                if ((allowNull || value != null) && !output.Contains(value))
-                    output.Add(value);
-            }
-        }
-
         public static void GetRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ICollection<KeyValuePair<TKey, TValue>> output, bool allowDuplicate = true, bool allowNull = false)
         {
             if (self == null || keys == null || output == null)
@@ -491,6 +515,205 @@ namespace System.Collections.ArrayBased
 
                 var kvp = new KeyValuePair<TKey, TValue>(key, value);
                 if ((allowNull || value != null) && !output.Contains(kvp))
+                    output.Add(kvp);
+            }
+        }
+
+        public static void GetRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, Dictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicateValue)
+            {
+                foreach (var i in range)
+                {
+                    if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                        continue;
+
+                    if (allowNull || self.UnsafeValues[i] != null)
+                        output.Add(self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                    continue;
+
+                if ((allowNull || self.UnsafeValues[i] != null) && !output.ContainsValue(self.UnsafeValues[i]))
+                    output.Add(self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+            }
+        }
+
+        public static void GetRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicateValue)
+            {
+                foreach (var i in range)
+                {
+                    if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                        continue;
+
+                    if (allowNull || self.UnsafeValues[i] != null)
+                        output.Add(self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                    continue;
+
+                if ((allowNull || self.UnsafeValues[i] != null) && !output.ContainsValue(self.UnsafeValues[i]))
+                    output.Add(self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+            }
+        }
+
+        public static void GetRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicateValue)
+            {
+                foreach (var i in range)
+                {
+                    if (output.ContainsKey(in self.UnsafeKeys[i].Key))
+                        continue;
+
+                    if (allowNull || self.UnsafeValues[i] != null)
+                        output.Add(in self.UnsafeKeys[i].Key, in self.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if (output.ContainsKey(in self.UnsafeKeys[i].Key))
+                    continue;
+
+                if ((allowNull || self.UnsafeValues[i] != null) && !output.ContainsValue(in self.UnsafeValues[i]))
+                    output.Add(in self.UnsafeKeys[i].Key, in self.UnsafeValues[i]);
+            }
+        }
+
+        public static void GetRangeInKey<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicateValue)
+            {
+                foreach (var i in range)
+                {
+                    if (output.ContainsKey(in self.UnsafeKeys[i].Key))
+                        continue;
+
+                    if (allowNull || self.UnsafeValues[i] != null)
+                        output.Add(in self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if (output.ContainsKey(in self.UnsafeKeys[i].Key))
+                    continue;
+
+                if ((allowNull || self.UnsafeValues[i] != null) && !output.ContainsValue(self.UnsafeValues[i]))
+                    output.Add(in self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+            }
+        }
+
+        public static void GetRangeInValue<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayDictionary<TKey, TValue> output, bool allowDuplicateValue = false, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicateValue)
+            {
+                foreach (var i in range)
+                {
+                    if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                        continue;
+
+                    if (allowNull || self.UnsafeValues[i] != null)
+                        output.Add(self.UnsafeKeys[i].Key, in self.UnsafeValues[i]);
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                    continue;
+
+                if ((allowNull || self.UnsafeValues[i] != null) && !output.ContainsValue(in self.UnsafeValues[i]))
+                    output.Add(self.UnsafeKeys[i].Key, in self.UnsafeValues[i]);
+            }
+        }
+
+        public static void GetRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, IDictionary<TKey, TValue> output, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            foreach (var i in range)
+            {
+                if (output.ContainsKey(self.UnsafeKeys[i].Key))
+                    continue;
+
+                if (allowNull || self.UnsafeValues[i] != null)
+                    output.Add(self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+            }
+        }
+
+        public static void GetRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ICollection<KeyValuePair<TKey, TValue>> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    if (allowNull || self.UnsafeValues[i] != null)
+                        output.Add(new KeyValuePair<TKey, TValue>(self.UnsafeKeys[i].Key, self.UnsafeValues[i]));
+                }
+
+                return;
+            }
+
+            foreach (var i in range)
+            {
+                var kvp = new KeyValuePair<TKey, TValue>(self.UnsafeKeys[i].Key, self.UnsafeValues[i]);
+
+                if ((allowNull || self.UnsafeValues[i] != null) && !output.Contains(kvp))
                     output.Add(kvp);
             }
         }
@@ -1057,6 +1280,330 @@ namespace System.Collections.ArrayBased
                 if (allowNull || value != null)
                     output.Add(key, in value);
             }
+        }
+
+        public static void GetKeys<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayList<TKey> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+            else
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    if (output.Contains(self.UnsafeKeys[i].Key))
+                        output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+        }
+
+        public static void GetKeysIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayList<TKey> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    output.Add(in self.UnsafeKeys[i].Key);
+                }
+            }
+            else
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    if (output.Contains(in self.UnsafeKeys[i].Key))
+                        output.Add(in self.UnsafeKeys[i].Key);
+                }
+            }
+        }
+
+        public static void GetKeys<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ICollection<TKey> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+            else
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    if (output.Contains(self.UnsafeKeys[i].Key))
+                        output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+        }
+
+        public static void GetValues<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, ArrayList<TValue> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            if (allowDuplicate)
+                output.AddRange(self.UnsafeValues, self.Count);
+            else
+            {
+                for (var i = 0u; i < self.Count; i++)
+                {
+                    if (output.Contains(self.UnsafeValues[i]))
+                        output.Add(self.UnsafeValues[i]);
+                }
+            }
+        }
+
+        public static void GetKeyRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayList<TKey> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+            else
+            {
+                foreach (var i in range)
+                {
+                    if (output.Contains(self.UnsafeKeys[i].Key))
+                        output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+        }
+
+        public static void GetKeyRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayList<TKey> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    output.Add(in self.UnsafeKeys[i].Key);
+                }
+            }
+            else
+            {
+                foreach (var i in range)
+                {
+                    if (output.Contains(in self.UnsafeKeys[i].Key))
+                        output.Add(in self.UnsafeKeys[i].Key);
+                }
+            }
+        }
+
+        public static void GetKeyRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ICollection<TKey> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+            else
+            {
+                foreach (var i in range)
+                {
+                    if (output.Contains(self.UnsafeKeys[i].Key))
+                        output.Add(self.UnsafeKeys[i].Key);
+                }
+            }
+        }
+
+        public static void GetValueRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayList<TValue> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    output.Add(self.UnsafeValues[i]);
+                }
+            }
+            else
+            {
+                foreach (var i in range)
+                {
+                    if (output.Contains(self.UnsafeValues[i]))
+                        output.Add(self.UnsafeValues[i]);
+                }
+            }
+        }
+
+        public static void GetValueRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ArrayList<TValue> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    output.Add(in self.UnsafeValues[i]);
+                }
+            }
+            else
+            {
+                foreach (var i in range)
+                {
+                    if (output.Contains(in self.UnsafeValues[i]))
+                        output.Add(in self.UnsafeValues[i]);
+                }
+            }
+        }
+
+        public static void GetValueRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range, ICollection<TValue> output, bool allowDuplicate = false)
+        {
+            if (self == null || output == null)
+                return;
+
+            self.Validate(range);
+
+            if (allowDuplicate)
+            {
+                foreach (var i in range)
+                {
+                    output.Add(self.UnsafeValues[i]);
+                }
+            }
+            else
+            {
+                foreach (var i in range)
+                {
+                    if (output.Contains(self.UnsafeValues[i]))
+                        output.Add(self.UnsafeValues[i]);
+                }
+            }
+        }
+
+        public static void GetValueRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ArrayList<TValue> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            if (self == null || keys == null || output == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                foreach (var key in keys)
+                {
+                    if (!self.TryGetValue(key, out var value))
+                        continue;
+
+                    if (allowNull || value != null)
+                        output.Add(value);
+                }
+
+                return;
+            }
+
+            foreach (var key in keys)
+            {
+                if (!self.TryGetValue(key, out var value))
+                    continue;
+
+                if ((allowNull || value != null) && !output.Contains(value))
+                    output.Add(value);
+            }
+        }
+
+        public static void GetValueRangeIn<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ArrayList<TValue> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            if (self == null || keys == null || output == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                foreach (var key in keys)
+                {
+                    if (!self.TryGetValue(key, out var value))
+                        continue;
+
+                    if (allowNull || value != null)
+                        output.Add(in value);
+                }
+
+                return;
+            }
+
+            foreach (var key in keys)
+            {
+                if (!self.TryGetValue(key, out var value))
+                    continue;
+
+                if ((allowNull || value != null) && !output.Contains(in value))
+                    output.Add(in value);
+            }
+        }
+
+        public static void GetValueRange<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, IEnumerable<TKey> keys, ICollection<TValue> output, bool allowDuplicate = true, bool allowNull = false)
+        {
+            if (self == null || keys == null || output == null)
+                return;
+
+            if (allowDuplicate)
+            {
+                foreach (var key in keys)
+                {
+                    if (!self.TryGetValue(key, out var value))
+                        continue;
+
+                    if (allowNull || value != null)
+                        output.Add(value);
+                }
+
+                return;
+            }
+
+            foreach (var key in keys)
+            {
+                if (!self.TryGetValue(key, out var value))
+                    continue;
+
+                if ((allowNull || value != null) && !output.Contains(value))
+                    output.Add(value);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void Validate<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, in UIntRange range)
+        {
+            if (range.Start >= self.Count)
+                throw new IndexOutOfRangeException(nameof(range.Start));
+
+            if (range.End >= self.Count)
+                throw new IndexOutOfRangeException(nameof(range.End));
         }
     }
 }

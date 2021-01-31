@@ -157,7 +157,7 @@
             }
         }
 
-        public static void GetRange<T>(this ICollection<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this ICollection<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);
@@ -218,7 +218,7 @@
             }
         }
 
-        public static void GetRange<T>(this IReadOnlyCollection<T> self, in ReadRange<int> range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
+        public static void GetRange<T>(this IReadOnlyCollection<T> self, in IntRange range, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
             var start = Math.Min(range.Start, range.End);
             var end = Math.Max(range.Start, range.End);
@@ -284,7 +284,7 @@
             offset = Math.Max(offset, 0);
 
             if (offset > collectionCount)
-                throw new IndexOutOfRangeException(nameof(offset));
+                throw new ArgumentOutOfRangeException(nameof(offset));
 
             if (count < 0)
                 count = collectionCount - offset;
@@ -292,7 +292,7 @@
                 count += offset;
 
             if (count > collectionCount)
-                throw new IndexOutOfRangeException(nameof(count));
+                throw new ArgumentOutOfRangeException(nameof(count));
         }
     }
 }
