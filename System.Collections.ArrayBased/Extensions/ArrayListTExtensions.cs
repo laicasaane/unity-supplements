@@ -7,6 +7,9 @@ namespace System.Collections.ArrayBased
         public static bool ValidateIndex<T>(this ArrayList<T> self, int index)
             => self != null && index >= 0 && index < self.Count;
 
+        public static bool ValidateIndex<T>(this ArrayList<T> self, uint index)
+            => self != null && index >= 0 && index < self.Count;
+
         public static ReadArrayList<T> AsReadArrayList<T>(this ArrayList<T> self)
             => self;
 

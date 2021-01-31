@@ -4,6 +4,12 @@ namespace System.Collections.ArrayBased
 {
     public static class ArrayDictionaryTKeyTValueExtensions
     {
+        public static bool ValidateIndex<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, int index)
+            => index >= 0 && index < self.Count;
+
+        public static bool ValidateIndex<TKey, TValue>(this ArrayDictionary<TKey, TValue> self, uint index)
+            => index >= 0 && index < self.Count;
+
         public static ReadArrayDictionary<TKey, TValue> AsReadArrayDictionary<TKey, TValue>(this ArrayDictionary<TKey, TValue> self)
             => self;
 
