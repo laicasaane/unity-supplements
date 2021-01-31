@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
@@ -219,7 +219,6 @@ namespace System.Grid
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Grid<T> dest)
         {
             if (dest == null)
@@ -228,26 +227,21 @@ namespace System.Grid
             dest.Initialize(this);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             this.Size = GridSize.Zero;
             this.data.Clear();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsIndex(in GridIndex index)
             => this.data.ContainsKey(index);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsValue(T value)
             => this.data.ContainsValue(value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(in GridIndex index, out T value)
             => this.data.TryGetValue(index, out value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Dictionary<GridIndex, T>.Enumerator GetEnumerator()
             => this.data.GetEnumerator();
 

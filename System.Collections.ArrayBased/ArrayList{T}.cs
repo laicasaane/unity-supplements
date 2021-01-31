@@ -131,7 +131,6 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(T item)
         {
             if (this.count == this.buffer.Length)
@@ -140,7 +139,6 @@ namespace System.Collections.ArrayBased
             this.buffer[this.count++] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(in T item)
         {
             if (this.count == this.buffer.Length)
@@ -149,7 +147,6 @@ namespace System.Collections.ArrayBased
             this.buffer[this.count++] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddAt(uint location, T item)
         {
             ExpandTo(location + 1);
@@ -157,7 +154,6 @@ namespace System.Collections.ArrayBased
             this.buffer[location] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddAt(uint location, in T item)
         {
             ExpandTo(location + 1);
@@ -165,23 +161,14 @@ namespace System.Collections.ArrayBased
             this.buffer[location] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(ArrayList<T> items)
-        {
-            AddRange(items.buffer, items.count);
-        }
+            => AddRange(items.buffer, items.count);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(in ReadArrayList<T> items)
-        {
-            AddRange(items.GetSource().buffer, items.Count);
-        }
+            => AddRange(items.GetSource().buffer, items.Count);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(params T[] items)
-        {
-            AddRange(items, (uint)items.Length);
-        }
+            => AddRange(items, (uint)items.Length);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(T[] items, uint count)
@@ -195,7 +182,6 @@ namespace System.Collections.ArrayBased
             this.count += count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
         {
             var comp = EqualityComparer<T>.Default;
@@ -207,7 +193,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(in T item)
         {
             var comp = EqualityComparer<T>.Default;
@@ -219,7 +204,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item, IEqualityComparer<T> comparer)
         {
             if (comparer == null)
@@ -232,7 +216,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(in T item, IEqualityComparerIn<T> comparer)
         {
             if (comparer == null)
@@ -245,7 +228,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint? IndexOf(T item)
         {
             var comp = EqualityComparer<T>.Default;
@@ -257,7 +239,6 @@ namespace System.Collections.ArrayBased
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint? IndexOf(in T item)
         {
             var comp = EqualityComparer<T>.Default;
@@ -269,7 +250,6 @@ namespace System.Collections.ArrayBased
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint? IndexOf(T item, IEqualityComparer<T> comparer)
         {
             if (comparer == null)
@@ -282,7 +262,6 @@ namespace System.Collections.ArrayBased
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint? IndexOf(in T item, IEqualityComparerIn<T> comparer)
         {
             if (comparer == null)
@@ -299,7 +278,6 @@ namespace System.Collections.ArrayBased
         /// This method does not actually clear the list, thus objects held by this list won't be garbage collected.
         /// Use <see cref="ResetToReuse"/> or <see cref="Clear"/> to clear the entire list completely.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShallowClear()
         {
 #if DEBUG
@@ -309,7 +287,6 @@ namespace System.Collections.ArrayBased
             this.count = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ResetToReuse()
         {
             this.count = 0;
@@ -362,7 +339,6 @@ namespace System.Collections.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             Array.Clear(this.buffer, 0, this.buffer.Length);
@@ -370,7 +346,6 @@ namespace System.Collections.ArrayBased
             this.count = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(int index, T item)
         {
             if ((uint)index >= this.count)
@@ -384,7 +359,6 @@ namespace System.Collections.ArrayBased
             this.buffer[index] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(int index, in T item)
         {
             if ((uint)index >= this.count)
@@ -398,7 +372,6 @@ namespace System.Collections.ArrayBased
             this.buffer[index] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(uint index, T item)
         {
             if (index >= this.count)
@@ -412,7 +385,6 @@ namespace System.Collections.ArrayBased
             this.buffer[index] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Insert(uint index, in T item)
         {
             if (index >= this.count)
@@ -426,7 +398,6 @@ namespace System.Collections.ArrayBased
             this.buffer[index] = item;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(T item)
         {
             var indexTemp = IndexOf(item);
@@ -448,7 +419,6 @@ namespace System.Collections.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Remove(in T item)
         {
             var indexTemp = IndexOf(in item);
@@ -470,7 +440,6 @@ namespace System.Collections.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(int index)
         {
             if ((uint)index >= this.count)
@@ -484,7 +453,6 @@ namespace System.Collections.ArrayBased
             this.buffer[this.count] = default;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void RemoveAt(uint index)
         {
             if (index >= this.count)
@@ -498,7 +466,6 @@ namespace System.Collections.ArrayBased
             this.buffer[this.count] = default;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Resize(uint newSize)
         {
             if (newSize == this.buffer.Length) return;
@@ -506,7 +473,6 @@ namespace System.Collections.ArrayBased
             Array.Resize(ref this.buffer, (int)newSize);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             var destinationArray = new T[this.count];
@@ -519,14 +485,12 @@ namespace System.Collections.ArrayBased
         /// <summary>
         /// Note: The length of the returned array cannot be used. Use the count argument instead.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] GetBufferArray(out uint count)
         {
             count = this.count;
             return this.buffer;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool UnorderedRemoveAt(int index)
         {
             if ((uint)index >= this.count)
@@ -544,7 +508,6 @@ namespace System.Collections.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool UnorderedRemoveAt(uint index)
         {
             if (index >= this.count)
@@ -562,14 +525,12 @@ namespace System.Collections.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Trim()
         {
             if (this.count < this.buffer.Length)
                 Resize(this.count);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void TrimCount(uint newCount)
         {
             if (newCount > this.count)
@@ -578,7 +539,6 @@ namespace System.Collections.ArrayBased
             this.count = newCount;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExpandBy(uint increment)
         {
             var count = this.count + increment;
@@ -589,7 +549,6 @@ namespace System.Collections.ArrayBased
             this.count = count;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ExpandTo(uint newSize)
         {
             if (this.buffer.Length < newSize)
@@ -605,29 +564,24 @@ namespace System.Collections.ArrayBased
                 AllocateMore(newSize);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint Push(in T item)
         {
             AddAt(this.count, item);
             return this.count - 1;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref readonly T Pop()
         {
             --this.count;
             return ref this.buffer[this.count];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref readonly T Peek()
             => ref this.buffer[this.count - 1];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(T[] array, int arrayIndex)
             => Array.Copy(this.buffer, 0, array, arrayIndex, this.count);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AllocateMore()
         {
             var newLength = (uint)((this.buffer.Length + 1) * 1.5f);
@@ -636,7 +590,6 @@ namespace System.Collections.ArrayBased
             this.buffer = newList;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void AllocateMore(uint newSize)
         {
             if (newSize <= this.buffer.Length)
@@ -648,7 +601,6 @@ namespace System.Collections.ArrayBased
             this.buffer = newList;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator()
             => new Enumerator(this.buffer, this.count);
 

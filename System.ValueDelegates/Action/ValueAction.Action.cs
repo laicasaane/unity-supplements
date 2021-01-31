@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValueAction
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invoke<TAction>()
             where TAction : struct, IAction
             => new TAction().Invoke();
@@ -80,7 +78,6 @@ namespace System.ValueDelegates
             action.Invoke(closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Invoke<TAction, TClosure>(this TClosure closure)
                where TAction : struct, IAction<TClosure>
                => new TAction().Invoke(closure);

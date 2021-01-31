@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValueDelegate
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueFunc<TFunc, object, TResult> ValueFunc<TFunc, TResult>(this object closure)
             where TFunc : struct, IFunc<object, TResult>
             => new ValueFunc<TFunc, object, TResult>(new TFunc(), closure);
@@ -55,7 +53,6 @@ namespace System.ValueDelegates
             return new ValueFunc<TFunc, object, TResult>(in func, closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueFuncIn<TFunc, object, TResult> ValueFuncIn<TFunc, TResult>(this object closure)
             where TFunc : struct, IFuncIn<object, TResult>
             => new ValueFuncIn<TFunc, object, TResult>(new TFunc(), in closure);
@@ -105,7 +102,6 @@ namespace System.ValueDelegates
             return new ValueFuncIn<TFunc, object, TResult>(in func, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueFuncRef<TFunc, object, TResult> ValueFuncRef<TFunc, TResult>(this object closure)
             where TFunc : struct, IFuncRef<object, TResult>
             => new ValueFuncRef<TFunc, object, TResult>(new TFunc(), ref closure);
@@ -155,7 +151,6 @@ namespace System.ValueDelegates
             return new ValueFuncRef<TFunc, object, TResult>(in func, ref closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueFunc<TFunc, TClosure, TResult> ValueFunc<TFunc, TClosure, TResult>(this TClosure closure)
             where TFunc : struct, IFunc<TClosure, TResult>
             => new ValueFunc<TFunc, TClosure, TResult>(new TFunc(), closure);
@@ -205,7 +200,6 @@ namespace System.ValueDelegates
             return new ValueFunc<TFunc, TClosure, TResult>(in func, closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueFuncIn<TFunc, TClosure, TResult> ValueFuncIn<TFunc, TClosure, TResult>(this TClosure closure)
             where TFunc : struct, IFuncIn<TClosure, TResult>
             => new ValueFuncIn<TFunc, TClosure, TResult>(new TFunc(), in closure);
@@ -255,7 +249,6 @@ namespace System.ValueDelegates
             return new ValueFuncIn<TFunc, TClosure, TResult>(in func, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueFuncRef<TFunc, TClosure, TResult> ValueFuncRef<TFunc, TClosure, TResult>(this TClosure closure)
             where TFunc : struct, IFuncRef<TClosure, TResult>
             => new ValueFuncRef<TFunc, TClosure, TResult>(new TFunc(), ref closure);

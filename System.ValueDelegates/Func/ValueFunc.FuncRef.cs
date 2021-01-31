@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValueFunc
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TResult InvokeRef<TFunc, TClosure, TResult>(ref TClosure closure)
             where TFunc : struct, IFuncRef<TClosure, TResult>
             => new TFunc().Invoke(ref closure);

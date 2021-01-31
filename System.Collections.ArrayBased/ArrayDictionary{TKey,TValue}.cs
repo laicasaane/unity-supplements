@@ -184,11 +184,9 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyValuesTo(TValue[] array, uint arrayIndex)
             => Array.Copy(this.values, 0, array, arrayIndex, this.Count);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue[] GetValuesArray(out uint count)
         {
             count = this.freeValueCellIndex;
@@ -196,51 +194,42 @@ namespace System.Collections.ArrayBased
             return this.values;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, TValue value)
         {
             if (AddValue(key, value, out _) == false)
                 throw new ArrayDictionaryException("Key already present");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(TKey key, in TValue value)
         {
             if (AddValue(key, in value, out _) == false)
                 throw new ArrayDictionaryException("Key already present");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(in TKey key, TValue value)
         {
             if (AddValue(key, value, out _) == false)
                 throw new ArrayDictionaryException("Key already present");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Add(in TKey key, in TValue value)
         {
             if (AddValue(key, in value, out _) == false)
                 throw new ArrayDictionaryException("Key already present");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, TValue value)
             => AddValue(key, value, out _);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(TKey key, in TValue value)
             => AddValue(key, in value, out _);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(in TKey key, TValue value)
             => AddValue(key, value, out _);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Set(in TKey key, in TValue value)
             => AddValue(key, in value, out _);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (this.freeValueCellIndex == 0) return;
@@ -252,7 +241,6 @@ namespace System.Collections.ArrayBased
             Array.Clear(this.keys, 0, this.keys.Length);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShallowClear()
         {
             if (this.freeValueCellIndex == 0) return;
@@ -329,15 +317,12 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(TKey key)
             => TryGetIndex(key, out _);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsKey(in TKey key)
             => TryGetIndex(in key, out _);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(TKey key, out TValue result)
         {
             if (TryGetIndex(key, out var findIndex) == true)
@@ -350,7 +335,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(in TKey key, out TValue result)
         {
             if (TryGetIndex(in key, out var findIndex) == true)
@@ -363,7 +347,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetKeyValueAt(uint index, out TKey key, out TValue value)
         {
             if (index >= this.freeValueCellIndex)
@@ -373,7 +356,6 @@ namespace System.Collections.ArrayBased
             value = this.values[index];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetKeyValueAt(uint index, out TKey key, out TValue value)
         {
             if (index >= this.freeValueCellIndex)
@@ -388,7 +370,6 @@ namespace System.Collections.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Enumerator GetEnumerator()
             => new Enumerator(this);
 
@@ -399,7 +380,6 @@ namespace System.Collections.ArrayBased
             => GetEnumerator();
 
         // TODO: can be optimized
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(TKey key)
         {
             if (TryGetIndex(key, out var findIndex) == true)
@@ -412,7 +392,6 @@ namespace System.Collections.ArrayBased
             return ref this.values[findIndex];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
         {
             if (TryGetIndex(key, out var findIndex) == true)
@@ -425,7 +404,6 @@ namespace System.Collections.ArrayBased
             return ref this.values[findIndex];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetOrCreate<T>(TKey key, RefFunc<T, TValue> builder, ref T parameter)
         {
             if (TryGetIndex(key, out var findIndex) == true)
@@ -438,7 +416,6 @@ namespace System.Collections.ArrayBased
             return ref this.values[findIndex];
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(TKey key)
         {
             if (TryGetIndex(key, out var findIndex) == true)
@@ -449,7 +426,6 @@ namespace System.Collections.ArrayBased
             throw new ArrayDictionaryException("Key not found");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref TValue GetValueByRef(in TKey key)
         {
             if (TryGetIndex(in key, out var findIndex) == true)
@@ -469,7 +445,6 @@ namespace System.Collections.ArrayBased
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(TKey key)
         {
             if (TryGetIndex(key, out var findIndex)) return findIndex;
@@ -477,7 +452,6 @@ namespace System.Collections.ArrayBased
             throw new ArrayDictionaryException("Key not found");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint GetIndex(in TKey key)
         {
             if (TryGetIndex(in key, out var findIndex)) return findIndex;
@@ -951,7 +925,6 @@ namespace System.Collections.ArrayBased
 
         internal static readonly ArrayDictionary<TKey, TValue> Empty = new ArrayDictionary<TKey, TValue>();
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static uint Reduce(uint x, uint N)
         {
             if (x >= N)
@@ -960,7 +933,6 @@ namespace System.Collections.ArrayBased
             return x;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void UpdateLinkedList(int index, Node[] valuesInfo)
         {
             var next = valuesInfo[index].Next;
@@ -1042,7 +1014,6 @@ namespace System.Collections.ArrayBased
                 this.first = true;
             }
 
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool MoveNext()
             {
 #if DEBUG

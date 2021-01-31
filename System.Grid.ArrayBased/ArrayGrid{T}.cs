@@ -1,4 +1,4 @@
-﻿using System.Collections.ArrayBased;
+using System.Collections.ArrayBased;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -382,7 +382,6 @@ namespace System.Grid.ArrayBased
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(ArrayGrid<T> dest)
         {
             if (dest == null)
@@ -391,37 +390,30 @@ namespace System.Grid.ArrayBased
             dest.Initialize(this);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             this.Size = GridSize.Zero;
             this.data.Clear();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void ShallowClear()
         {
             this.Size = GridSize.Zero;
             this.data.ShallowClear();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsIndex(in GridIndex index)
             => this.data.ContainsKey(in index);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsValue(T value)
             => this.data.ContainsValue(value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsValue(in T value)
             => this.data.ContainsValue(in value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetValue(in GridIndex index, out T value)
             => this.data.TryGetValue(in index, out value);
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ArrayDictionary<GridIndex, T>.Enumerator GetEnumerator()
             => this.data.GetEnumerator();
 

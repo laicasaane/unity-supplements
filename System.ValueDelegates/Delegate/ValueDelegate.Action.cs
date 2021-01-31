@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValueDelegate
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueAction<TAction, object> ValueAction<TAction>(this object closure)
             where TAction : struct, IAction<object>
             => new ValueAction<TAction, object>(new TAction(), closure);
@@ -55,7 +53,6 @@ namespace System.ValueDelegates
             return new ValueAction<TAction, object>(in action, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueActionIn<TAction, object> ValueActionIn<TAction>(this object closure)
             where TAction : struct, IActionIn<object>
             => new ValueActionIn<TAction, object>(new TAction(), closure);
@@ -105,7 +102,6 @@ namespace System.ValueDelegates
             return new ValueActionIn<TAction, object>(in action, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueActionRef<TAction, object> ValueActionRef<TAction>(this object closure)
             where TAction : struct, IActionRef<object>
             => new ValueActionRef<TAction, object>(new TAction(), ref closure);
@@ -155,7 +151,6 @@ namespace System.ValueDelegates
             return new ValueActionRef<TAction, object>(in action, ref closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueAction<TAction, TClosure> ValueAction<TAction, TClosure>(this TClosure closure)
             where TAction : struct, IAction<TClosure>
             => new ValueAction<TAction, TClosure>(new TAction(), closure);
@@ -205,7 +200,6 @@ namespace System.ValueDelegates
             return new ValueAction<TAction, TClosure>(in action, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueActionIn<TAction, TClosure> ValueActionIn<TAction, TClosure>(this TClosure closure)
             where TAction : struct, IActionIn<TClosure>
             => new ValueActionIn<TAction, TClosure>(new TAction(), in closure);
@@ -255,7 +249,6 @@ namespace System.ValueDelegates
             return new ValueActionIn<TAction, TClosure>(in action, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValueActionRef<TAction, TClosure> ValueActionRef<TAction, TClosure>(this TClosure closure)
             where TAction : struct, IActionRef<TClosure>
             => new ValueActionRef<TAction, TClosure>(new TAction(), ref closure);

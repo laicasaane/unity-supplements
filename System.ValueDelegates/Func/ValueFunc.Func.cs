@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValueFunc
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TResult Invoke<TFunc, TResult>()
             where TFunc : struct, IFunc<TResult>
             => new TFunc().Invoke();
@@ -80,7 +78,6 @@ namespace System.ValueDelegates
             return func.Invoke(closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TResult Invoke<TFunc, TClosure, TResult>(this TClosure closure)
             where TFunc : struct, IFunc<TClosure, TResult>
             => new TFunc().Invoke(closure);

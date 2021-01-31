@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValueDelegate
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValuePredicate<TPredicate, object> ValuePredicate<TPredicate>(this object closure)
             where TPredicate : struct, IPredicate<object>
             => new ValuePredicate<TPredicate, object>(new TPredicate(), closure);
@@ -55,7 +53,6 @@ namespace System.ValueDelegates
             return new ValuePredicate<TPredicate, object>(in predicate, closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValuePredicateIn<TPredicate, object> ValuePredicateIn<TPredicate>(this object closure)
             where TPredicate : struct, IPredicateIn<object>
             => new ValuePredicateIn<TPredicate, object>(new TPredicate(), in closure);
@@ -105,7 +102,6 @@ namespace System.ValueDelegates
             return new ValuePredicateIn<TPredicate, object>(in predicate, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValuePredicateRef<TPredicate, object> ValuePredicateRef<TPredicate>(this object closure)
             where TPredicate : struct, IPredicateRef<object>
             => new ValuePredicateRef<TPredicate, object>(new TPredicate(), ref closure);
@@ -155,7 +151,6 @@ namespace System.ValueDelegates
             return new ValuePredicateRef<TPredicate, object>(in predicate, ref closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValuePredicate<TPredicate, TClosure> ValuePredicate<TPredicate, TClosure>(this TClosure closure)
             where TPredicate : struct, IPredicate<TClosure>
             => new ValuePredicate<TPredicate, TClosure>(new TPredicate(), closure);
@@ -205,7 +200,6 @@ namespace System.ValueDelegates
             return new ValuePredicate<TPredicate, TClosure>(in predicate, closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValuePredicateIn<TPredicate, TClosure> ValuePredicateIn<TPredicate, TClosure>(this TClosure closure)
             where TPredicate : struct, IPredicateIn<TClosure>
             => new ValuePredicateIn<TPredicate, TClosure>(new TPredicate(), in closure);
@@ -255,7 +249,6 @@ namespace System.ValueDelegates
             return new ValuePredicateIn<TPredicate, TClosure>(in predicate, in closure);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ValuePredicateRef<TPredicate, TClosure> ValuePredicateRef<TPredicate, TClosure>(this TClosure closure)
             where TPredicate : struct, IPredicateRef<TClosure>
             => new ValuePredicateRef<TPredicate, TClosure>(new TPredicate(), ref closure);

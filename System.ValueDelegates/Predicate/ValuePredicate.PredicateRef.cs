@@ -1,11 +1,9 @@
 ﻿using System.Delegates;
-using System.Runtime.CompilerServices;
 
 namespace System.ValueDelegates
 {
     public static partial class ValuePredicate
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool InvokeRef<TPredicate, TClosure>(ref TClosure closure)
             where TPredicate : struct, IPredicateRef<TClosure>
             => new TPredicate().Invoke(ref closure);
