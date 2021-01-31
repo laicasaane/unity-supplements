@@ -79,8 +79,8 @@ namespace System.Grid.ArrayBased
             => this.hasSource ? (this.source ?? _empty) : _empty;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo(ArrayGrid<T> dest)
-            => GetSource().CopyTo(dest);
+        public void CopyTo(ArrayGrid<T> dest, bool inValue = false)
+            => GetSource().CopyTo(dest, inValue);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool ContainsIndex(in GridIndex index)

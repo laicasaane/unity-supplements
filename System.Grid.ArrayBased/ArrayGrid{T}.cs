@@ -466,12 +466,16 @@ namespace System.Grid.ArrayBased
             return true;
         }
 
-        public void CopyTo(ArrayGrid<T> dest)
+        /// <param name="inValue">Should set to true when <see cref="T"/> is struct to avoid copying its value around.</param>
+        public void CopyTo(ArrayGrid<T> dest, bool inValue = false)
         {
             if (dest == null)
                 throw new ArgumentNullException(nameof(dest));
 
-            dest.Initialize(this);
+            if (inValue)
+                dest.InitializeIn(this);
+            else
+                dest.Initialize(this);
         }
 
         public void Clear()

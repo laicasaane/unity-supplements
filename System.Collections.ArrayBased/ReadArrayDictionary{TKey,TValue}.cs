@@ -61,8 +61,28 @@ namespace System.Collections.ArrayBased
             => GetSource().ContainsKey(in key);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyValuesTo(TValue[] tasks, uint index)
-            => GetSource().CopyValuesTo(tasks, index);
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+            => GetSource().CopyTo(array, arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyKeysTo(TKey[] array, int arrayIndex)
+            => GetSource().CopyKeysTo(array, arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyValuesTo(TValue[] array, int arrayIndex)
+            => GetSource().CopyValuesTo(array, arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, uint arrayIndex)
+            => GetSource().CopyTo(array, arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyKeysTo(TKey[] array, uint arrayIndex)
+            => GetSource().CopyKeysTo(array, arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyValuesTo(TValue[] array, uint arrayIndex)
+            => GetSource().CopyValuesTo(array, arrayIndex);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ArrayDictionary<TKey, TValue>.Enumerator GetEnumerator()
@@ -83,6 +103,10 @@ namespace System.Collections.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref readonly TValue GetValueByRef(in TKey key)
             => ref GetSource().GetValueByRef(in key);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ArrayDictionary<TKey, TValue>.Node[] GetKeysArray(out uint count)
+            => GetSource().GetKeysArray(out count);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TValue[] GetValuesArray(out uint count)

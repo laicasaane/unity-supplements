@@ -64,6 +64,10 @@ namespace System.Collections.ArrayBased
             => GetSource().CopyTo(array, arrayIndex);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyTo(T[] array, uint arrayIndex)
+            => GetSource().CopyTo(array, arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ArrayList<T>.Enumerator GetEnumerator()
             => GetSource().GetEnumerator();
 

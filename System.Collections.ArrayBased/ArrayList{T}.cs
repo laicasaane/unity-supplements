@@ -582,6 +582,9 @@ namespace System.Collections.ArrayBased
         public void CopyTo(T[] array, int arrayIndex)
             => Array.Copy(this.buffer, 0, array, arrayIndex, this.count);
 
+        public void CopyTo(T[] array, uint arrayIndex)
+            => Array.Copy(this.buffer, 0, array, arrayIndex, this.count);
+
         private void AllocateMore()
         {
             var newLength = (uint)((this.buffer.Length + 1) * 1.5f);

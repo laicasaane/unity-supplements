@@ -168,24 +168,59 @@ namespace System.Collections.ArrayBased
         }
 
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+            => CopyTo(array, (uint)arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyTo(KeyValuePair<TKey, TValue>[] array, uint arrayIndex)
         {
             if (array == null)
                 throw new ArgumentNullException(nameof(array));
 
-            if ((uint)arrayIndex >= (uint)array.Length)
+            if (arrayIndex >= (uint)array.Length)
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 
             if (array.Length - arrayIndex < this.Count)
                 throw new ArgumentException("The number of elements in the source is greater than the available space from index to the end of the destination array.");
 
-            foreach (var kv in this)
+            for (var i = 0u; i < this.freeValueCellIndex; i++)
             {
-                array[arrayIndex++] = kv;
+                array[arrayIndex++] = new KeyValuePair<TKey, TValue>(this.keys[i].Key, this.values[i]);
             }
         }
 
+        public void CopyKeysTo(TKey[] array, int arrayIndex)
+            => CopyKeysTo(array, (uint)arrayIndex);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void CopyKeysTo(TKey[] array, uint arrayIndex)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+
+            if (arrayIndex >= (uint)array.Length)
+                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+
+            if (array.Length - arrayIndex < this.Count)
+                throw new ArgumentException("The number of elements in the source is greater than the available space from index to the end of the destination array.");
+
+            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            {
+                array[arrayIndex++] = this.keys[i].Key;
+            }
+        }
+
+        public void CopyValuesTo(TValue[] array, int arrayIndex)
+            => Array.Copy(this.values, 0, array, arrayIndex, this.Count);
+
         public void CopyValuesTo(TValue[] array, uint arrayIndex)
             => Array.Copy(this.values, 0, array, arrayIndex, this.Count);
+
+        public Node[] GetKeysArray(out uint count)
+        {
+            count = this.freeValueCellIndex;
+
+            return this.keys;
+        }
 
         public TValue[] GetValuesArray(out uint count)
         {
