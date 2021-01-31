@@ -1,4 +1,4 @@
-using System.Collections.ArrayBased;
+﻿using System.Collections.ArrayBased;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -26,6 +26,18 @@ namespace System.Grid.ArrayBased
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this.data.Values;
+        }
+
+        public ArrayDictionary<GridIndex, T>.Node[] UnsafeIndices
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.data.UnsafeKeys;
+        }
+
+        public T[] UnsafeValues
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.data.UnsafeValues;
         }
 
         public T this[in GridIndex key]
@@ -56,6 +68,7 @@ namespace System.Grid.ArrayBased
         }
 
         private readonly ArrayDictionary<GridIndex, T> data;
+        private bool initialized;
 
         public ArrayGrid()
         {
@@ -113,7 +126,12 @@ namespace System.Grid.ArrayBased
 
             this.Size = source.Size;
             this.data = new ArrayDictionary<GridIndex, T>(source.data);
+            this.initialized = true;
         }
+
+        public ArrayGrid(in ReadArrayGrid<T> source)
+            : this(source.GetSource())
+        { }
 
         protected ArrayGrid(SerializationInfo info, StreamingContext context)
         {
@@ -125,88 +143,128 @@ namespace System.Grid.ArrayBased
                 try
                 {
                     var value = (T)info.GetValue(index.ToString(), typeof(T));
-                    this.data[index] = value;
+                    this.data[in index] = value;
                 }
                 catch
                 {
                 }
             }
+
+            this.initialized = true;
         }
 
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.AddValue(nameof(this.Size), this.Size);
 
-            foreach (var kv in this.data)
+            for (var i = 0u; i < this.data.Count; i++)
             {
-                info.AddValue(kv.Key.ToString(), kv.Value);
+                info.AddValue(this.data.UnsafeKeys[i].Key.ToString(), this.data.UnsafeValues[i]);
             }
         }
 
+        public void Initialize(in ReadArrayGrid<T> source)
+            => Initialize(source.GetSource());
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Initialize(ArrayGrid<T> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
 
             this.Size = source.Size;
+            var data = source.data;
 
-            foreach (var kv in source.data)
+            for (var i = 0u; i < data.Count; i++)
             {
-                this.data.Set(kv.Key, kv.Value);
+                this.data.Set(in data.UnsafeKeys[i].Key, data.UnsafeValues[i]);
             }
+
+            this.initialized = true;
         }
 
         /// <summary>
-        /// Initialize without making multiple copies of <see cref="T"/> value.
+        /// Initialize without passing copies of <see cref="T"/> value.
         /// </summary>
+        public void InitializeIn(in ReadArrayGrid<T> source)
+            => InitializeIn(source.GetSource());
+
+        /// <summary>
+        /// Initialize without passing copies of <see cref="T"/> value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InitializeIn(ArrayGrid<T> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
 
             this.Size = source.Size;
+            var data = source.data;
 
-            foreach (var kv in source.data)
+            for (var i = 0u; i < data.Count; i++)
             {
-                this.data.Set(kv.Key, in kv.Value);
+                this.data.Set(in data.UnsafeKeys[i].Key, in data.UnsafeValues[i]);
             }
+
+            this.initialized = true;
         }
 
+        public void Initialize(in GridSize size, in ReadArrayDictionary<GridIndex, T> data)
+            => Initialize(size, data.GetSource());
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Initialize(in GridSize size, ArrayDictionary<GridIndex, T> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
+
             this.Size = size;
 
-            foreach (var kv in data)
+            for (var i = 0u; i < data.Count; i++)
             {
-                if (this.Size.ValidateIndex(kv.Key))
-                    this.data.Set(kv.Key, kv.Value);
+                if (this.Size.ValidateIndex(data.UnsafeKeys[i].Key))
+                    this.data.Set(in data.UnsafeKeys[i].Key, data.UnsafeValues[i]);
             }
+
+            this.initialized = true;
         }
 
         /// <summary>
-        /// Initialize without making multiple copies of <see cref="T"/> value.
+        /// Initialize without passing copies of <see cref="T"/> value.
         /// </summary>
+        public void InitializeIn(in GridSize size, in ReadArrayDictionary<GridIndex, T> data)
+            => InitializeIn(size, data.GetSource());
+
+        /// <summary>
+        /// Initialize without passing copies of <see cref="T"/> value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void InitializeIn(in GridSize size, ArrayDictionary<GridIndex, T> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
+
             this.Size = size;
 
-            foreach (var kv in data)
+            for (var i = 0u; i < data.Count; i++)
             {
-                if (this.Size.ValidateIndex(kv.Key))
-                    this.data.Set(kv.Key, in kv.Value);
+                if (this.Size.ValidateIndex(data.UnsafeKeys[i].Key))
+                    this.data.Set(in data.UnsafeKeys[i].Key, in data.UnsafeValues[i]);
             }
+
+            this.initialized = true;
         }
 
         public void Initialize(in GridSize size, IEnumerable<KeyValuePair<GridIndex, T>> data)
@@ -214,7 +272,9 @@ namespace System.Grid.ArrayBased
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
+
             this.Size = size;
 
             foreach (var kv in data)
@@ -222,6 +282,8 @@ namespace System.Grid.ArrayBased
                 if (this.Size.ValidateIndex(kv.Key))
                     this.data.Set(kv.Key, kv.Value);
             }
+
+            this.initialized = true;
         }
 
         public void Initialize(in GridSize size, IEnumerable<GridValue<T>> data)
@@ -229,8 +291,9 @@ namespace System.Grid.ArrayBased
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
+            if (this.initialized)
+                ShallowClear();
 
-            Clear();
             this.Size = size;
 
             foreach (var kv in data)
@@ -238,18 +301,21 @@ namespace System.Grid.ArrayBased
                 if (this.Size.ValidateIndex(kv.Index))
                     this.data.Set(in kv.Index, kv.Value);
             }
+
+            this.initialized = true;
         }
 
         /// <summary>
-        /// Initialize without making multiple copies of <see cref="T"/> value.
+        /// Initialize without passing copies of <see cref="T"/> value.
         /// </summary>
         public void InitializeIn(in GridSize size, IEnumerable<GridValue<T>> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
+            if (this.initialized)
+                ShallowClear();
 
-            Clear();
             this.Size = size;
 
             foreach (var kv in data)
@@ -257,6 +323,8 @@ namespace System.Grid.ArrayBased
                 if (this.Size.ValidateIndex(kv.Index))
                     this.data.Set(in kv.Index, in kv.Value);
             }
+
+            this.initialized = true;
         }
 
         public void Initialize(in GridSize size, IEnumerator<KeyValuePair<GridIndex, T>> data)
@@ -264,7 +332,9 @@ namespace System.Grid.ArrayBased
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
+
             this.Size = size;
 
             while (data.MoveNext())
@@ -274,6 +344,8 @@ namespace System.Grid.ArrayBased
                 if (this.Size.ValidateIndex(kv.Key))
                     this.data.Set(kv.Key, kv.Value);
             }
+
+            this.initialized = true;
         }
 
         public void Initialize(in GridSize size, IEnumerator<GridValue<T>> data)
@@ -281,8 +353,9 @@ namespace System.Grid.ArrayBased
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
+            if (this.initialized)
+                ShallowClear();
 
-            Clear();
             this.Size = size;
 
             while (data.MoveNext())
@@ -292,18 +365,21 @@ namespace System.Grid.ArrayBased
                 if (this.Size.ValidateIndex(kv.Index))
                     this.data.Set(in kv.Index, kv.Value);
             }
+
+            this.initialized = true;
         }
 
         /// <summary>
-        /// Initialize without making multiple copies of <see cref="T"/> value.
+        /// Initialize without passing copies of <see cref="T"/> value.
         /// </summary>
         public void InitializeIn(in GridSize size, IEnumerator<GridValue<T>> data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
+            if (this.initialized)
+                ShallowClear();
 
-            Clear();
             this.Size = size;
 
             while (data.MoveNext())
@@ -313,6 +389,8 @@ namespace System.Grid.ArrayBased
                 if (this.Size.ValidateIndex(kv.Index))
                     this.data.Set(in kv.Index, in kv.Value);
             }
+
+            this.initialized = true;
         }
 
         public void Initialize(IGrid<T> source)
@@ -320,7 +398,8 @@ namespace System.Grid.ArrayBased
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
 
             this.Size = source.Size;
 
@@ -328,17 +407,20 @@ namespace System.Grid.ArrayBased
             {
                 this.data.Set(in kv.Index, kv.Value);
             }
+
+            this.initialized = true;
         }
 
         /// <summary>
-        /// Initialize without making multiple copies of <see cref="T"/> value.
+        /// Initialize without passing copies of <see cref="T"/> value.
         /// </summary>
         public void InitializeIn(IGrid<T> source)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            Clear();
+            if (this.initialized)
+                ShallowClear();
 
             this.Size = source.Size;
 
@@ -346,6 +428,8 @@ namespace System.Grid.ArrayBased
             {
                 this.data.Set(in kv.Index, in kv.Value);
             }
+
+            this.initialized = true;
         }
 
         public void Set(in GridIndex index, T value)
@@ -417,6 +501,7 @@ namespace System.Grid.ArrayBased
         public ArrayDictionary<GridIndex, T>.Enumerator GetEnumerator()
             => this.data.GetEnumerator();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(ArrayList<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -424,17 +509,17 @@ namespace System.Grid.ArrayBased
 
             if (allowDuplicate)
             {
-                foreach (var value in this.data.Values)
+                for (var i = 0u; i < this.data.Count; i++)
                 {
-                    output.Add(value);
+                    output.Add(this.data.UnsafeValues[i]);
                 }
             }
             else
             {
-                foreach (var value in this.data.Values)
+                for (var i = 0u; i < this.data.Count; i++)
                 {
-                    if (!output.Contains(value))
-                        output.Add(value);
+                    if (!output.Contains(this.data.UnsafeValues[i]))
+                        output.Add(this.data.UnsafeValues[i]);
                 }
             }
         }
@@ -459,6 +544,7 @@ namespace System.Grid.ArrayBased
         public void GetValues(in GridIndex pivot, bool byRow, ArrayList<T> output, bool allowDuplicate = false)
             => GetValues(this.Size.IndexRange(pivot, byRow), output, allowDuplicate);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndexRange range, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -482,6 +568,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridRange range, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -505,6 +592,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(IEnumerable<GridIndex> indices, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (indices == null)
@@ -531,6 +619,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(IEnumerator<GridIndex> enumerator, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (enumerator == null)
@@ -561,6 +650,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValuesIn(ArrayList<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -568,17 +658,17 @@ namespace System.Grid.ArrayBased
 
             if (allowDuplicate)
             {
-                foreach (var value in this.data.Values)
+                for (var i = 0u; i < this.data.Count; i++)
                 {
-                    output.Add(in value);
+                    output.Add(in this.data.UnsafeValues[i]);
                 }
             }
             else
             {
-                foreach (var value in this.data.Values)
+                for (var i = 0u; i < this.data.Count; i++)
                 {
-                    if (!output.Contains(in value))
-                        output.Add(in value);
+                    if (!output.Contains(in this.data.UnsafeValues[i]))
+                        output.Add(in this.data.UnsafeValues[i]);
                 }
             }
         }
@@ -603,6 +693,7 @@ namespace System.Grid.ArrayBased
         public void GetValuesIn(in GridIndex pivot, bool byRow, ArrayList<T> output, bool allowDuplicate = false)
             => GetValuesIn(this.Size.IndexRange(pivot, byRow), output, allowDuplicate);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValuesIn(in GridIndexRange range, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -626,6 +717,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValuesIn(in GridRange range, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -649,6 +741,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValuesIn(IEnumerable<GridIndex> indices, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (indices == null)
@@ -675,6 +768,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValuesIn(IEnumerator<GridIndex> enumerator, ArrayList<T> output, bool allowDuplicate = false)
         {
             if (enumerator == null)
@@ -705,6 +799,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(ICollection<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -712,17 +807,17 @@ namespace System.Grid.ArrayBased
 
             if (allowDuplicate)
             {
-                foreach (var value in this.data.Values)
+                for (var i = 0u; i < this.data.Count; i++)
                 {
-                    output.Add(value);
+                    output.Add(this.data.UnsafeValues[i]);
                 }
             }
             else
             {
-                foreach (var value in this.data.Values)
+                for (var i = 0u; i < this.data.Count; i++)
                 {
-                    if (!output.Contains(value))
-                        output.Add(value);
+                    if (!output.Contains(this.data.UnsafeValues[i]))
+                        output.Add(this.data.UnsafeValues[i]);
                 }
             }
         }
@@ -747,6 +842,7 @@ namespace System.Grid.ArrayBased
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output, bool allowDuplicate = false)
             => GetValues(this.Size.IndexRange(pivot, byRow), output, allowDuplicate);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndexRange range, ICollection<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -770,6 +866,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridRange range, ICollection<T> output, bool allowDuplicate = false)
         {
             if (output == null)
@@ -793,6 +890,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output, bool allowDuplicate = false)
         {
             if (indices == null)
@@ -819,6 +917,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output, bool allowDuplicate = false)
         {
             if (enumerator == null)
@@ -901,14 +1000,15 @@ namespace System.Grid.ArrayBased
             return new GridValues(this, indices);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(ArrayList<GridValue<T>> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var kv in this.data)
+            for (var i = 0u; i < this.data.Count; i++)
             {
-                output.Add(new GridValue<T>(kv.Key, kv.Value));
+                output.Add(new GridValue<T>(this.data.UnsafeKeys[i].Key, this.data.UnsafeValues[i]));
             }
         }
 
@@ -932,6 +1032,7 @@ namespace System.Grid.ArrayBased
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ArrayList<GridValue<T>> output)
             => GetIndexedValues(this.Size.IndexRange(pivot, byRow), output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(in GridIndexRange range, ArrayList<GridValue<T>> output)
         {
             if (output == null)
@@ -946,6 +1047,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(in GridRange range, ArrayList<GridValue<T>> output)
         {
             if (output == null)
@@ -960,6 +1062,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(IEnumerable<GridIndex> indices, ArrayList<GridValue<T>> output)
         {
             if (indices == null)
@@ -977,6 +1080,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(IEnumerator<GridIndex> enumerator, ArrayList<GridValue<T>> output)
         {
             if (enumerator == null)
@@ -996,14 +1100,15 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(ICollection<GridValue<T>> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var kv in this.data)
+            for (var i = 0u; i < this.data.Count; i++)
             {
-                output.Add(new GridValue<T>(kv.Key, kv.Value));
+                output.Add(new GridValue<T>(this.data.UnsafeKeys[i].Key, this.data.UnsafeValues[i]));
             }
         }
 
@@ -1027,6 +1132,7 @@ namespace System.Grid.ArrayBased
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
             => GetIndexedValues(this.Size.IndexRange(pivot, byRow), output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -1041,6 +1147,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(in GridRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -1055,6 +1162,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(IEnumerable<GridIndex> indices, ICollection<GridValue<T>> output)
         {
             if (indices == null)
@@ -1072,6 +1180,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(IEnumerator<GridIndex> enumerator, ICollection<GridValue<T>> output)
         {
             if (enumerator == null)
@@ -1133,14 +1242,15 @@ namespace System.Grid.ArrayBased
         public GridIndexedValues GetIndexedValues(IEnumerator<GridIndex> indices)
             => new GridIndexedValues(this, indices);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(ArrayList<GridValue<T>> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var kv in this.data)
+            for (var i = 0u; i < this.data.Count; i++)
             {
-                output.Add(new GridValue<T>(kv.Key, in kv.Value));
+                output.Add(new GridValue<T>(this.data.UnsafeKeys[i].Key, in this.data.UnsafeValues[i]));
             }
         }
 
@@ -1164,6 +1274,7 @@ namespace System.Grid.ArrayBased
         public void GetIndexedValuesIn(in GridIndex pivot, bool byRow, ArrayList<GridValue<T>> output)
             => GetIndexedValuesIn(this.Size.IndexRange(pivot, byRow), output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(in GridIndexRange range, ArrayList<GridValue<T>> output)
         {
             if (output == null)
@@ -1178,6 +1289,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(in GridRange range, ArrayList<GridValue<T>> output)
         {
             if (output == null)
@@ -1192,6 +1304,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(IEnumerable<GridIndex> indices, ArrayList<GridValue<T>> output)
         {
             if (indices == null)
@@ -1209,6 +1322,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(IEnumerator<GridIndex> enumerator, ArrayList<GridValue<T>> output)
         {
             if (enumerator == null)
@@ -1228,14 +1342,15 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(ICollection<GridValue<T>> output)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
 
-            foreach (var kv in this.data)
+            for (var i = 0u; i < this.data.Count; i++)
             {
-                output.Add(new GridValue<T>(kv.Key, in kv.Value));
+                output.Add(new GridValue<T>(this.data.UnsafeKeys[i].Key, in this.data.UnsafeValues[i]));
             }
         }
 
@@ -1259,6 +1374,7 @@ namespace System.Grid.ArrayBased
         public void GetIndexedValuesIn(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
             => GetIndexedValuesIn(this.Size.IndexRange(pivot, byRow), output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(in GridIndexRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -1273,6 +1389,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(in GridRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -1287,6 +1404,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(IEnumerable<GridIndex> indices, ICollection<GridValue<T>> output)
         {
             if (indices == null)
@@ -1304,6 +1422,7 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValuesIn(IEnumerator<GridIndex> enumerator, ICollection<GridValue<T>> output)
         {
             if (enumerator == null)

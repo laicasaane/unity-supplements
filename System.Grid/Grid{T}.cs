@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
@@ -73,6 +73,10 @@ namespace System.Grid
             this.Size = source.Size;
             this.data = new Dictionary<GridIndex, T>(source.data);
         }
+
+        public Grid(in ReadGrid<T> source)
+            : this(source.GetSource())
+        { }
 
         protected Grid(SerializationInfo info, StreamingContext context)
         {
@@ -249,6 +253,7 @@ namespace System.Grid
         public void GetValues(ICollection<T> output)
             => GetValues(output, false);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(ICollection<T> output, bool allowDuplicate)
         {
             if (output == null)
@@ -327,6 +332,7 @@ namespace System.Grid
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output, bool allowDuplicate)
             => GetValues(this.Size.IndexRange(pivot, byRow), output, allowDuplicate);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndexRange range, ICollection<T> output, bool allowDuplicate)
         {
             if (output == null)
@@ -350,6 +356,7 @@ namespace System.Grid
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridRange range, ICollection<T> output, bool allowDuplicate)
         {
             if (output == null)
@@ -373,6 +380,7 @@ namespace System.Grid
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(IEnumerable<GridIndex> indices, ICollection<T> output, bool allowDuplicate)
         {
             if (indices == null)
@@ -399,6 +407,7 @@ namespace System.Grid
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(IEnumerator<GridIndex> enumerator, ICollection<T> output, bool allowDuplicate)
         {
             if (enumerator == null)
@@ -449,18 +458,21 @@ namespace System.Grid
         public GridValues GetValues(in GridIndex pivot, bool byRow)
             => GetValues(this.Size.IndexRange(pivot, byRow));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GridValues GetValues(in GridIndexRange range)
         {
             var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
             return new GridValues(this, enumerator);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GridValues GetValues(in GridRange range)
         {
             var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
             return new GridValues(this, enumerator);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GridValues GetValues(IEnumerable<GridIndex> indices)
         {
             if (indices == null)
@@ -469,6 +481,7 @@ namespace System.Grid
             return new GridValues(this, indices.GetEnumerator());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GridValues GetValues(IEnumerator<GridIndex> indices)
         {
             if (indices == null)
@@ -517,6 +530,7 @@ namespace System.Grid
         IGridValues<T> IReadOnlyGrid<T>.GetValues(IEnumerator<GridIndex> indices)
             => GetValues(indices);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -551,6 +565,7 @@ namespace System.Grid
         public void GetIndexedValues(in GridIndex pivot, bool byRow, ICollection<GridValue<T>> output)
             => GetIndexedValues(this.Size.IndexRange(pivot, byRow), output);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(in GridIndexRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -565,6 +580,7 @@ namespace System.Grid
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(in GridRange range, ICollection<GridValue<T>> output)
         {
             if (output == null)
@@ -579,6 +595,7 @@ namespace System.Grid
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(IEnumerable<GridIndex> indices, ICollection<GridValue<T>> output)
         {
             if (indices == null)
@@ -596,6 +613,7 @@ namespace System.Grid
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetIndexedValues(IEnumerator<GridIndex> enumerator, ICollection<GridValue<T>> output)
         {
             if (enumerator == null)
@@ -639,12 +657,14 @@ namespace System.Grid
         public GridIndexedValues GetIndexedValues(in GridIndex pivot, bool byRow)
             => GetIndexedValues(this.Size.IndexRange(pivot, byRow));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GridIndexedValues GetIndexedValues(in GridIndexRange range)
         {
             var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();
             return new GridIndexedValues(this, enumerator);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public GridIndexedValues GetIndexedValues(in GridRange range)
         {
             var enumerator = this.Size.ClampIndexRange(range).GetEnumerator();

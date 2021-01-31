@@ -9,9 +9,17 @@ namespace System.Collections.ArrayBased
     {
         private readonly ArrayList<T> source;
 
-        public uint Count => this.source.Count;
+        public uint Count
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.source.Count;
+        }
 
-        public uint Capacity => this.source.Capacity;
+        public uint Capacity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.source.Capacity;
+        }
 
         public RefReadArrayList(ArrayList<T> list)
         {
