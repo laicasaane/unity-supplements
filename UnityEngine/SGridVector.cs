@@ -108,6 +108,12 @@ namespace UnityEngine
         public static implicit operator SGridVector(in (int row, int column) value)
             => new SGridVector(value.row, value.column);
 
+        public static implicit operator SGridVector(in SGridIndex value)
+            => new SGridVector(value.Row, value.Column);
+
+        public static implicit operator SGridIndex(in SGridVector value)
+            => new SGridIndex(value.row, value.column);
+
         public static implicit operator SGridVector(in GridIndex value)
             => new SGridVector(value.Row, value.Column);
 
@@ -153,6 +159,21 @@ namespace UnityEngine
         public static SGridVector operator %(in SGridVector lhs, in SGridVector rhs)
             => new SGridVector(lhs.row % rhs.Row, lhs.column % rhs.Column);
 
+        public static SGridVector operator +(in SGridVector lhs, in SGridIndex rhs)
+            => new SGridVector(lhs.row + rhs.Row, lhs.column + rhs.Column);
+
+        public static SGridVector operator -(in SGridVector lhs, in SGridIndex rhs)
+            => new SGridVector(lhs.row - rhs.Row, lhs.column - rhs.Column);
+
+        public static SGridVector operator *(in SGridVector lhs, in SGridIndex rhs)
+            => new SGridVector(lhs.row * rhs.Row, lhs.column * rhs.Column);
+
+        public static SGridVector operator /(in SGridVector lhs, in SGridIndex rhs)
+            => new SGridVector(lhs.row / rhs.Row, lhs.column / rhs.Column);
+
+        public static SGridVector operator %(in SGridVector lhs, in SGridIndex rhs)
+            => new SGridVector(lhs.row % rhs.Row, lhs.column % rhs.Column);
+
         public static SGridVector operator +(in SGridVector lhs, GridVector rhs)
             => new SGridVector(lhs.row + rhs.Row, lhs.column + rhs.Column);
 
@@ -182,6 +203,21 @@ namespace UnityEngine
 
         public static SGridVector operator %(in SGridVector lhs, in GridIndex rhs)
             => new SGridVector(lhs.row % rhs.Row, lhs.column % rhs.Column);
+
+        public static SGridVector operator +(in SGridIndex lhs, in SGridVector rhs)
+            => new SGridVector(lhs.Row + rhs.row, lhs.Column + rhs.column);
+
+        public static SGridVector operator -(in SGridIndex lhs, in SGridVector rhs)
+            => new SGridVector(lhs.Row - rhs.row, lhs.Column - rhs.column);
+
+        public static SGridVector operator *(in SGridIndex lhs, in SGridVector rhs)
+            => new SGridVector(lhs.Row * rhs.row, lhs.Column * rhs.column);
+
+        public static SGridVector operator /(in SGridIndex lhs, in SGridVector rhs)
+            => new SGridVector(lhs.Row / rhs.row, lhs.Column / rhs.column);
+
+        public static SGridVector operator %(in SGridIndex lhs, in SGridVector rhs)
+            => new SGridVector(lhs.Row % rhs.Row, lhs.Column % rhs.Column);
 
         public static SGridVector operator +(GridVector lhs, in SGridVector rhs)
             => new SGridVector(lhs.Row + rhs.row, lhs.Column + rhs.column);
