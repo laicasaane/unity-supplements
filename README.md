@@ -288,6 +288,7 @@
 - [SingleLayer](./UnityEngine/SingleLayer.cs)
 - [SortingLayerId](./UnityEngine/SortingLayerId.cs)
 - [GridVector](./UnityEngine/GridVector.cs)
+- [SGridVector](./UnityEngine/SGridVector.cs)
 
 ## Unity.Collections
 
