@@ -222,6 +222,7 @@
 ## System.Grid
 
 - [GridIndex](./System.Grid/GridIndex.cs)
+- [SGridIndex](./System.Grid/SGridIndex.cs)
 - [GridIndexRange](./System.Grid/GridIndexRange.cs)
 - [GridIndexRange.Enumerator](./System.Grid/GridIndexRange.Enumerator.cs)
 - [GridRange](./System.Grid/GridRange.cs)
