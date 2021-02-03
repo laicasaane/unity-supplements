@@ -24,16 +24,9 @@ namespace UnityEditor
             }
 
             label = EditorGUI.BeginProperty(position, label, property);
-            var labelWidth = EditorGUIUtility.labelWidth;
-            Rect contentPosition = EditorGUI.PrefixLabel(position, label);
 
-            if (position.height > 16f)
-            {
-                position.height = 16f;
-                EditorGUI.indentLevel += 1;
-                contentPosition = EditorGUI.IndentedRect(position);
-                contentPosition.y += 18f;
-            }
+            var labelWidth = EditorGUIUtility.labelWidth;
+            var contentPosition = EditorGUI.PrefixLabel(position, label);
 
             contentPosition.width *= 0.5f;
             EditorGUI.indentLevel = 0;
