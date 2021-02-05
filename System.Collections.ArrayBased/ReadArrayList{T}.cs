@@ -76,32 +76,16 @@ namespace System.Collections.ArrayBased
             => GetSource().Contains(in item);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(in T item, IEqualityComparerIn<T> comparer)
-            => GetSource().Contains(in item, comparer);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Contains(T item)
             => GetSource().Contains(item);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(T item, IEqualityComparer<T> comparer)
-            => GetSource().Contains(item, comparer);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint? IndexOf(in T item)
             => GetSource().IndexOf(in item);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint? IndexOf(in T item, IEqualityComparerIn<T> comparer)
-            => GetSource().IndexOf(in item, comparer);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public uint? IndexOf(T item)
             => GetSource().IndexOf(item);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint? IndexOf(T item, IEqualityComparer<T> comparer)
-            => GetSource().IndexOf(item, comparer);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ref readonly T Peek()

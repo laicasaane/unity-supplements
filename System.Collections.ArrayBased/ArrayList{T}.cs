@@ -11,6 +11,8 @@ namespace System.Collections.ArrayBased
 {
     public partial class ArrayList<T> : IEnumerable<T>
     {
+        private readonly IEqualityComparerIn<T> comparer;
+
         private T[] buffer;
         private uint count;
 
@@ -27,39 +29,64 @@ namespace System.Collections.ArrayBased
         }
 
         public ArrayList()
+            : this(EqualityComparerIn<T>.Default)
         {
-            this.count = 0;
-            this.buffer = new T[0];
         }
 
-        public ArrayList(uint capacity)
+        public ArrayList(IEqualityComparerIn<T> comparer)
         {
+            this.comparer = comparer ?? EqualityComparerIn<T>.Default;
             this.count = 0;
-            this.buffer = new T[capacity];
+            this.buffer = new T[0];
         }
 
         public ArrayList(int capacity)
             : this((uint)capacity)
         { }
 
-        public ArrayList(params T[] source)
+        public ArrayList(uint capacity)
+            : this(capacity, EqualityComparerIn<T>.Default)
         {
+        }
+
+        public ArrayList(int capacity, IEqualityComparerIn<T> comparer)
+            : this((uint)capacity, comparer)
+        {
+        }
+
+        public ArrayList(uint capacity, IEqualityComparerIn<T> comparer)
+        {
+            this.comparer = comparer ?? EqualityComparerIn<T>.Default;
+            this.count = 0;
+            this.buffer = new T[capacity];
+        }
+
+        public ArrayList(params T[] source)
+            : this(EqualityComparerIn<T>.Default, source)
+        {
+        }
+
+        public ArrayList(IEqualityComparerIn<T> comparer, params T[] source)
+        {
+            this.comparer = comparer ?? EqualityComparerIn<T>.Default;
             this.buffer = new T[source.Length];
             Array.Copy(source, this.buffer, source.Length);
 
             this.count = (uint)source.Length;
         }
 
-        public ArrayList(T[] source, uint actualSize)
+        public ArrayList(T[] source, uint actualSize, IEqualityComparerIn<T> comparer = null)
         {
+            this.comparer = comparer ?? EqualityComparerIn<T>.Default;
             this.buffer = new T[actualSize];
             Array.Copy(source, this.buffer, actualSize);
 
             this.count = actualSize;
         }
 
-        public ArrayList(ICollection<T> source)
+        public ArrayList(ICollection<T> source, IEqualityComparerIn<T> comparer = null)
         {
+            this.comparer = comparer ?? EqualityComparerIn<T>.Default;
             this.buffer = new T[source.Count];
 
             source.CopyTo(this.buffer, 0);
@@ -67,44 +94,46 @@ namespace System.Collections.ArrayBased
             this.count = (uint)source.Count;
         }
 
-        public ArrayList(ICollection<T> source, int extraCapacity)
-            : this(source, (uint)extraCapacity)
+        public ArrayList(ICollection<T> source, int extraCapacity, IEqualityComparerIn<T> comparer = null)
+            : this(source, (uint)extraCapacity, comparer)
         { }
 
-        public ArrayList(ICollection<T> source, uint extraCapacity)
+        public ArrayList(ICollection<T> source, uint extraCapacity, IEqualityComparerIn<T> comparer = null)
         {
+            this.comparer = comparer ?? EqualityComparerIn<T>.Default;
             this.buffer = new T[(uint)source.Count + extraCapacity];
             source.CopyTo(this.buffer, 0);
 
             this.count = (uint)source.Count;
         }
 
-        public ArrayList(ArrayList<T> source)
-            : this(source, 0)
+        public ArrayList(ArrayList<T> source, IEqualityComparerIn<T> comparer = null)
+            : this(source, 0, comparer)
         { }
 
-        public ArrayList(ArrayList<T> source, int extraCapacity)
-            : this(source, (uint)extraCapacity)
+        public ArrayList(ArrayList<T> source, int extraCapacity, IEqualityComparerIn<T> comparer = null)
+            : this(source, (uint)extraCapacity, comparer)
         { }
 
-        public ArrayList(ArrayList<T> source, uint extraCapacity)
+        public ArrayList(ArrayList<T> source, uint extraCapacity, IEqualityComparerIn<T> comparer = null)
         {
+            this.comparer = comparer ?? source.comparer ?? EqualityComparerIn<T>.Default;
             this.buffer = new T[source.count + extraCapacity];
             source.CopyTo(this.buffer, 0);
 
             this.count = source.count;
         }
 
-        public ArrayList(in ReadArrayList<T> source)
-            : this(source.GetSource())
+        public ArrayList(in ReadArrayList<T> source, IEqualityComparerIn<T> comparer = null)
+            : this(source.GetSource(), comparer)
         { }
 
-        public ArrayList(in ReadArrayList<T> source, int extraCapacity)
-            : this(source.GetSource(), (uint)extraCapacity)
+        public ArrayList(in ReadArrayList<T> source, int extraCapacity, IEqualityComparerIn<T> comparer = null)
+            : this(source.GetSource(), (uint)extraCapacity, comparer)
         { }
 
-        public ArrayList(in ReadArrayList<T> source, uint extraCapacity)
-            : this(source.GetSource(), extraCapacity)
+        public ArrayList(in ReadArrayList<T> source, uint extraCapacity, IEqualityComparerIn<T> comparer = null)
+            : this(source.GetSource(), extraCapacity, comparer)
         { }
 
         public ref T this[int index]
@@ -184,10 +213,8 @@ namespace System.Collections.ArrayBased
 
         public bool Contains(T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (var index = 0u; index < this.count; index++)
-                if (comp.Equals(this.buffer[index], item))
+                if (this.comparer.Equals(this.buffer[index], item))
                     return true;
 
             return false;
@@ -195,34 +222,8 @@ namespace System.Collections.ArrayBased
 
         public bool Contains(in T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (var index = 0u; index < this.count; index++)
-                if (comp.Equals(this.buffer[index], item))
-                    return true;
-
-            return false;
-        }
-
-        public bool Contains(T item, IEqualityComparer<T> comparer)
-        {
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
-
-            for (var index = 0u; index < this.count; index++)
-                if (comparer.Equals(this.buffer[index], item))
-                    return true;
-
-            return false;
-        }
-
-        public bool Contains(in T item, IEqualityComparerIn<T> comparer)
-        {
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
-
-            for (var index = 0u; index < this.count; index++)
-                if (comparer.Equals(in this.buffer[index], in item))
+                if (this.comparer.Equals(in this.buffer[index], in item))
                     return true;
 
             return false;
@@ -230,10 +231,8 @@ namespace System.Collections.ArrayBased
 
         public uint? IndexOf(T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (var index = 0u; index < this.count; index++)
-                if (comp.Equals(this.buffer[index], item))
+                if (this.comparer.Equals(this.buffer[index], item))
                     return index;
 
             return null;
@@ -241,34 +240,8 @@ namespace System.Collections.ArrayBased
 
         public uint? IndexOf(in T item)
         {
-            var comp = EqualityComparer<T>.Default;
-
             for (var index = 0u; index < this.count; index++)
-                if (comp.Equals(this.buffer[index], item))
-                    return index;
-
-            return null;
-        }
-
-        public uint? IndexOf(T item, IEqualityComparer<T> comparer)
-        {
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
-
-            for (var index = 0u; index < this.count; index++)
-                if (comparer.Equals(this.buffer[index], item))
-                    return index;
-
-            return null;
-        }
-
-        public uint? IndexOf(in T item, IEqualityComparerIn<T> comparer)
-        {
-            if (comparer == null)
-                throw new ArgumentNullException(nameof(comparer));
-
-            for (var index = 0u; index < this.count; index++)
-                if (comparer.Equals(in this.buffer[index], in item))
+                if (this.comparer.Equals(in this.buffer[index], in item))
                     return index;
 
             return null;
