@@ -16,6 +16,8 @@ namespace System.Collections.ArrayBased
         private T[] buffer;
         private uint count;
 
+        public IEqualityComparerIn<T> Comparer => this.comparer;
+
         public uint Count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
