@@ -165,6 +165,7 @@
 ### Misc.
 - [Values\<T>](./System.Collections.Generic/Values.cs)
 - [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
+- [EqualityComparerIn\<T>](./System.Collections.Generic/EqualityComparerIn%7BT%7D.cs)
 
 ## System.Collections.ArrayBased
 
