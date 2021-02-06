@@ -277,7 +277,6 @@ namespace System.Collections.ArrayBased
             this.freeKVIndex = 0;
 
             Array.Clear(this.buckets, 0, this.buckets.Length);
-            Array.Clear(this.keys, 0, this.keys.Length);
         }
 
         public bool ContainsValue(TValue value)
