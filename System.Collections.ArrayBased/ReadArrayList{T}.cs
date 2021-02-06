@@ -1,7 +1,6 @@
 ﻿// Based on
 // https://github.com/sebas77/Svelto.Common/blob/master/DataStructures/Arrays/FasterReadOnlyList.cs
 
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace System.Collections.ArrayBased
@@ -31,13 +30,13 @@ namespace System.Collections.ArrayBased
         internal ArrayList<T> GetSource()
             => this.source ?? ArrayList<T>.Empty;
 
-        public ref T this[int index]
+        public ref readonly T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref GetSource()[index];
         }
 
-        public ref T this[uint index]
+        public ref readonly T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref GetSource()[index];

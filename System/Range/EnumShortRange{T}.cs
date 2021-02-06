@@ -253,7 +253,7 @@ namespace System
                         return false;
                     }
 
-                    this.current += (short)this.sign;
+                    this.current += this.sign;
                     return true;
                 }
 

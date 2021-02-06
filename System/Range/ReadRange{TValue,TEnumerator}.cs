@@ -4,9 +4,9 @@ using System.Runtime.Serialization;
 namespace System
 {
     [Serializable]
-    public readonly struct ReadRange<TValue, TEnumerator> : IRange<TValue>,
-                                                            IEquatableReadOnlyStruct<ReadRange<TValue, TEnumerator>>,
-                                                            ISerializable
+    public struct ReadRange<TValue, TEnumerator> : IRange<TValue>,
+                                                   IEquatableReadOnlyStruct<ReadRange<TValue, TEnumerator>>,
+                                                   ISerializable
         where TValue : struct
         where TEnumerator : struct, IRangeEnumerator<TValue>
     {
@@ -16,7 +16,7 @@ namespace System
 
         public bool IsFromEnd { get; }
 
-        private readonly TEnumerator enumerator;
+        private TEnumerator enumerator;
 
         public ReadRange(TValue start, TValue end)
         {

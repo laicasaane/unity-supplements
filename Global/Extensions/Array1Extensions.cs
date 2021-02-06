@@ -7,7 +7,7 @@ public static class Array1Extensions
         => self != null && index >= 0 && index < self.Length;
 
     public static bool ValidateIndex<T>(this T[] self, uint index)
-        => self != null && index >= 0 && index < self.LongLength;
+        => self != null && index < self.LongLength;
 
     public static bool ValidateIndex<T>(this T[] self, long index)
         => self != null && index >= 0 && index < self.LongLength;
@@ -110,7 +110,17 @@ public static class Array1Extensions
         => self.Set(0, source);
 
     public static void Set<T>(this T[] self, int startIndex, IReadOnlyList<T> source)
-        => self.Set(startIndex, source.AsSegment());
+    {
+        if (self == null || source == null)
+            return;
+
+        var length = Math.Min(self.Length, source.Count);
+
+        for (var i = startIndex; i < length; i++)
+        {
+            self[i] = source[i];
+        }
+    }
 
     public static void Set<T>(this T[] self, in Segment<T> source)
         => self.Set(0, in source);

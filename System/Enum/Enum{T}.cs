@@ -1,14 +1,11 @@
 ﻿namespace System
 {
-    public static partial class Enum<T> where T : unmanaged, Enum
+    public static class Enum<T> where T : unmanaged, Enum
     {
-        public static Type Type { get; }
-
-        public static Type UnderlyingType { get; }
-
-        public static ReadArray1<T> Values { get; }
-
-        public static ReadArray1<string> Names { get; }
+        public static readonly Type Type;
+        public static readonly Type UnderlyingType;
+        public static readonly ReadArray1<T> Values;
+        public static readonly ReadArray1<string> Names;
 
         static Enum()
         {

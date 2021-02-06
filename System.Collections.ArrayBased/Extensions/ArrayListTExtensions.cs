@@ -8,7 +8,7 @@ namespace System.Collections.ArrayBased
             => self != null && index >= 0 && index < self.Count;
 
         public static bool ValidateIndex<T>(this ArrayList<T> self, uint index)
-            => self != null && index >= 0 && index < self.Count;
+            => self != null && index < self.Count;
 
         public static ReadArrayList<T> AsReadArrayList<T>(this ArrayList<T> self)
             => self;
@@ -122,7 +122,7 @@ namespace System.Collections.ArrayBased
             {
                 for (var i = 0u; i < source.Count; i++)
                 {
-                    ref var item = ref source[i];
+                    var item = source[i];
 
                     if (allowNull || item != null)
                         self.Add(item);
@@ -133,7 +133,7 @@ namespace System.Collections.ArrayBased
 
             for (var i = 0u; i < source.Count; i++)
             {
-                ref var item = ref source[i];
+                var item = source[i];
 
                 if ((allowNull || item != null) && !self.Contains(item))
                     self.Add(item);
@@ -149,7 +149,7 @@ namespace System.Collections.ArrayBased
             {
                 for (var i = 0u; i < source.Count; i++)
                 {
-                    ref var item = ref source[i];
+                    var item = source[i];
 
                     if (allowNull || item != null)
                         self.Add(in item);
@@ -160,7 +160,7 @@ namespace System.Collections.ArrayBased
 
             for (var i = 0u; i < source.Count; i++)
             {
-                ref var item = ref source[i];
+                var item = source[i];
 
                 if ((allowNull || item != null) && !self.Contains(in item))
                     self.Add(in item);
@@ -437,7 +437,7 @@ namespace System.Collections.ArrayBased
             => self.GetRange(offset, -1, output, allowDuplicate, allowNull);
 
         public static void GetRange<T>(this ArrayList<T> self, uint offset, uint count, ArrayList<T> output, bool allowDuplicate = true, bool allowNull = false)
-            => self.GetRange((long)offset, (long)count, output, allowDuplicate, allowNull);
+            => self.GetRange(offset, (long)count, output, allowDuplicate, allowNull);
 
         private static void GetRange<T>(this ArrayList<T> self, long offset, long count, ArrayList<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
@@ -494,7 +494,7 @@ namespace System.Collections.ArrayBased
             => self.GetRangeIn(offset, -1, output, allowDuplicate, allowNull);
 
         public static void GetRangeIn<T>(this ArrayList<T> self, uint offset, uint count, ArrayList<T> output, bool allowDuplicate = true, bool allowNull = false)
-            => self.GetRangeIn((long)offset, (long)count, output, allowDuplicate, allowNull);
+            => self.GetRangeIn(offset, (long)count, output, allowDuplicate, allowNull);
 
         private static void GetRangeIn<T>(this ArrayList<T> self, long offset, long count, ArrayList<T> output, bool allowDuplicate = true, bool allowNull = false)
         {
@@ -551,7 +551,7 @@ namespace System.Collections.ArrayBased
             => self.GetRange(offset, -1, output, allowDuplicate, allowNull);
 
         public static void GetRange<T>(this ArrayList<T> self, uint offset, uint count, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
-            => self.GetRange((long)offset, (long)count, output, allowDuplicate, allowNull);
+            => self.GetRange(offset, (long)count, output, allowDuplicate, allowNull);
 
         private static void GetRange<T>(this ArrayList<T> self, long offset, long count, ICollection<T> output, bool allowDuplicate = true, bool allowNull = false)
         {

@@ -26,13 +26,13 @@ namespace System.Collections.ArrayBased
             this.source = list;
         }
 
-        public ref T this[int index]
+        public ref readonly T this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref this.source[index];
         }
 
-        public ref T this[uint index]
+        public ref readonly T this[uint index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => ref this.source[index];

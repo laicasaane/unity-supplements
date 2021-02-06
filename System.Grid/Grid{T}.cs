@@ -92,6 +92,7 @@ namespace System.Grid
                 }
                 catch
                 {
+                    // ignored
                 }
             }
         }
@@ -278,23 +279,23 @@ namespace System.Grid
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, int extend, ICollection<T> output)
-            => GetValues(pivot, extend, output);
+            => GetValues(this.Size.IndexRange(pivot, extend), output);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, int lowerExtend, int upperExtend, ICollection<T> output)
-            => GetValues(pivot, lowerExtend, upperExtend, output);
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, in GridIndex extend, ICollection<T> output)
-            => GetValues(pivot, extend, output);
+            => GetValues(this.Size.IndexRange(pivot, extend), output);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, in GridIndex lowerExtend, in GridIndex upperExtend, ICollection<T> output)
-            => GetValues(pivot, lowerExtend, upperExtend, output);
+            => GetValues(this.Size.IndexRange(pivot, lowerExtend, upperExtend), output);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndex pivot, bool byRow, ICollection<T> output)
-            => GetValues(pivot, byRow, output);
+            => GetValues(this.Size.IndexRange(pivot, byRow), output);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void GetValues(in GridIndexRange range, ICollection<T> output)
@@ -538,7 +539,7 @@ namespace System.Grid
 
             foreach (var (index, value) in this.data)
             {
-                var data = new GridValue<T>(index, value);
+                var data = new GridValue<T>(in index, value);
 
                 if (!output.Contains(data))
                     output.Add(data);
@@ -576,7 +577,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -591,7 +592,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -609,7 +610,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -629,7 +630,7 @@ namespace System.Grid
                 if (!this.data.TryGetValue(index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 

@@ -147,6 +147,7 @@ namespace System.Grid.ArrayBased
                 }
                 catch
                 {
+                    // ignore
                 }
             }
 
@@ -1012,7 +1013,7 @@ namespace System.Grid.ArrayBased
 
             for (var i = 0u; i < this.data.Count; i++)
             {
-                output.Add(new GridValue<T>(this.data.UnsafeKeys[i].Key, this.data.UnsafeValues[i]));
+                output.Add(new GridValue<T>(in this.data.UnsafeKeys[i].Key, this.data.UnsafeValues[i]));
             }
         }
 
@@ -1047,7 +1048,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1062,7 +1063,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1080,7 +1081,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1100,7 +1101,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1112,7 +1113,7 @@ namespace System.Grid.ArrayBased
 
             for (var i = 0u; i < this.data.Count; i++)
             {
-                output.Add(new GridValue<T>(this.data.UnsafeKeys[i].Key, this.data.UnsafeValues[i]));
+                output.Add(new GridValue<T>(in this.data.UnsafeKeys[i].Key, this.data.UnsafeValues[i]));
             }
         }
 
@@ -1147,7 +1148,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1162,7 +1163,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1180,7 +1181,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 
@@ -1200,7 +1201,7 @@ namespace System.Grid.ArrayBased
                 if (!this.data.TryGetValue(in index, out var value))
                     continue;
 
-                output.Add(new GridValue<T>(index, value));
+                output.Add(new GridValue<T>(in index, value));
             }
         }
 

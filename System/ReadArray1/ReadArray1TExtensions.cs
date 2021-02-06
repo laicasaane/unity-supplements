@@ -8,7 +8,7 @@ namespace System
            => self != null && index >= 0 && index < self.Length;
 
         public static bool ValidateIndex<T>(in this ReadArray1<T> self, uint index)
-           => self != null && index >= 0 && index < self.LongLength;
+           => self != null && index < self.LongLength;
 
         public static bool ValidateIndex<T>(in this ReadArray1<T> self, long index)
            => self != null && index >= 0 && index < self.LongLength;

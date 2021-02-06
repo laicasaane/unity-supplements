@@ -28,10 +28,13 @@ namespace System.Grid
         }
 
         public GridValue<T> With(in GridIndex Index)
-            => new GridValue<T>(Index, this.Value);
+            => new GridValue<T>(in Index, this.Value);
 
         public GridValue<T> With(T Value)
-            => new GridValue<T>(this.Index, Value);
+            => new GridValue<T>(in this.Index, Value);
+
+        public GridValue<T> With(in T Value)
+            => new GridValue<T>(this.Index, in Value);
 
         public override bool Equals(object obj)
             => obj is GridValue<T> other &&
@@ -70,9 +73,12 @@ namespace System.Grid
         }
 
         public static implicit operator GridValue<T>(in KeyValuePair<GridIndex, T> kvp)
-            => new GridValue<T>(kvp.Key, kvp.Value);
+        {
+            var gridIndex = kvp.Key;
+            return new GridValue<T>(in gridIndex, kvp.Value);
+        }
 
         public static implicit operator GridValue<T>(in (GridIndex Index, T Value) kvp)
-            => new GridValue<T>(kvp.Index, kvp.Value);
+            => new GridValue<T>(in kvp.Index, kvp.Value);
     }
 }

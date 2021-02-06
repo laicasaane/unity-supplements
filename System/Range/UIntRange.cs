@@ -124,7 +124,6 @@ namespace System
             => Normal(this.Start, this.End);
 
         /// <summary>
-        /// <summary>
         /// Create a normal range from (a, b) where <see cref="Start"/> is lesser than <see cref="End"/>.
         /// </summary>
         public static UIntRange Normal(uint a, uint b)

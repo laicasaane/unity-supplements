@@ -15,7 +15,7 @@ namespace System
 
         private static class Instance
         {
-            private readonly static Dictionary<Type, object> _instances
+            private static readonly Dictionary<Type, object> _instances
                    = new Dictionary<Type, object>();
 
             public static void Set<T>(T instance) where T : class

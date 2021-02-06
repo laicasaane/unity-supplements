@@ -84,7 +84,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static Segment<T> AsSegment<T>(this IReadOnlyList<T> source, int offset = 0)
             => source == null ? Segment<T>.Empty : new Segment<T>(source, offset, source.Count - offset);
 
@@ -93,7 +93,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static Segment<T> AsSegment<T>(this IList<T> source, int offset = 0)
             => source == null ? Segment<T>.Empty : new Segment<T>(source, offset, source.Count - offset);
 
@@ -102,7 +102,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static ListSegment<T> AsSegment<T>(this List<T> source, int offset = 0)
             => source == null ? ListSegment<T>.Empty : new ListSegment<T>(source, offset, source.Count - offset);
 
@@ -111,7 +111,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static ListSegment<T> AsSegment<T>(in this ReadList<T> source, int offset = 0)
             => new ListSegment<T>(source, offset, source.Count - offset);
 
@@ -120,7 +120,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static Segment<T> AsSegment<T>(this ISegmentSource<T> source, int offset = 0)
             => source == null ? Segment<T>.Empty : new Segment<T>(source, offset, source.Count - offset);
 
@@ -129,7 +129,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static Array1Segment<T> AsSegment<T>(this T[] source, int offset = 0)
             => source == null ? Array1Segment<T>.Empty : new Array1Segment<T>(source, offset, source.Length - offset);
 
@@ -138,7 +138,7 @@
         /// </summary>
         /// <typeparam name="T">The type of elements contained in the source.</typeparam>
         /// <param name="source">The source.</param>
-        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</returns>
+        /// <param name="offset">The offset in this source where the segment begins. Defaults to <c>0</c> (the beginning of the source). Must be in the range <c>[0, <paramref name="source"/>.Count]</c>.</param>
         public static Array1Segment<T> AsSegment<T>(in this ReadArray1<T> source, int offset = 0)
             => new Array1Segment<T>(source, offset, source.Length - offset);
     }

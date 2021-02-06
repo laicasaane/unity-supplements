@@ -28,7 +28,7 @@ namespace System.Grid
             IEnumerator IEnumerable.GetEnumerator()
                 => GetEnumerator();
 
-            public struct Enumerator : IGridIndexedValueEnumerator<T>
+            public readonly struct Enumerator : IGridIndexedValueEnumerator<T>
             {
                 private readonly ReadDictionary<GridIndex, T> source;
                 private readonly IEnumerator<GridIndex> enumerator;
@@ -51,7 +51,7 @@ namespace System.Grid
                     {
                         var key = this.enumerator.Current;
                         this.source.TryGetValue(key, out var value);
-                        return new GridValue<T>(key, value);
+                        return new GridValue<T>(in key, value);
                     }
                 }
 

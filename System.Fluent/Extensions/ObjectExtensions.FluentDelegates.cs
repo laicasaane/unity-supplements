@@ -1,6 +1,6 @@
 ﻿namespace System.Fluent
 {
-    public static partial class ObjectExtensions
+    public static class ObjectExtensions
     {
         public static T Action<T>(this T self, Action action)
         {
