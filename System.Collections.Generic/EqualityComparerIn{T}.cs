@@ -1,19 +1,15 @@
 ﻿namespace System.Collections.Generic
 {
-    public class EqualityComparerIn<T> : IEqualityComparerIn<T>
+    public abstract partial  class EqualityComparerIn<T> : IEqualityComparerIn<T>
     {
-        public bool Equals(in T x, in T y)
-            => x.Equals(y);
+        public abstract bool Equals(in T x, in T y);
 
-        public bool Equals(T x, T y)
-            => x.Equals(y);
+        public abstract bool Equals(T x, T y);
 
-        public int GetHashCode(in T obj)
-            => obj.GetHashCode();
+        public abstract int GetHashCode(in T obj);
 
-        public int GetHashCode(T obj)
-            => obj.GetHashCode();
+        public abstract int GetHashCode(T obj);
 
-        public static EqualityComparerIn<T> Default { get; } = new EqualityComparerIn<T>();
+        public static EqualityComparerIn<T> Default { get; } = CreateComparer();
     }
 }
