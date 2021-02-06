@@ -1,4 +1,4 @@
-﻿// Based on
+// Based on
 // https://github.com/sebas77/Svelto.Common/blob/master/DataStructures/Dictionaries/FasterDictionary.cs
 // https://github.com/sebas77/Svelto.Common/blob/master/DataStructures/Dictionaries/FasterDictionaryNode.cs
 
@@ -22,7 +22,7 @@ namespace System.Collections.ArrayBased
         private Node[] keys;
         private TValue[] values;
         private int[] buckets;
-        private uint freeValueCellIndex;
+        private uint freeKVIndex;
         private uint collisions;
 
         public TValue this[TKey key]
@@ -48,7 +48,7 @@ namespace System.Collections.ArrayBased
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                if (index >= this.freeValueCellIndex)
+                if (index >= this.freeKVIndex)
                     throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
                 return new KeyValuePair<TKey, TValue>(this.keys[index], this.values[index]);
@@ -60,7 +60,7 @@ namespace System.Collections.ArrayBased
         public uint Count
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => this.freeValueCellIndex;
+            get => this.freeKVIndex;
         }
 
         public Node[] UnsafeKeys
@@ -137,7 +137,7 @@ namespace System.Collections.ArrayBased
             this.buckets = new int[source.buckets.Length];
             Array.Copy(source.buckets, this.buckets, this.buckets.Length);
 
-            this.freeValueCellIndex = source.freeValueCellIndex;
+            this.freeKVIndex = source.freeKVIndex;
             this.collisions = source.collisions;
         }
 
@@ -176,7 +176,7 @@ namespace System.Collections.ArrayBased
             if (array.Length - arrayIndex < this.Count)
                 throw new ArgumentException("The number of elements in the source is greater than the available space from index to the end of the destination array.");
 
-            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            for (var i = 0u; i < this.freeKVIndex; i++)
             {
                 array[arrayIndex++] = new KeyValuePair<TKey, TValue>(this.keys[i].Key, this.values[i]);
             }
@@ -197,7 +197,7 @@ namespace System.Collections.ArrayBased
             if (array.Length - arrayIndex < this.Count)
                 throw new ArgumentException("The number of elements in the source is greater than the available space from index to the end of the destination array.");
 
-            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            for (var i = 0u; i < this.freeKVIndex; i++)
             {
                 array[arrayIndex++] = this.keys[i].Key;
             }
@@ -211,14 +211,14 @@ namespace System.Collections.ArrayBased
 
         public Node[] GetKeysArray(out uint count)
         {
-            count = this.freeValueCellIndex;
+            count = this.freeKVIndex;
 
             return this.keys;
         }
 
         public TValue[] GetValuesArray(out uint count)
         {
-            count = this.freeValueCellIndex;
+            count = this.freeKVIndex;
 
             return this.values;
         }
@@ -261,9 +261,9 @@ namespace System.Collections.ArrayBased
 
         public void Clear()
         {
-            if (this.freeValueCellIndex == 0) return;
+            if (this.freeKVIndex == 0) return;
 
-            this.freeValueCellIndex = 0;
+            this.freeKVIndex = 0;
 
             Array.Clear(this.buckets, 0, this.buckets.Length);
             Array.Clear(this.values, 0, this.values.Length);
@@ -272,9 +272,9 @@ namespace System.Collections.ArrayBased
 
         public void ShallowClear()
         {
-            if (this.freeValueCellIndex == 0) return;
+            if (this.freeKVIndex == 0) return;
 
-            this.freeValueCellIndex = 0;
+            this.freeKVIndex = 0;
 
             Array.Clear(this.buckets, 0, this.buckets.Length);
             Array.Clear(this.keys, 0, this.keys.Length);
@@ -287,7 +287,7 @@ namespace System.Collections.ArrayBased
 
             var comparer = EqualityComparerIn<TValue>.Default;
 
-            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            for (var i = 0u; i < this.freeKVIndex; i++)
             {
                 if (comparer.Equals(this.values[i], value))
                     return true;
@@ -304,7 +304,7 @@ namespace System.Collections.ArrayBased
             if (value == null)
                 return false;
 
-            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            for (var i = 0u; i < this.freeKVIndex; i++)
             {
                 if (comparer.Equals(this.values[i], value))
                     return true;
@@ -320,7 +320,7 @@ namespace System.Collections.ArrayBased
 
             var comparer = EqualityComparerIn<TValue>.Default;
 
-            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            for (var i = 0u; i < this.freeKVIndex; i++)
             {
                 if (comparer.Equals(in this.values[i], in value))
                     return true;
@@ -337,7 +337,7 @@ namespace System.Collections.ArrayBased
             if (value == null)
                 return false;
 
-            for (var i = 0u; i < this.freeValueCellIndex; i++)
+            for (var i = 0u; i < this.freeKVIndex; i++)
             {
                 if (comparer.Equals(in this.values[i], in value))
                     return true;
@@ -354,7 +354,7 @@ namespace System.Collections.ArrayBased
 
         public bool TryGetValue(TKey key, out TValue result)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 result = this.values[findIndex];
                 return true;
@@ -366,7 +366,7 @@ namespace System.Collections.ArrayBased
 
         public bool TryGetValue(in TKey key, out TValue result)
         {
-            if (TryGetIndex(in key, out var findIndex) == true)
+            if (TryGetIndex(in key, out var findIndex))
             {
                 result = this.values[findIndex];
                 return true;
@@ -378,7 +378,7 @@ namespace System.Collections.ArrayBased
 
         public void GetAt(uint index, out TKey key, out TValue value)
         {
-            if (index >= this.freeValueCellIndex)
+            if (index >= this.freeKVIndex)
                 throw ThrowHelper.GetArgumentOutOfRange_IndexException();
 
             key = this.keys[index];
@@ -387,7 +387,7 @@ namespace System.Collections.ArrayBased
 
         public bool TryGetAt(uint index, out TKey key, out TValue value)
         {
-            if (index >= this.freeValueCellIndex)
+            if (index >= this.freeKVIndex)
             {
                 key = default;
                 value = default;
@@ -411,7 +411,7 @@ namespace System.Collections.ArrayBased
         // TODO: can be optimized
         public ref TValue GetOrCreate(TKey key)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -423,7 +423,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetOrCreate(TKey key, Func<TValue> builder)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -435,7 +435,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetOrCreate<T>(TKey key, RefFunc<T, TValue> builder, ref T parameter)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -447,7 +447,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetOrCreate(in TKey key)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -459,7 +459,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetOrCreate(in TKey key, Func<TValue> builder)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -471,7 +471,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetOrCreate<T>(in TKey key, RefFunc<T, TValue> builder, ref T parameter)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -483,7 +483,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetValueByRef(TKey key)
         {
-            if (TryGetIndex(key, out var findIndex) == true)
+            if (TryGetIndex(key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -493,7 +493,7 @@ namespace System.Collections.ArrayBased
 
         public ref TValue GetValueByRef(in TKey key)
         {
-            if (TryGetIndex(in key, out var findIndex) == true)
+            if (TryGetIndex(in key, out var findIndex))
             {
                 return ref this.values[findIndex];
             }
@@ -526,8 +526,8 @@ namespace System.Collections.ArrayBased
 
         public void Trim()
         {
-            Array.Resize(ref this.values, (int)Math.Max(this.freeValueCellIndex, 1));
-            Array.Resize(ref this.keys, (int)Math.Max(this.freeValueCellIndex, 1));
+            Array.Resize(ref this.keys, (int)Math.Max(this.freeKVIndex, 1));
+            Array.Resize(ref this.values, (int)Math.Max(this.freeKVIndex, 1));
         }
 
         private bool AddValue(TKey key, TValue value, out uint indexSet)
@@ -535,46 +535,48 @@ namespace System.Collections.ArrayBased
             var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
-            if (this.freeValueCellIndex == this.values.Length)
+            if (this.freeKVIndex == this.values.Length)
             {
-                var expandPrime = HashHelpers.ExpandPrime((int)this.freeValueCellIndex);
+                var expandPrime = HashHelpers.ExpandPrime((int)this.freeKVIndex);
 
                 Array.Resize(ref this.values, expandPrime);
                 Array.Resize(ref this.keys, expandPrime);
             }
 
             //buckets value -1 means it's empty
-            var valueIndex = this.buckets[bucketIndex] - 1;
+            var kvIndex = this.buckets[bucketIndex] - 1;
 
-            if (valueIndex == -1)
+            if (kvIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                this.keys[this.freeValueCellIndex] = new Node(key, hash);
+                this.keys[this.freeKVIndex] = new Node(key, hash);
             else //collision or already exists
             {
-                var currentValueIndex = valueIndex;
+                var currentKVIndex = kvIndex;
+
                 do
                 {
                     //must check if the key already exists in the dictionary
-                    //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                    ref var node = ref this.keys[currentValueIndex];
-                    if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
+                    ref var node = ref this.keys[currentKVIndex];
+
+                    if (node.Hash == hash && this.comparer.Equals(node.Key, key))
                     {
                         //the key already exists, simply replace the value!
-                        this.values[currentValueIndex] = value;
-                        indexSet = (uint)currentValueIndex;
+                        this.values[currentKVIndex] = value;
+                        indexSet = (uint)currentKVIndex;
                         return false;
                     }
 
-                    currentValueIndex = node.Previous;
-                } while (currentValueIndex != -1); //-1 means no more values with key with the same hash
+                    currentKVIndex = node.Previous;
+                }
+                while (currentKVIndex != -1); //-1 means no more values with key with the same hash
 
                 //oops collision!
                 this.collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                this.keys[this.freeValueCellIndex] = new Node(key, hash, valueIndex);
+                this.keys[this.freeKVIndex] = new Node(key, hash, kvIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                this.keys[valueIndex].Next = (int)this.freeValueCellIndex;
+                this.keys[kvIndex].Next = (int)this.freeKVIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -583,12 +585,12 @@ namespace System.Collections.ArrayBased
             //item with this bucketIndex will point to the last value created
             //TODO: if instead I assume that the original one is the one in the bucket
             //I wouldn't need to update the bucket here. Small optimization but important
-            this.buckets[bucketIndex] = (int)(this.freeValueCellIndex + 1);
+            this.buckets[bucketIndex] = (int)(this.freeKVIndex + 1);
 
-            this.values[this.freeValueCellIndex] = value;
-            indexSet = this.freeValueCellIndex;
+            this.values[this.freeKVIndex] = value;
+            indexSet = this.freeKVIndex;
 
-            this.freeValueCellIndex++;
+            this.freeKVIndex++;
 
             //too many collisions?
             if (this.collisions > this.buckets.Length)
@@ -600,31 +602,31 @@ namespace System.Collections.ArrayBased
 
                 //we need to get all the hash code of all the values stored so far and spread them over the new bucket
                 //length
-                for (var newValueIndex = 0; newValueIndex < this.freeValueCellIndex; newValueIndex++)
+                for (var newKVIndex = 0; newKVIndex < this.freeKVIndex; newKVIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    ref var node = ref this.keys[newValueIndex];
+                    ref var node = ref this.keys[newKVIndex];
                     bucketIndex = Reduce((uint)node.Hash, (uint)this.buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
                     //In this way we can rebuild the linkedlist.
-                    //get the current valueIndex, it's -1 if no collision happens
-                    var existingValueIndex = this.buckets[bucketIndex] - 1;
+                    //get the current kvIndex, it's -1 if no collision happens
+                    var existingKVIndex = this.buckets[bucketIndex] - 1;
                     //update the bucket index to the index of the current item that share the bucketIndex
                     //(last found is always the one in the bucket)
-                    this.buckets[bucketIndex] = newValueIndex + 1;
-                    if (existingValueIndex != -1)
+                    this.buckets[bucketIndex] = newKVIndex + 1;
+                    if (existingKVIndex != -1)
                     {
                         //oops a value was already being pointed by this cell in the new bucket list,
                         //it means there is a collision, problem
                         this.collisions++;
                         //the bucket will point to this value, so
                         //the previous index will be used as previous for the new value.
-                        node.Previous = existingValueIndex;
+                        node.Previous = existingKVIndex;
                         node.Next = -1;
                         //and update the previous next index to the new one
-                        this.keys[existingValueIndex].Next = newValueIndex;
+                        this.keys[existingKVIndex].Next = newKVIndex;
                     }
                     else
                     {
@@ -644,46 +646,45 @@ namespace System.Collections.ArrayBased
             var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
-            if (this.freeValueCellIndex == this.values.Length)
+            if (this.freeKVIndex == this.values.Length)
             {
-                var expandPrime = HashHelpers.ExpandPrime((int)this.freeValueCellIndex);
+                var expandPrime = HashHelpers.ExpandPrime((int)this.freeKVIndex);
 
                 Array.Resize(ref this.values, expandPrime);
                 Array.Resize(ref this.keys, expandPrime);
             }
 
             //buckets value -1 means it's empty
-            var valueIndex = this.buckets[bucketIndex] - 1;
+            var kvIndex = this.buckets[bucketIndex] - 1;
 
-            if (valueIndex == -1)
+            if (kvIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                this.keys[this.freeValueCellIndex] = new Node(in key, hash);
+                this.keys[this.freeKVIndex] = new Node(in key, hash);
             else //collision or already exists
             {
-                var currentValueIndex = valueIndex;
+                var currentKVIndex = kvIndex;
                 do
                 {
                     //must check if the key already exists in the dictionary
-                    //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                    ref var node = ref this.keys[currentValueIndex];
-                    if (node.Hash == hash && this.comparer.Equals(in node.Key, in key) == true)
+                    ref var node = ref this.keys[currentKVIndex];
+                    if (node.Hash == hash && this.comparer.Equals(in node.Key, in key))
                     {
                         //the key already exists, simply replace the value!
-                        this.values[currentValueIndex] = value;
-                        indexSet = (uint)currentValueIndex;
+                        this.values[currentKVIndex] = value;
+                        indexSet = (uint)currentKVIndex;
                         return false;
                     }
 
-                    currentValueIndex = node.Previous;
-                } while (currentValueIndex != -1); //-1 means no more values with key with the same hash
+                    currentKVIndex = node.Previous;
+                } while (currentKVIndex != -1); //-1 means no more values with key with the same hash
 
                 //oops collision!
                 this.collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                this.keys[this.freeValueCellIndex] = new Node(in key, hash, valueIndex);
+                this.keys[this.freeKVIndex] = new Node(in key, hash, kvIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                this.keys[valueIndex].Next = (int)this.freeValueCellIndex;
+                this.keys[kvIndex].Next = (int)this.freeKVIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -692,12 +693,12 @@ namespace System.Collections.ArrayBased
             //item with this bucketIndex will point to the last value created
             //TODO: if instead I assume that the original one is the one in the bucket
             //I wouldn't need to update the bucket here. Small optimization but important
-            this.buckets[bucketIndex] = (int)(this.freeValueCellIndex + 1);
+            this.buckets[bucketIndex] = (int)(this.freeKVIndex + 1);
 
-            this.values[this.freeValueCellIndex] = value;
-            indexSet = this.freeValueCellIndex;
+            this.values[this.freeKVIndex] = value;
+            indexSet = this.freeKVIndex;
 
-            this.freeValueCellIndex++;
+            this.freeKVIndex++;
 
             //too many collisions?
             if (this.collisions > this.buckets.Length)
@@ -709,31 +710,31 @@ namespace System.Collections.ArrayBased
 
                 //we need to get all the hash code of all the values stored so far and spread them over the new bucket
                 //length
-                for (var newValueIndex = 0; newValueIndex < this.freeValueCellIndex; newValueIndex++)
+                for (var newKVIndex = 0; newKVIndex < this.freeKVIndex; newKVIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    ref var node = ref this.keys[newValueIndex];
+                    ref var node = ref this.keys[newKVIndex];
                     bucketIndex = Reduce((uint)node.Hash, (uint)this.buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
                     //In this way we can rebuild the linkedlist.
-                    //get the current valueIndex, it's -1 if no collision happens
-                    var existingValueIndex = this.buckets[bucketIndex] - 1;
+                    //get the current kvIndex, it's -1 if no collision happens
+                    var existingKVIndex = this.buckets[bucketIndex] - 1;
                     //update the bucket index to the index of the current item that share the bucketIndex
                     //(last found is always the one in the bucket)
-                    this.buckets[bucketIndex] = newValueIndex + 1;
-                    if (existingValueIndex != -1)
+                    this.buckets[bucketIndex] = newKVIndex + 1;
+                    if (existingKVIndex != -1)
                     {
                         //oops a value was already being pointed by this cell in the new bucket list,
                         //it means there is a collision, problem
                         this.collisions++;
                         //the bucket will point to this value, so
                         //the previous index will be used as previous for the new value.
-                        node.Previous = existingValueIndex;
+                        node.Previous = existingKVIndex;
                         node.Next = -1;
                         //and update the previous next index to the new one
-                        this.keys[existingValueIndex].Next = newValueIndex;
+                        this.keys[existingKVIndex].Next = newKVIndex;
                     }
                     else
                     {
@@ -753,46 +754,45 @@ namespace System.Collections.ArrayBased
             var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
-            if (this.freeValueCellIndex == this.values.Length)
+            if (this.freeKVIndex == this.values.Length)
             {
-                var expandPrime = HashHelpers.ExpandPrime((int)this.freeValueCellIndex);
+                var expandPrime = HashHelpers.ExpandPrime((int)this.freeKVIndex);
 
                 Array.Resize(ref this.values, expandPrime);
                 Array.Resize(ref this.keys, expandPrime);
             }
 
             //buckets value -1 means it's empty
-            var valueIndex = this.buckets[bucketIndex] - 1;
+            var kvIndex = this.buckets[bucketIndex] - 1;
 
-            if (valueIndex == -1)
+            if (kvIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                this.keys[this.freeValueCellIndex] = new Node(key, hash);
+                this.keys[this.freeKVIndex] = new Node(key, hash);
             else //collision or already exists
             {
-                var currentValueIndex = valueIndex;
+                var currentKVIndex = kvIndex;
                 do
                 {
                     //must check if the key already exists in the dictionary
-                    //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                    ref var node = ref this.keys[currentValueIndex];
-                    if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
+                    ref var node = ref this.keys[currentKVIndex];
+                    if (node.Hash == hash && this.comparer.Equals(node.Key, key))
                     {
                         //the key already exists, simply replace the value!
-                        this.values[currentValueIndex] = value;
-                        indexSet = (uint)currentValueIndex;
+                        this.values[currentKVIndex] = value;
+                        indexSet = (uint)currentKVIndex;
                         return false;
                     }
 
-                    currentValueIndex = node.Previous;
-                } while (currentValueIndex != -1); //-1 means no more values with key with the same hash
+                    currentKVIndex = node.Previous;
+                } while (currentKVIndex != -1); //-1 means no more values with key with the same hash
 
                 //oops collision!
                 this.collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                this.keys[this.freeValueCellIndex] = new Node(key, hash, valueIndex);
+                this.keys[this.freeKVIndex] = new Node(key, hash, kvIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                this.keys[valueIndex].Next = (int)this.freeValueCellIndex;
+                this.keys[kvIndex].Next = (int)this.freeKVIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -801,12 +801,12 @@ namespace System.Collections.ArrayBased
             //item with this bucketIndex will point to the last value created
             //TODO: if instead I assume that the original one is the one in the bucket
             //I wouldn't need to update the bucket here. Small optimization but important
-            this.buckets[bucketIndex] = (int)(this.freeValueCellIndex + 1);
+            this.buckets[bucketIndex] = (int)(this.freeKVIndex + 1);
 
-            this.values[this.freeValueCellIndex] = value;
-            indexSet = this.freeValueCellIndex;
+            this.values[this.freeKVIndex] = value;
+            indexSet = this.freeKVIndex;
 
-            this.freeValueCellIndex++;
+            this.freeKVIndex++;
 
             //too many collisions?
             if (this.collisions > this.buckets.Length)
@@ -818,31 +818,31 @@ namespace System.Collections.ArrayBased
 
                 //we need to get all the hash code of all the values stored so far and spread them over the new bucket
                 //length
-                for (var newValueIndex = 0; newValueIndex < this.freeValueCellIndex; newValueIndex++)
+                for (var newKVIndex = 0; newKVIndex < this.freeKVIndex; newKVIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    ref var node = ref this.keys[newValueIndex];
+                    ref var node = ref this.keys[newKVIndex];
                     bucketIndex = Reduce((uint)node.Hash, (uint)this.buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
                     //In this way we can rebuild the linkedlist.
-                    //get the current valueIndex, it's -1 if no collision happens
-                    var existingValueIndex = this.buckets[bucketIndex] - 1;
+                    //get the current kvIndex, it's -1 if no collision happens
+                    var existingKVIndex = this.buckets[bucketIndex] - 1;
                     //update the bucket index to the index of the current item that share the bucketIndex
                     //(last found is always the one in the bucket)
-                    this.buckets[bucketIndex] = newValueIndex + 1;
-                    if (existingValueIndex != -1)
+                    this.buckets[bucketIndex] = newKVIndex + 1;
+                    if (existingKVIndex != -1)
                     {
                         //oops a value was already being pointed by this cell in the new bucket list,
                         //it means there is a collision, problem
                         this.collisions++;
                         //the bucket will point to this value, so
                         //the previous index will be used as previous for the new value.
-                        node.Previous = existingValueIndex;
+                        node.Previous = existingKVIndex;
                         node.Next = -1;
                         //and update the previous next index to the new one
-                        this.keys[existingValueIndex].Next = newValueIndex;
+                        this.keys[existingKVIndex].Next = newKVIndex;
                     }
                     else
                     {
@@ -862,46 +862,45 @@ namespace System.Collections.ArrayBased
             var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
-            if (this.freeValueCellIndex == this.values.Length)
+            if (this.freeKVIndex == this.values.Length)
             {
-                var expandPrime = HashHelpers.ExpandPrime((int)this.freeValueCellIndex);
+                var expandPrime = HashHelpers.ExpandPrime((int)this.freeKVIndex);
 
                 Array.Resize(ref this.values, expandPrime);
                 Array.Resize(ref this.keys, expandPrime);
             }
 
             //buckets value -1 means it's empty
-            var valueIndex = this.buckets[bucketIndex] - 1;
+            var kvIndex = this.buckets[bucketIndex] - 1;
 
-            if (valueIndex == -1)
+            if (kvIndex == -1)
                 //create the info node at the last position and fill it with the relevant information
-                this.keys[this.freeValueCellIndex] = new Node(in key, hash);
+                this.keys[this.freeKVIndex] = new Node(in key, hash);
             else //collision or already exists
             {
-                var currentValueIndex = valueIndex;
+                var currentKVIndex = kvIndex;
                 do
                 {
                     //must check if the key already exists in the dictionary
-                    //for some reason this is faster than using Comparer<TKey>.default, should investigate
-                    ref var node = ref this.keys[currentValueIndex];
-                    if (node.Hash == hash && this.comparer.Equals(in node.Key, in key) == true)
+                    ref var node = ref this.keys[currentKVIndex];
+                    if (node.Hash == hash && this.comparer.Equals(in node.Key, in key))
                     {
                         //the key already exists, simply replace the value!
-                        this.values[currentValueIndex] = value;
-                        indexSet = (uint)currentValueIndex;
+                        this.values[currentKVIndex] = value;
+                        indexSet = (uint)currentKVIndex;
                         return false;
                     }
 
-                    currentValueIndex = node.Previous;
-                } while (currentValueIndex != -1); //-1 means no more values with key with the same hash
+                    currentKVIndex = node.Previous;
+                } while (currentKVIndex != -1); //-1 means no more values with key with the same hash
 
                 //oops collision!
                 this.collisions++;
                 //create a new node which previous index points to node currently pointed in the bucket
-                this.keys[this.freeValueCellIndex] = new Node(in key, hash, valueIndex);
+                this.keys[this.freeKVIndex] = new Node(in key, hash, kvIndex);
                 //update the next of the existing cell to point to the new one
                 //old one -> new one | old one <- next one
-                this.keys[valueIndex].Next = (int)this.freeValueCellIndex;
+                this.keys[kvIndex].Next = (int)this.freeKVIndex;
                 //Important: the new node is always the one that will be pointed by the bucket cell
                 //so I can assume that the one pointed by the bucket is always the last value added
                 //(next = -1)
@@ -910,12 +909,12 @@ namespace System.Collections.ArrayBased
             //item with this bucketIndex will point to the last value created
             //TODO: if instead I assume that the original one is the one in the bucket
             //I wouldn't need to update the bucket here. Small optimization but important
-            this.buckets[bucketIndex] = (int)(this.freeValueCellIndex + 1);
+            this.buckets[bucketIndex] = (int)(this.freeKVIndex + 1);
 
-            this.values[this.freeValueCellIndex] = value;
-            indexSet = this.freeValueCellIndex;
+            this.values[this.freeKVIndex] = value;
+            indexSet = this.freeKVIndex;
 
-            this.freeValueCellIndex++;
+            this.freeKVIndex++;
 
             //too many collisions?
             if (this.collisions > this.buckets.Length)
@@ -927,31 +926,31 @@ namespace System.Collections.ArrayBased
 
                 //we need to get all the hash code of all the values stored so far and spread them over the new bucket
                 //length
-                for (var newValueIndex = 0; newValueIndex < this.freeValueCellIndex; newValueIndex++)
+                for (var newKVIndex = 0; newKVIndex < this.freeKVIndex; newKVIndex++)
                 {
                     //get the original hash code and find the new bucketIndex due to the new length
-                    ref var node = ref this.keys[newValueIndex];
+                    ref var node = ref this.keys[newKVIndex];
                     bucketIndex = Reduce((uint)node.Hash, (uint)this.buckets.Length);
                     //bucketsIndex can be -1 or a next value. If it's -1 means no collisions. If there is collision,
                     //we create a new node which prev points to the old one. Old one next points to the new one.
                     //the bucket will now points to the new one
                     //In this way we can rebuild the linkedlist.
-                    //get the current valueIndex, it's -1 if no collision happens
-                    var existingValueIndex = this.buckets[bucketIndex] - 1;
+                    //get the current kvIndex, it's -1 if no collision happens
+                    var existingKVIndex = this.buckets[bucketIndex] - 1;
                     //update the bucket index to the index of the current item that share the bucketIndex
                     //(last found is always the one in the bucket)
-                    this.buckets[bucketIndex] = newValueIndex + 1;
-                    if (existingValueIndex != -1)
+                    this.buckets[bucketIndex] = newKVIndex + 1;
+                    if (existingKVIndex != -1)
                     {
                         //oops a value was already being pointed by this cell in the new bucket list,
                         //it means there is a collision, problem
                         this.collisions++;
                         //the bucket will point to this value, so
                         //the previous index will be used as previous for the new value.
-                        node.Previous = existingValueIndex;
+                        node.Previous = existingKVIndex;
                         node.Next = -1;
                         //and update the previous next index to the new one
-                        this.keys[existingValueIndex].Next = newValueIndex;
+                        this.keys[existingKVIndex].Next = newKVIndex;
                     }
                     else
                     {
@@ -979,7 +978,7 @@ namespace System.Collections.ArrayBased
             while (indexToValueToRemove != -1)
             {
                 ref var node = ref this.keys[indexToValueToRemove];
-                if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
+                if (node.Hash == hash && this.comparer.Equals(node.Key, key))
                 {
                     //if the key is found and the bucket points directly to the node to remove
                     if (this.buckets[bucketIndex] - 1 == indexToValueToRemove)
@@ -1012,7 +1011,7 @@ namespace System.Collections.ArrayBased
             if (indexToValueToRemove == -1)
                 return false; //not found!
 
-            this.freeValueCellIndex--; //one less value to iterate
+            this.freeKVIndex--; //one less value to iterate
 
             //Part two:
             //At this point nodes pointers and buckets are updated, but the _values array
@@ -1021,24 +1020,24 @@ namespace System.Collections.ArrayBased
 
             //if the cell to remove is the last one in the list, we can perform less operations (no swapping needed)
             //otherwise we want to move the last value cell over the value to remove
-            if (indexToValueToRemove != this.freeValueCellIndex)
+            if (indexToValueToRemove != this.freeKVIndex)
             {
                 //we can move the last value of both arrays in place of the one to delete.
                 //in order to do so, we need to be sure that the bucket pointer is updated.
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 var movingBucketIndex =
-                    Reduce((uint)this.keys[this.freeValueCellIndex].Hash, (uint)this.buckets.Length);
+                    Reduce((uint)this.keys[this.freeKVIndex].Hash, (uint)this.buckets.Length);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
-                if (this.buckets[movingBucketIndex] - 1 == this.freeValueCellIndex)
+                if (this.buckets[movingBucketIndex] - 1 == this.freeKVIndex)
                     this.buckets[movingBucketIndex] = indexToValueToRemove + 1;
 
                 //otherwise it means that there was more than one key with the same hash (collision), so
                 //we need to update the linked list and its pointers
-                var next = this.keys[this.freeValueCellIndex].Next;
-                var previous = this.keys[this.freeValueCellIndex].Previous;
+                var next = this.keys[this.freeKVIndex].Next;
+                var previous = this.keys[this.freeKVIndex].Previous;
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
@@ -1047,8 +1046,8 @@ namespace System.Collections.ArrayBased
                     this.keys[previous].Next = indexToValueToRemove;
 
                 //finally, actually move the values
-                this.keys[indexToValueToRemove] = this.keys[this.freeValueCellIndex];
-                this.values[indexToValueToRemove] = this.values[this.freeValueCellIndex];
+                this.keys[indexToValueToRemove] = this.keys[this.freeKVIndex];
+                this.values[indexToValueToRemove] = this.values[this.freeKVIndex];
             }
 
             return true;
@@ -1067,7 +1066,7 @@ namespace System.Collections.ArrayBased
             while (indexToValueToRemove != -1)
             {
                 ref var node = ref this.keys[indexToValueToRemove];
-                if (node.Hash == hash && this.comparer.Equals(in node.Key, in key) == true)
+                if (node.Hash == hash && this.comparer.Equals(in node.Key, in key))
                 {
                     //if the key is found and the bucket points directly to the node to remove
                     if (this.buckets[bucketIndex] - 1 == indexToValueToRemove)
@@ -1100,7 +1099,7 @@ namespace System.Collections.ArrayBased
             if (indexToValueToRemove == -1)
                 return false; //not found!
 
-            this.freeValueCellIndex--; //one less value to iterate
+            this.freeKVIndex--; //one less value to iterate
 
             //Part two:
             //At this point nodes pointers and buckets are updated, but the _values array
@@ -1109,24 +1108,24 @@ namespace System.Collections.ArrayBased
 
             //if the cell to remove is the last one in the list, we can perform less operations (no swapping needed)
             //otherwise we want to move the last value cell over the value to remove
-            if (indexToValueToRemove != this.freeValueCellIndex)
+            if (indexToValueToRemove != this.freeKVIndex)
             {
                 //we can move the last value of both arrays in place of the one to delete.
                 //in order to do so, we need to be sure that the bucket pointer is updated.
                 //first we find the index in the bucket list of the pointer that points to the cell
                 //to move
                 var movingBucketIndex =
-                    Reduce((uint)this.keys[this.freeValueCellIndex].Hash, (uint)this.buckets.Length);
+                    Reduce((uint)this.keys[this.freeKVIndex].Hash, (uint)this.buckets.Length);
 
                 //if the key is found and the bucket points directly to the node to remove
                 //it must now point to the cell where it's going to be moved
-                if (this.buckets[movingBucketIndex] - 1 == this.freeValueCellIndex)
+                if (this.buckets[movingBucketIndex] - 1 == this.freeKVIndex)
                     this.buckets[movingBucketIndex] = indexToValueToRemove + 1;
 
                 //otherwise it means that there was more than one key with the same hash (collision), so
                 //we need to update the linked list and its pointers
-                var next = this.keys[this.freeValueCellIndex].Next;
-                var previous = this.keys[this.freeValueCellIndex].Previous;
+                var next = this.keys[this.freeKVIndex].Next;
+                var previous = this.keys[this.freeKVIndex].Previous;
 
                 //they now point to the cell where the last value is moved into
                 if (next != -1)
@@ -1135,8 +1134,8 @@ namespace System.Collections.ArrayBased
                     this.keys[previous].Next = indexToValueToRemove;
 
                 //finally, actually move the values
-                this.keys[indexToValueToRemove] = this.keys[this.freeValueCellIndex];
-                this.values[indexToValueToRemove] = this.values[this.freeValueCellIndex];
+                this.keys[indexToValueToRemove] = this.keys[this.freeKVIndex];
+                this.values[indexToValueToRemove] = this.values[this.freeKVIndex];
             }
 
             return true;
@@ -1150,22 +1149,21 @@ namespace System.Collections.ArrayBased
             var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
-            var valueIndex = this.buckets[bucketIndex] - 1;
+            var kvIndex = this.buckets[bucketIndex] - 1;
 
             //even if we found an existing value we need to be sure it's the one we requested
-            while (valueIndex != -1)
+            while (kvIndex != -1)
             {
-                //for some reason this is way faster than using Comparer<TKey>.default, should investigate
-                ref var node = ref this.keys[valueIndex];
+                ref var node = ref this.keys[kvIndex];
 
-                if (node.Hash == hash && this.comparer.Equals(node.Key, key) == true)
+                if (node.Hash == hash && this.comparer.Equals(node.Key, key))
                 {
                     //this is the one
-                    findIndex = (uint)valueIndex;
+                    findIndex = (uint)kvIndex;
                     return true;
                 }
 
-                valueIndex = node.Previous;
+                kvIndex = node.Previous;
             }
 
             findIndex = 0;
@@ -1180,22 +1178,21 @@ namespace System.Collections.ArrayBased
             var hash = key.GetHashCode();
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
-            var valueIndex = this.buckets[bucketIndex] - 1;
+            var kvIndex = this.buckets[bucketIndex] - 1;
 
             //even if we found an existing value we need to be sure it's the one we requested
-            while (valueIndex != -1)
+            while (kvIndex != -1)
             {
-                //for some reason this is way faster than using Comparer<TKey>.default, should investigate
-                ref var node = ref this.keys[valueIndex];
+                ref var node = ref this.keys[kvIndex];
 
-                if (node.Hash == hash && this.comparer.Equals(in node.Key, in key) == true)
+                if (node.Hash == hash && this.comparer.Equals(in node.Key, in key))
                 {
                     //this is the one
-                    findIndex = (uint)valueIndex;
+                    findIndex = (uint)kvIndex;
                     return true;
                 }
 
-                valueIndex = node.Previous;
+                kvIndex = node.Previous;
             }
 
             findIndex = 0;
@@ -1212,15 +1209,15 @@ namespace System.Collections.ArrayBased
             return x;
         }
 
-        private static void UpdateLinkedList(int index, Node[] valuesInfo)
+        private static void UpdateLinkedList(int index, Node[] keys)
         {
-            var next = valuesInfo[index].Next;
-            var previous = valuesInfo[index].Previous;
+            var next = keys[index].Next;
+            var previous = keys[index].Previous;
 
             if (next != -1)
-                valuesInfo[next].Previous = previous;
+                keys[next].Previous = previous;
             if (previous != -1)
-                valuesInfo[previous].Next = next;
+                keys[previous].Next = next;
         }
 
         public struct Node
