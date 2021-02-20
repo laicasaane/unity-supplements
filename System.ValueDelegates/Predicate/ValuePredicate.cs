@@ -14,12 +14,6 @@ namespace System.ValueDelegates
             this.closure = closure;
         }
 
-        public ValuePredicate(in TClosure closure)
-        {
-            this.predicate = new TPredicate();
-            this.closure = closure;
-        }
-
         public ValuePredicate(TPredicate action, TClosure closure)
         {
             this.predicate = action;
@@ -33,12 +27,6 @@ namespace System.ValueDelegates
         }
 
         public ValuePredicate(in TPredicate action, TClosure closure)
-        {
-            this.predicate = action;
-            this.closure = closure;
-        }
-
-        public ValuePredicate(in TPredicate action, in TClosure closure)
         {
             this.predicate = action;
             this.closure = closure;

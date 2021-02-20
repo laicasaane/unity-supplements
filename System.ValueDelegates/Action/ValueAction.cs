@@ -14,12 +14,6 @@ namespace System.ValueDelegates
             this.closure = closure;
         }
 
-        public ValueAction(in TClosure closure)
-        {
-            this.action = new TAction();
-            this.closure = closure;
-        }
-
         public ValueAction(TAction action, TClosure closure)
         {
             this.action = action;
@@ -27,18 +21,6 @@ namespace System.ValueDelegates
         }
 
         public ValueAction(in TAction action, TClosure closure)
-        {
-            this.action = action;
-            this.closure = closure;
-        }
-
-        public ValueAction(TAction action, in TClosure closure)
-        {
-            this.action = action;
-            this.closure = closure;
-        }
-
-        public ValueAction(in TAction action, in TClosure closure)
         {
             this.action = action;
             this.closure = closure;

@@ -50,12 +50,12 @@ namespace System.ValueDelegates
             var action = new TAction();
             action.SetArguments(arg1, arg2, arg3, arg4, arg5);
 
-            return new ValueAction<TAction, object>(in action, in closure);
+            return new ValueAction<TAction, object>(in action, closure);
         }
 
         public static ValueActionIn<TAction, object> ValueActionIn<TAction>(this object closure)
             where TAction : struct, IActionIn<object>
-            => new ValueActionIn<TAction, object>(new TAction(), closure);
+            => new ValueActionIn<TAction, object>(new TAction(), in closure);
 
         public static ValueActionIn<TAction, object> ValueActionIn<TAction, T>(this object closure, T arg)
             where TAction : struct, IActionIn<object, T>
@@ -197,7 +197,7 @@ namespace System.ValueDelegates
             var action = new TAction();
             action.SetArguments(arg1, arg2, arg3, arg4, arg5);
 
-            return new ValueAction<TAction, TClosure>(in action, in closure);
+            return new ValueAction<TAction, TClosure>(in action, closure);
         }
 
         public static ValueActionIn<TAction, TClosure> ValueActionIn<TAction, TClosure>(this TClosure closure)

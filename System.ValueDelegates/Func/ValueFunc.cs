@@ -14,12 +14,6 @@ namespace System.ValueDelegates
             this.closure = closure;
         }
 
-        public ValueFunc(in TClosure closure)
-        {
-            this.func = new TFunc();
-            this.closure = closure;
-        }
-
         public ValueFunc(TFunc action, TClosure closure)
         {
             this.func = action;
@@ -33,12 +27,6 @@ namespace System.ValueDelegates
         }
 
         public ValueFunc(TFunc action, in TClosure closure)
-        {
-            this.func = action;
-            this.closure = closure;
-        }
-
-        public ValueFunc(in TFunc action, in TClosure closure)
         {
             this.func = action;
             this.closure = closure;
