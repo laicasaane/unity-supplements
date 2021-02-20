@@ -83,41 +83,6 @@ namespace System.ValueDelegates
             action.Invoke(in closure);
         }
 
-        public static void Invoke<TAction, TClosure, T>(in TAction action, in TClosure closure, T arg)
-            where TAction : struct, IActionIn<TClosure, T>
-        {
-            action.SetArguments(arg);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2>(in TAction action, in TClosure closure, T1 arg1, T2 arg2)
-            where TAction : struct, IActionIn<TClosure, T1, T2>
-        {
-            action.SetArguments(arg1, arg2);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2, T3>(in TAction action, in TClosure closure, T1 arg1, T2 arg2, T3 arg3)
-            where TAction : struct, IActionIn<TClosure, T1, T2, T3>
-        {
-            action.SetArguments(arg1, arg2, arg3);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2, T3, T4>(in TAction action, in TClosure closure, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
-            where TAction : struct, IActionIn<TClosure, T1, T2, T3, T4>
-        {
-            action.SetArguments(arg1, arg2, arg3, arg4);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2, T3, T4, T5>(in TAction action, in TClosure closure, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
-            where TAction : struct, IActionIn<TClosure, T1, T2, T3, T4, T5>
-        {
-            action.SetArguments(arg1, arg2, arg3, arg4, arg5);
-            action.Invoke(in closure);
-        }
-
         public static void Invoke<TAction, TClosure, T>(this TAction action, in TClosure closure, in T arg)
             where TAction : struct, IActionInArgIn<TClosure, T>
         {
@@ -147,41 +112,6 @@ namespace System.ValueDelegates
         }
 
         public static void Invoke<TAction, TClosure, T1, T2, T3, T4, T5>(this TAction action, in TClosure closure, in T1 arg1, in T2 arg2, in T3 arg3, in T4 arg4, in T5 arg5)
-            where TAction : struct, IActionInArgIn<TClosure, T1, T2, T3, T4, T5>
-        {
-            action.SetArguments(in arg1, in arg2, in arg3, in arg4, in arg5);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T>(in TAction action, in TClosure closure, in T arg)
-            where TAction : struct, IActionInArgIn<TClosure, T>
-        {
-            action.SetArguments(in arg);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2>(in TAction action, in TClosure closure, in T1 arg1, in T2 arg2)
-            where TAction : struct, IActionInArgIn<TClosure, T1, T2>
-        {
-            action.SetArguments(in arg1, in arg2);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2, T3>(in TAction action, in TClosure closure, in T1 arg1, in T2 arg2, in T3 arg3)
-            where TAction : struct, IActionInArgIn<TClosure, T1, T2, T3>
-        {
-            action.SetArguments(in arg1, in arg2, in arg3);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2, T3, T4>(in TAction action, in TClosure closure, in T1 arg1, in T2 arg2, in T3 arg3, in T4 arg4)
-            where TAction : struct, IActionInArgIn<TClosure, T1, T2, T3, T4>
-        {
-            action.SetArguments(arg1, arg2, arg3, arg4);
-            action.Invoke(in closure);
-        }
-
-        public static void Invoke<TAction, TClosure, T1, T2, T3, T4, T5>(in TAction action, in TClosure closure, in T1 arg1, in T2 arg2, in T3 arg3, in T4 arg4, in T5 arg5)
             where TAction : struct, IActionInArgIn<TClosure, T1, T2, T3, T4, T5>
         {
             action.SetArguments(in arg1, in arg2, in arg3, in arg4, in arg5);
