@@ -223,11 +223,15 @@
 ## System.Grid
 
 - [GridIndex](./System.Grid/GridIndex.cs)
-- [SGridIndex](./System.Grid/SGridIndex.cs)
 - [GridIndexRange](./System.Grid/GridIndexRange.cs)
 - [GridIndexRange.Enumerator](./System.Grid/GridIndexRange.Enumerator.cs)
 - [GridRange](./System.Grid/GridRange.cs)
 - [GridRange.Enumerator](./System.Grid/GridRange.Enumerator.cs)
+- [SGridIndex](./System.Grid/SGridIndex.cs)
+- [SGridIndexRange](./System.Grid/SGridIndexRange.cs)
+- [SGridIndexRange.Enumerator](./System.Grid/SGridIndexRange.Enumerator.cs)
+- [SGridRange](./System.Grid/SGridRange.cs)
+- [SGridRange.Enumerator](./System.Grid/SGridRange.Enumerator.cs)
 - [GridSize](./System.Grid/GridSize.cs)
 - [ClampedGridSize](./System.Grid/ClampedGridSize.cs)
 - [GridPartitioner](./System.Grid/GridPartitioner.cs)
