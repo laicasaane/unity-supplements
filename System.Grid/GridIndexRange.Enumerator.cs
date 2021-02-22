@@ -29,7 +29,7 @@ namespace System.Grid
         public struct Enumerator : IEnumerator<GridIndex>
         {
             private readonly GridIndex start, end;
-            private readonly int startValue, endValue, colCount;
+            private readonly int startValue, endValue;
             private readonly sbyte rowSign, colSign, compare;
             private readonly bool byRow;
 
@@ -43,8 +43,9 @@ namespace System.Grid
             public Enumerator(in GridIndex start, in GridIndex end, bool fromEnd, GridDirection direction)
             {
                 this.byRow = direction == GridDirection.Row;
-                this.colCount = Math.Max(start.Column, end.Column) + 1;
                 this.colSign = default;
+
+                var colCount = Math.Max(start.Column, end.Column) + 1;
 
                 if (fromEnd)
                 {
@@ -57,8 +58,8 @@ namespace System.Grid
                     this.end = end;
                 }
 
-                var startIndex = start.ToIndex1(this.colCount);
-                var endIndex = end.ToIndex1(this.colCount);
+                var startIndex = start.ToIndex1(colCount);
+                var endIndex = end.ToIndex1(colCount);
                 var increasing = startIndex <= endIndex;
 
                 if (increasing)
@@ -181,7 +182,7 @@ namespace System.Grid
             {
                 this.byRow = direction == GridDirection.Row;
                 this.current = this.start = this.end = default;
-                this.startValue = this.endValue = this.colCount = default;
+                this.startValue = this.endValue = default;
                 this.rowSign = this.colSign = this.compare = this.flag = default;
             }
 
