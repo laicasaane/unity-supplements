@@ -264,7 +264,7 @@ namespace System.Grid
             public readonly struct ColumnFirst : IRangeEnumerator<GridIndex>
             {
                 public IEnumerator<GridIndex> Enumerate(GridIndex start, GridIndex end, bool fromEnd)
-                    => new Enumerator(start, end, fromEnd, GridDirection.Row);
+                    => new Enumerator(start, end, fromEnd, GridDirection.Column);
             }
 
             public readonly struct RowFirst : IRangeEnumerator<GridIndex>
