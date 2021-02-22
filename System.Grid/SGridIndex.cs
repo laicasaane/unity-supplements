@@ -51,6 +51,12 @@ namespace System.Grid
                 Column ?? this.Column
             );
 
+        public int ToIndex1(int columnCount)
+            => columnCount <= 0 ? 0 : this.Column + this.Row * columnCount;
+
+        public int ToIndex1(in GridIndex size)
+            => size.Column <= 0 ? 0 : this.Column + this.Row * size.Column;
+
         public override bool Equals(object obj)
             => obj is SGridIndex other && this.Row == other.Row && this.Column == other.Column;
 
