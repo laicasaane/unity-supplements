@@ -57,7 +57,7 @@ namespace System.Grid
 
         private GridRange(SerializationInfo info, StreamingContext context)
         {
-            this.Size = info.GetValueOrDefault<GridIndex>(nameof(this.Size));
+            this.Size = info.GetValueOrDefault<GridSize>(nameof(this.Size));
             this.Clamped = info.GetBooleanOrDefault(nameof(this.Clamped));
             this.Start = info.GetValueOrDefault<GridIndex>(nameof(this.Start));
             this.End = info.GetValueOrDefault<GridIndex>(nameof(this.End));
