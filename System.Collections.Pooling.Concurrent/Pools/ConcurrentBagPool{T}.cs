@@ -43,5 +43,8 @@ namespace System.Collections.Pooling.Concurrent
                 Return(item);
             }
         }
+
+        public static void Clear()
+            => _pool.Clear();
     }
 }

@@ -89,5 +89,8 @@ namespace System.Collections.Pooling.Concurrent
                 }
             }
         }
+
+        public static void Clear()
+            => _pool.Clear();
     }
 }

@@ -47,6 +47,9 @@ namespace System.Collections.Pooling
             }
         }
 
+        public void Clear()
+            => this.pool.Clear();
+
         public static Pool<T> Default { get; } = new Pool<T>();
     }
 }

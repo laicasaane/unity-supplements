@@ -47,5 +47,8 @@ namespace System.Collections.Pooling
                 _pool.Return(item);
             }
         }
+
+        public static void Clear()
+            => _pool.Clear();
     }
 }

@@ -77,6 +77,19 @@ namespace System.Collections.Pooling.Concurrent
             pool.Enqueue(item);
         }
 
+        public static void Clear()
+        {
+            foreach (var kv in _poolMap)
+            {
+                while (kv.Value.Count > 0)
+                {
+                    kv.Value.TryDequeue(out _);
+                }
+            }
+
+            _poolMap.Clear();
+        }
+
         private class PoolMap : ConcurrentDictionary<long, ConcurrentQueue<T[]>> { }
     }
 }

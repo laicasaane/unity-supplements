@@ -76,6 +76,16 @@ namespace System.Collections.Pooling
             pool.Enqueue(item);
         }
 
+        public static void Clear()
+        {
+            foreach (var kv in _poolMap)
+            {
+                kv.Value.Clear();
+            }
+
+            _poolMap.Clear();
+        }
+
         private class PoolMap : Dictionary<long, Queue<T[]>> { }
     }
 }

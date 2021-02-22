@@ -53,6 +53,14 @@ namespace System.Collections.Pooling.Concurrent
             }
         }
 
+        public void Clear()
+        {
+            while (this.pool.Count > 0)
+            {
+                this.pool.TryDequeue(out _);
+            }
+        }
+
         public static ConcurrentPool<T> Default { get; } = new ConcurrentPool<T>();
     }
 }
