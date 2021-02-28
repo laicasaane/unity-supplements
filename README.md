@@ -175,7 +175,6 @@
 - [ArrayDictionary\<TKey, TValue>.Collection](./System.Collections.ArrayBased/ArrayDictionary%7BTKey,TValue%7D.Collection.cs)
 - [ReadArrayList\<T>](./System.Collections.ArrayBased/ReadArrayList%7BT%7D.cs)
 - [ReadArrayDictionary\<TKey, TValue>](./System.Collections.ArrayBased/ReadArrayDictionary%7BTKey,TValue%7D.cs)
-- [RefReadArrayList\<T>](./System.Collections.ArrayBased/RefReadArrayList%7BT%7D.cs)
 - [Extensions](./System.Collections.ArrayBased/Extensions)
 
 ## System.Collections.Pooling
