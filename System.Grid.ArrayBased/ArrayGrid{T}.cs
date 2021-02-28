@@ -67,7 +67,7 @@ namespace System.Grid.ArrayBased
             get => this.data[index];
         }
 
-        private readonly ArrayDictionary<GridIndex, T> data;
+        internal readonly ArrayDictionary<GridIndex, T> data;
         private bool initialized;
 
         public ArrayGrid()
@@ -1496,5 +1496,7 @@ namespace System.Grid.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryGetAt(uint index, out GridIndex key, out T value)
             => this.data.TryGetAt(index, out key, out value);
+
+        internal static readonly ArrayGrid<T> Empty = new ArrayGrid<T>();
     }
 }
