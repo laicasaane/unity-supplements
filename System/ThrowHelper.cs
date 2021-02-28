@@ -103,6 +103,11 @@ namespace System
             return GetArgumentOutOfRangeException(ExceptionArgument.count, ExceptionResource.ArgumentOutOfRange_Index);
         }
 
+        public static Exception GetArgumentOutOfRange_KeyException()
+        {
+            return GetArgumentOutOfRangeException(ExceptionArgument.key, ExceptionResource.ArgumentOutOfRange_Index);
+        }
+
         public static Exception GetInvalidOperationException_InvalidOperation_EnumNotStarted()
         {
             return new InvalidOperationException("Enumeration has not started. Call MoveNext.");
@@ -128,6 +133,9 @@ namespace System
                 case ExceptionArgument.count:
                     return "count";
 
+                case ExceptionArgument.key:
+                    return "key";
+
                 default:
                     Debug.Fail("The enum value is not defined, please check the ExceptionArgument Enum.");
                     return "";
@@ -151,7 +159,8 @@ namespace System
     internal enum ExceptionArgument
     {
         index,
-        count
+        count,
+        key
     }
 
     internal enum ExceptionResource
