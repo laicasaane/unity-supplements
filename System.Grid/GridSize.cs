@@ -9,6 +9,8 @@ namespace System.Grid
 
         public int Column => this.value.Column;
 
+        public int Count => this.value.Row * this.value.Column;
+
         public int this[int index]
         {
             get
