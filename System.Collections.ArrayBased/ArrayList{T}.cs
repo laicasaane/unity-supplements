@@ -30,6 +30,12 @@ namespace System.Collections.ArrayBased
             get => (uint)this.buffer.Length;
         }
 
+        public T[] UnsafeBuffer
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.buffer;
+        }
+
         public ArrayList()
             : this(EqualityComparerIn<T>.Default)
         {
@@ -127,11 +133,11 @@ namespace System.Collections.ArrayBased
         }
 
         public ArrayList(in ReadArrayList<T> source, IEqualityComparerIn<T> comparer = null)
-            : this(source.GetSource(), comparer)
+            : this(source, 0, comparer)
         { }
 
         public ArrayList(in ReadArrayList<T> source, int extraCapacity, IEqualityComparerIn<T> comparer = null)
-            : this(source.GetSource(), (uint)extraCapacity, comparer)
+            : this(source, (uint)extraCapacity, comparer)
         { }
 
         public ArrayList(in ReadArrayList<T> source, uint extraCapacity, IEqualityComparerIn<T> comparer = null)
@@ -196,7 +202,7 @@ namespace System.Collections.ArrayBased
             => AddRange(items.buffer, items.count);
 
         public void AddRange(in ReadArrayList<T> items)
-            => AddRange(items.GetSource().buffer, items.Count);
+            => AddRange(items.GetSource());
 
         public void AddRange(params T[] items)
             => AddRange(items, (uint)items.Length);
@@ -204,7 +210,11 @@ namespace System.Collections.ArrayBased
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AddRange(T[] items, uint count)
         {
-            if (count == 0) return;
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            if (count == 0)
+                return;
 
             if (this.count + count > this.buffer.Length)
                 AllocateMore(this.count + count);
@@ -552,7 +562,12 @@ namespace System.Collections.ArrayBased
         }
 
         public ref readonly T Peek()
-            => ref this.buffer[this.count - 1];
+        {
+            if (this.count == 0)
+                throw ThrowHelper.GetArgumentOutOfRange_CountException();
+
+            return ref this.buffer[this.count - 1];
+        }
 
         public void CopyTo(T[] array, int arrayIndex)
             => Array.Copy(this.buffer, 0, array, arrayIndex, this.count);
