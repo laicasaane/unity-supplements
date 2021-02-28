@@ -75,6 +75,11 @@ namespace System.Grid.ArrayBased
             this.data = new ArrayDictionary<GridIndex, T>();
         }
 
+        public ArrayGrid(int capacity)
+        {
+            this.data = new ArrayDictionary<GridIndex, T>(capacity);
+        }
+
         /// <param name="inValue">Should set to true when <see cref="T"/> is struct to avoid copying its value around.</param>
         public ArrayGrid(in GridSize size, ArrayDictionary<GridIndex, T> data, bool inValue = false)
             : this()
@@ -164,6 +169,9 @@ namespace System.Grid.ArrayBased
             }
         }
 
+        public void SetCapacity(int capacity)
+            => this.data.SetCapacity(capacity);
+
         public void Initialize(in ReadArrayGrid<T> source)
             => Initialize(source.GetSource());
 
@@ -178,6 +186,7 @@ namespace System.Grid.ArrayBased
 
             this.Size = source.Size;
             var data = source.data;
+            this.data.SetCapacity((int)data.Capacity);
 
             for (var i = 0u; i < data.Count; i++)
             {
@@ -207,6 +216,7 @@ namespace System.Grid.ArrayBased
 
             this.Size = source.Size;
             var data = source.data;
+            this.data.SetCapacity((int)data.Capacity);
 
             for (var i = 0u; i < data.Count; i++)
             {
@@ -229,6 +239,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity((int)data.Capacity);
 
             for (var i = 0u; i < data.Count; i++)
             {
@@ -258,6 +269,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity((int)data.Capacity);
 
             for (var i = 0u; i < data.Count; i++)
             {
@@ -277,6 +289,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity(this.Size.Count);
 
             foreach (var kv in data)
             {
@@ -296,6 +309,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity(this.Size.Count);
 
             foreach (var kv in data)
             {
@@ -318,6 +332,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity(this.Size.Count);
 
             foreach (var kv in data)
             {
@@ -337,6 +352,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity(this.Size.Count);
 
             while (data.MoveNext())
             {
@@ -358,6 +374,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity(this.Size.Count);
 
             while (data.MoveNext())
             {
@@ -382,6 +399,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = size;
+            this.data.SetCapacity(this.Size.Count);
 
             while (data.MoveNext())
             {
@@ -403,6 +421,7 @@ namespace System.Grid.ArrayBased
                 ShallowClear();
 
             this.Size = source.Size;
+            this.data.SetCapacity(this.Size.Count);
 
             foreach (var kv in source.GetIndexedValues())
             {

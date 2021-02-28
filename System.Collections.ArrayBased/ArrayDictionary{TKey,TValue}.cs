@@ -128,9 +128,19 @@ namespace System.Collections.ArrayBased
         public ArrayDictionary(uint capacity, IEqualityComparerIn<TKey> comparer)
         {
             this.comparer = comparer ?? EqualityComparerIn<TKey>.Default;
-            this.keys = new Node[capacity];
-            this.values = new TValue[capacity];
-            this.buckets = new int[HashHelpers.GetPrime((int)capacity)];
+
+            if (capacity > 0)
+            {
+                this.keys = new Node[capacity];
+                this.values = new TValue[capacity];
+                this.buckets = new int[HashHelpers.GetPrime((int)capacity)];
+            }
+            else
+            {
+                this.keys = new Node[1];
+                this.values = new TValue[1];
+                this.buckets = new int[3];
+            }
         }
 
         public ArrayDictionary(ArrayDictionary<TKey, TValue> source, IEqualityComparerIn<TKey> comparer = null)
