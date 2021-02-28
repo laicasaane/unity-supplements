@@ -34,7 +34,7 @@ namespace System.Grid
             }
         }
 
-        private readonly Dictionary<GridIndex, T> data;
+        internal readonly Dictionary<GridIndex, T> data;
 
         public Grid()
         {
@@ -127,7 +127,6 @@ namespace System.Grid
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
 
-
             Clear();
             this.Size = size;
 
@@ -160,7 +159,6 @@ namespace System.Grid
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
-
 
             Clear();
 
@@ -719,5 +717,7 @@ namespace System.Grid
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IGridIndexedValues<T> IReadOnlyGrid<T>.GetIndexedValues(IEnumerator<GridIndex> indices)
             => GetIndexedValues(indices);
+
+        internal static readonly Grid<T> Empty = new Grid<T>();
     }
 }
