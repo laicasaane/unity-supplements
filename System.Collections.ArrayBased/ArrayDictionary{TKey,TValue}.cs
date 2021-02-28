@@ -63,6 +63,12 @@ namespace System.Collections.ArrayBased
             get => this.freeKVIndex;
         }
 
+        public uint Capacity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => (uint)this.keys.Length;
+        }
+
         public Node[] UnsafeKeys
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -73,6 +79,12 @@ namespace System.Collections.ArrayBased
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this.values;
+        }
+
+        internal int[] UnsafeBuckets
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => this.buckets;
         }
 
         public ReadArray1<Node> Keys
@@ -531,7 +543,7 @@ namespace System.Collections.ArrayBased
 
         private bool AddValue(TKey key, TValue value, out uint indexSet)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             if (this.freeKVIndex == this.values.Length)
@@ -642,7 +654,7 @@ namespace System.Collections.ArrayBased
 
         private bool AddValue(in TKey key, TValue value, out uint indexSet)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(in key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             if (this.freeKVIndex == this.values.Length)
@@ -750,7 +762,7 @@ namespace System.Collections.ArrayBased
 
         private bool AddValue(TKey key, in TValue value, out uint indexSet)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             if (this.freeKVIndex == this.values.Length)
@@ -858,7 +870,7 @@ namespace System.Collections.ArrayBased
 
         private bool AddValue(in TKey key, in TValue value, out uint indexSet)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(in key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             if (this.freeKVIndex == this.values.Length)
@@ -966,7 +978,7 @@ namespace System.Collections.ArrayBased
 
         public bool Remove(TKey key)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             //find the bucket
@@ -1054,7 +1066,7 @@ namespace System.Collections.ArrayBased
 
         public bool Remove(in TKey key)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(in key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             //find the bucket
@@ -1145,7 +1157,7 @@ namespace System.Collections.ArrayBased
         //I avoid to initialize the array to -1
         public bool TryGetIndex(TKey key, out uint findIndex)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             var kvIndex = this.buckets[bucketIndex] - 1;
@@ -1174,7 +1186,7 @@ namespace System.Collections.ArrayBased
         //I avoid to initialize the array to -1
         public bool TryGetIndex(in TKey key, out uint findIndex)
         {
-            var hash = key.GetHashCode();
+            var hash = this.comparer.GetHashCode(in key);
             var bucketIndex = Reduce((uint)hash, (uint)this.buckets.Length);
 
             var kvIndex = this.buckets[bucketIndex] - 1;
@@ -1198,8 +1210,6 @@ namespace System.Collections.ArrayBased
             return false;
         }
 
-        internal static readonly ArrayDictionary<TKey, TValue> Empty = new ArrayDictionary<TKey, TValue>();
-
         private static uint Reduce(uint x, uint N)
         {
             if (x >= N)
@@ -1218,6 +1228,8 @@ namespace System.Collections.ArrayBased
             if (previous != -1)
                 keys[previous].Next = next;
         }
+
+        internal static readonly ArrayDictionary<TKey, TValue> Empty = new ArrayDictionary<TKey, TValue>();
 
         public struct Node
         {
