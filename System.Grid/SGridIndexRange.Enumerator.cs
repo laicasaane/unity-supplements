@@ -177,7 +177,7 @@ namespace System.Grid
                 }
 
                 this.current = this.start;
-                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+                this.flag = -1;
             }
 
             public Enumerator(GridDirection direction)

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -202,7 +202,7 @@ namespace System
                             : (range.IsFromEnd ? 1 : -1));
 
                 this.current = this.start;
-                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+                this.flag = -1;
             }
 
             public bool MoveNext()

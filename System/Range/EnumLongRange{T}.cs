@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -168,9 +168,9 @@ namespace System
             var last = size - 1;
 
             for (var i = 0u; i < size; i++)
-                {
-                    if (i == 0u)
-                        start = values[i];
+            {
+                if (i == 0u)
+                    start = values[i];
                 else if (i == last)
                     end = values[i];
             }
@@ -245,7 +245,7 @@ namespace System
                             : (fromEnd ? 1 : -1));
 
                 this.current = this.start;
-                this.flag = (sbyte)(this.current == this.end ? 1 : -1);
+                this.flag = -1;
             }
 
             public bool MoveNext()
