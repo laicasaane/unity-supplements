@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -150,24 +150,29 @@ namespace System
             return aVal > bVal ? new EnumLongRange<T>(b, a) : new EnumLongRange<T>(a, b);
         }
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static EnumLongRange<T> FromSize(long value, bool fromEnd = false)
         {
             var values = Enum<T>.Values;
             var size = Math.Min(value, values.LongLength);
+
+            if (size <= 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
             var start = default(T);
             var end = default(T);
 
-            if (size > 0)
-            {
-                var last = size - 1;
+            var last = size - 1;
 
-                for (var i = 0u; i < size; i++)
+            for (var i = 0u; i < size; i++)
                 {
                     if (i == 0u)
                         start = values[i];
-                    else if (i == last)
-                        end = values[i];
-                }
+                else if (i == last)
+                    end = values[i];
             }
 
             return new EnumLongRange<T>(start, end, fromEnd);

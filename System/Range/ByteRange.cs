@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -129,8 +129,17 @@ namespace System
         public static ByteRange Normal(byte a, byte b)
             => a > b ? new ByteRange(b, a) : new ByteRange(a, b);
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static ByteRange FromSize(byte value, bool fromEnd = false)
-            => new ByteRange(0, (byte)(value > 0 ? value - 1 : value), fromEnd);
+        {
+            if (value == 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
+            return new ByteRange(0, (byte)(value > 0 ? value - 1 : value), fromEnd);
+        }
 
         public static ByteRange FromStart(byte start, byte end)
             => new ByteRange(start, end, false);

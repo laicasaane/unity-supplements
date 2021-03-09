@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -129,8 +129,17 @@ namespace System
         public static ULongRange Normal(ulong a, ulong b)
             => a > b ? new ULongRange(b, a) : new ULongRange(a, b);
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static ULongRange FromSize(ulong value, bool fromEnd = false)
-            => new ULongRange(0, value > 0 ? value - 1 : value, fromEnd);
+        {
+            if (value == 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
+            return new ULongRange(0, value > 0 ? value - 1 : value, fromEnd);
+        }
 
         public static ULongRange FromStart(ulong start, ulong end)
             => new ULongRange(start, end, false);

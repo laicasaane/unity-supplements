@@ -167,8 +167,17 @@ namespace System.Grid
             return new GridIndexRange(start, end, fromEnd, direction);
         }
 
+        /// <summary>
+        /// Create a range from a size whose row and column are greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Row and column must be greater than 0</exception>
         public static GridIndexRange FromSize(in GridIndex value, bool fromEnd = false)
-            => new GridIndexRange(GridIndex.Zero, value - GridIndex.One, fromEnd);
+        {
+            if (value.Row <= 0 || value.Column <= 0)
+                throw new InvalidOperationException("Row and column must be greater than 0");
+
+            return new GridIndexRange(GridIndex.Zero, value - GridIndex.One, fromEnd);
+        }
 
         public static GridIndexRange FromStart(in GridIndex start, in GridIndex end)
             => new GridIndexRange(start, end, false);

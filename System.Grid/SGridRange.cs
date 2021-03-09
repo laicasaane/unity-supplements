@@ -321,8 +321,17 @@ namespace System.Grid
         public static SGridRange FromEnd(in GridSize size, in SGridIndex start, in SGridIndex end)
             => new SGridRange(size, start, end, true);
 
+        /// <summary>
+        /// Create a range from a size whose row and column are greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Row and column must be greater than 0</exception>
         public static SGridRange FromSize(in GridIndex value, bool clamped, bool fromEnd = false)
-            => new SGridRange(value, clamped, SGridIndex.Zero, value - SGridIndex.One, fromEnd);
+        {
+            if (value.Row <= 0 || value.Column <= 0)
+                throw new InvalidOperationException("Row and column must be greater than 0");
+
+            return new SGridRange(value, clamped, SGridIndex.Zero, value - SGridIndex.One, fromEnd);
+        }
 
         public static SGridRange FromStart(in GridSize size, bool clamped, in SGridIndex start, in SGridIndex end)
             => new SGridRange(size, clamped, start, end, false);

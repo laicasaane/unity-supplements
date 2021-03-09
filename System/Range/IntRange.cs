@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -129,8 +129,17 @@ namespace System
         public static IntRange Normal(int a, int b)
             => a > b ? new IntRange(b, a) : new IntRange(a, b);
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static IntRange FromSize(int value, bool fromEnd = false)
-            => new IntRange(0, Math.Max(value - 1, 0), fromEnd);
+        {
+            if (value <= 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
+            return new IntRange(0, Math.Max(value - 1, 0), fromEnd);
+        }
 
         public static IntRange FromStart(int start, int end)
             => new IntRange(start, end, false);

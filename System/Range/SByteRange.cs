@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -129,8 +129,17 @@ namespace System
         public static SByteRange Normal(sbyte a, sbyte b)
             => a > b ? new SByteRange(b, a) : new SByteRange(a, b);
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static SByteRange FromSize(sbyte value, bool fromEnd = false)
-            => new SByteRange(0, (sbyte)Math.Max(value - 1, 0), fromEnd);
+        {
+            if (value <= 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
+            return new SByteRange(0, (sbyte)Math.Max(value - 1, 0), fromEnd);
+        }
 
         public static SByteRange FromStart(sbyte start, sbyte end)
             => new SByteRange(start, end, false);

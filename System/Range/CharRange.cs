@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -129,8 +129,17 @@ namespace System
         public static CharRange Normal(char a, char b)
             => a > b ? new CharRange(b, a) : new CharRange(a, b);
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static CharRange FromSize(char value, bool fromEnd = false)
-            => new CharRange((char)0, (char)(value > 0 ? value - 1 : value), fromEnd);
+        {
+            if (value == 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
+            return new CharRange((char)0, (char)(value > 0 ? value - 1 : value), fromEnd);
+        }
 
         public static CharRange FromStart(char start, char end)
             => new CharRange(start, end, false);

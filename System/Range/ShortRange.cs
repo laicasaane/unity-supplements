@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -129,8 +129,17 @@ namespace System
         public static ShortRange Normal(short a, short b)
             => a > b ? new ShortRange(b, a) : new ShortRange(a, b);
 
+        /// <summary>
+        /// Create a range from a size which is greater than 0
+        /// </summary>
+        /// <exception cref="InvalidOperationException">Size must be greater than 0</exception>
         public static ShortRange FromSize(short value, bool fromEnd = false)
-            => new ShortRange(0, (short)Math.Max(value - 1, 0), fromEnd);
+        {
+            if (value <= 0)
+                throw new InvalidOperationException("Size must be greater than 0");
+
+            return new ShortRange(0, (short)Math.Max(value - 1, 0), fromEnd);
+        }
 
         public static ShortRange FromStart(short start, short end)
             => new ShortRange(start, end, false);
