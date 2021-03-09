@@ -98,12 +98,12 @@ namespace UnityEngine
         /// <summary>
         /// Shorthand for writing SGridVector(1, 0)
         /// </summary>
-        public static SGridVector Up { get; } = new SGridVector(1, 0);
+        public static SGridVector Up { get; } = new SGridVector(-1, 0);
 
         /// <summary>
         /// Shorthand for writing SGridVector(-1, 0)
         /// </summary>
-        public static SGridVector Down { get; } = new SGridVector(-1, 0);
+        public static SGridVector Down { get; } = new SGridVector(1, 0);
 
         public static implicit operator SGridVector(in (int row, int column) value)
             => new SGridVector(value.row, value.column);

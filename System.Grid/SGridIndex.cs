@@ -100,12 +100,12 @@ namespace System.Grid
         /// <summary>
         /// Shorthand for writing SGridIndex(1, 0)
         /// </summary>
-        public static SGridIndex Up { get; } = new SGridIndex(1, 0);
+        public static SGridIndex Up { get; } = new SGridIndex(-1, 0);
 
         /// <summary>
         /// Shorthand for writing SGridIndex(-1, 0)
         /// </summary>
-        public static SGridIndex Down { get; } = new SGridIndex(-1, 0);
+        public static SGridIndex Down { get; } = new SGridIndex(1, 0);
 
         public static implicit operator SGridIndex(in (int row, int column) value)
             => new SGridIndex(value.row, value.column);
