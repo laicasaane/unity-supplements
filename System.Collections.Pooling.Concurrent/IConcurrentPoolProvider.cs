@@ -40,6 +40,14 @@ namespace System.Collections.Pooling.Concurrent
 
         void Return<T>(IEnumerable<HashSet<T>> items);
 
+        ArrayHashSet<T> ArrayHashSet<T>();
+
+        void Return<T>(ArrayHashSet<T> item);
+
+        void Return<T>(params ArrayHashSet<T>[] items);
+
+        void Return<T>(IEnumerable<ArrayHashSet<T>> items);
+
         Queue<T> Queue<T>();
 
         void Return<T>(Queue<T> item);

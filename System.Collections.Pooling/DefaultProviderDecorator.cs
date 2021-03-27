@@ -30,6 +30,9 @@ namespace System.Collections.Pooling
         public ArrayList<T> ArrayList<T>()
             => this.Provider.ArrayList<T>();
 
+        public ArrayHashSet<T> ArrayHashSet<T>()
+            => this.Provider.ArrayHashSet<T>();
+
         public Dictionary<TKey, TValue> Dictionary<TKey, TValue>()
             => this.Provider.Dictionary<TKey, TValue>();
 
@@ -92,6 +95,24 @@ namespace System.Collections.Pooling
 
         public void Return<T>(IEnumerable<HashSet<T>> items)
             => this.Provider.Return(items);
+
+        public void Return<T>(ArrayHashSet<T> item)
+            => this.Provider.Return(item);
+
+        public void Return<T>(params ArrayHashSet<T>[] items)
+            => this.Provider.Return(items);
+
+        public void Return<T>(IEnumerable<ArrayHashSet<T>> items)
+            => this.Provider.Return(items);
+
+        public void Return<T>(bool shallowClear, ArrayHashSet<T> item)
+            => ArrayHashSetPool<T>.Return(shallowClear, item);
+
+        public void Return<T>(bool shallowClear, params ArrayHashSet<T>[] items)
+            => ArrayHashSetPool<T>.Return(shallowClear, items);
+
+        public void Return<T>(bool shallowClear, IEnumerable<ArrayHashSet<T>> items)
+            => ArrayHashSetPool<T>.Return(shallowClear, items);
 
         public void Return<T>(Queue<T> item)
             => this.Provider.Return(item);

@@ -59,6 +59,18 @@ namespace System.Collections.Pooling.Concurrent
             public void Return<T>(IEnumerable<HashSet<T>> items)
                 => HashSetConcurrentPool<T>.Return(items);
 
+            public ArrayHashSet<T> ArrayHashSet<T>()
+                => ArrayHashSetConcurrentPool<T>.Get();
+
+            public void Return<T>(ArrayHashSet<T> item)
+                => ArrayHashSetConcurrentPool<T>.Return(item);
+
+            public void Return<T>(params ArrayHashSet<T>[] items)
+                => ArrayHashSetConcurrentPool<T>.Return(items);
+
+            public void Return<T>(IEnumerable<ArrayHashSet<T>> items)
+                => ArrayHashSetConcurrentPool<T>.Return(items);
+
             public Queue<T> Queue<T>()
                 => QueueConcurrentPool<T>.Get();
 

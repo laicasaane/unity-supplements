@@ -31,6 +31,9 @@ namespace System.Collections.Pooling.Concurrent
         public ArrayList<T> ArrayList<T>()
             => this.Provider.ArrayList<T>();
 
+        public ArrayHashSet<T> ArrayHashSet<T>()
+            => this.Provider.ArrayHashSet<T>();
+
         public ConcurrentBag<T> ConcurrentBag<T>()
             => this.Provider.ConcurrentBag<T>();
 
@@ -105,6 +108,24 @@ namespace System.Collections.Pooling.Concurrent
 
         public void Return<T>(IEnumerable<HashSet<T>> items)
             => this.Provider.Return(items);
+
+        public void Return<T>(ArrayHashSet<T> item)
+            => this.Provider.Return(item);
+
+        public void Return<T>(params ArrayHashSet<T>[] items)
+            => this.Provider.Return(items);
+
+        public void Return<T>(IEnumerable<ArrayHashSet<T>> items)
+            => this.Provider.Return(items);
+
+        public void Return<T>(bool shallowClear, ArrayHashSet<T> item)
+            => ArrayHashSetConcurrentPool<T>.Return(shallowClear, item);
+
+        public void Return<T>(bool shallowClear, params ArrayHashSet<T>[] items)
+            => ArrayHashSetConcurrentPool<T>.Return(shallowClear, items);
+
+        public void Return<T>(bool shallowClear, IEnumerable<ArrayHashSet<T>> items)
+            => ArrayHashSetConcurrentPool<T>.Return(shallowClear, items);
 
         public void Return<T>(Queue<T> item)
             => this.Provider.Return(item);

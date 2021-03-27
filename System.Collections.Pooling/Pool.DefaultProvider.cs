@@ -58,6 +58,18 @@ namespace System.Collections.Pooling
             public void Return<T>(IEnumerable<HashSet<T>> items)
                 => HashSetPool<T>.Return(items);
 
+            public ArrayHashSet<T> ArrayHashSet<T>()
+                => ArrayHashSetPool<T>.Get();
+
+            public void Return<T>(ArrayHashSet<T> item)
+                => ArrayHashSetPool<T>.Return(item);
+
+            public void Return<T>(params ArrayHashSet<T>[] items)
+                => ArrayHashSetPool<T>.Return(items);
+
+            public void Return<T>(IEnumerable<ArrayHashSet<T>> items)
+                => ArrayHashSetPool<T>.Return(items);
+
             public Queue<T> Queue<T>()
                 => QueuePool<T>.Get();
 
