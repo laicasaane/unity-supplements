@@ -205,12 +205,18 @@ namespace System.Collections.Generic
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.hasSource, GetSource(), this.offset, this.count);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = 1328453276;
             hashCode = hashCode * -1521134295 + this.hasSource.GetHashCode();
             hashCode = hashCode * -1521134295 + GetSource().GetHashCode();
             hashCode = hashCode * -1521134295 + this.offset.GetHashCode();
             hashCode = hashCode * -1521134295 + this.count.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         private static Array1Source _empty { get; } = new Array1Source(new T[0]);

@@ -51,10 +51,16 @@ namespace System.Grid
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.Index, this.Value);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = 1774931160;
             hashCode = hashCode * -1521134295 + this.Index.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode(this.Value);
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override string ToString()

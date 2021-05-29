@@ -70,12 +70,18 @@ namespace UnityEngine
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.Left, this.Right, this.Top, this.Bottom);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = 551583723;
             hashCode = hashCode * -1521134295 + this.Left.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Right.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Top.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Bottom.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override bool Equals(object obj)

@@ -39,10 +39,16 @@ namespace UnityEngine
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.Width, this.Height);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = 859600377;
             hashCode = hashCode * -1521134295 + this.Width;
             hashCode = hashCode * -1521134295 + this.Height;
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override bool Equals(object obj)

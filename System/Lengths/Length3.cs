@@ -91,11 +91,17 @@ namespace System
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.A, this.B, this.C);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = 793064651;
             hashCode = hashCode * -1521134295 + this.A.GetHashCode();
             hashCode = hashCode * -1521134295 + this.B.GetHashCode();
             hashCode = hashCode * -1521134295 + this.C.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         private Length3(SerializationInfo info, StreamingContext context)

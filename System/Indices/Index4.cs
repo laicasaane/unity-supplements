@@ -82,12 +82,18 @@ namespace System
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.A, this.B, this.C, this.D);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = -1408250474;
             hashCode = hashCode * -1521134295 + this.A.GetHashCode();
             hashCode = hashCode * -1521134295 + this.B.GetHashCode();
             hashCode = hashCode * -1521134295 + this.C.GetHashCode();
             hashCode = hashCode * -1521134295 + this.D.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override bool Equals(object obj)

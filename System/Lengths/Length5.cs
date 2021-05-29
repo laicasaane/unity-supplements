@@ -130,6 +130,11 @@ namespace System
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.A, this.B, this.C, this.D, this.E);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = 2124721030;
             hashCode = hashCode * -1521134295 + this.A.GetHashCode();
             hashCode = hashCode * -1521134295 + this.B.GetHashCode();
@@ -137,6 +142,7 @@ namespace System
             hashCode = hashCode * -1521134295 + this.D.GetHashCode();
             hashCode = hashCode * -1521134295 + this.E.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         private Length5(SerializationInfo info, StreamingContext context)

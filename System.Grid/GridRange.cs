@@ -184,6 +184,11 @@ namespace System.Grid
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.Size, this.Clamped, this.Start, this.End, this.IsFromEnd, this.Direction);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = -535992267;
             hashCode = hashCode * -1521134295 + this.Size.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Clamped.GetHashCode();
@@ -192,6 +197,7 @@ namespace System.Grid
             hashCode = hashCode * -1521134295 + this.IsFromEnd.GetHashCode();
             hashCode = hashCode * -1521134295 + this.Direction.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override string ToString()

@@ -182,6 +182,11 @@ namespace System.Collections.Generic
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.Offset, this.Count, GetSource());
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             unchecked
             {
                 var hash = (int)2166136261;
@@ -191,6 +196,7 @@ namespace System.Collections.Generic
 
                 return hash;
             }
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override bool Equals(object obj)

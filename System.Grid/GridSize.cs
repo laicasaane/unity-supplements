@@ -60,7 +60,15 @@ namespace System.Grid
         }
 
         public override int GetHashCode()
-            => -1937169414 + this.value.GetHashCode();
+        {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.value);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
+            return -1937169414 + this.value.GetHashCode();
+#pragma warning restore CS0162 // Unreachable code detected
+        }
 
         public override bool Equals(object obj)
             => obj is GridSize other && this.value.Equals(in other.value);

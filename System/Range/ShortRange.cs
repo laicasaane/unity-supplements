@@ -101,11 +101,17 @@ namespace System
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.Start, this.End, this.IsFromEnd);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = -1418356749;
             hashCode = hashCode * -1521134295 + this.Start.GetHashCode();
             hashCode = hashCode * -1521134295 + this.End.GetHashCode();
             hashCode = hashCode * -1521134295 + this.IsFromEnd.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override string ToString()

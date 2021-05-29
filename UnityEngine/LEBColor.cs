@@ -134,6 +134,11 @@ namespace UnityEngine
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.L, this.E, this.B, this.A);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             unchecked
             {
                 var hashCode = -374917833;
@@ -145,6 +150,7 @@ namespace UnityEngine
 
                 return hashCode;
             }
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override bool Equals(object obj)

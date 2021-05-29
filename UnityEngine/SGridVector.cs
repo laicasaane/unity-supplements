@@ -66,10 +66,16 @@ namespace UnityEngine
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.row, this.column);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = -1663278630;
             hashCode = hashCode * -1521134295 + this.row.GetHashCode();
             hashCode = hashCode * -1521134295 + this.column.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
 
         public override string ToString()

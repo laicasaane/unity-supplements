@@ -55,11 +55,18 @@ namespace System
 
         public override int GetHashCode()
         {
+#if USE_SYSTEM_HASHCODE
+            return HashCode.Combine(this.A, this.B);
+#endif
+
+#pragma warning disable CS0162 // Unreachable code detected
             var hashCode = -1817952719;
             hashCode = hashCode * -1521134295 + this.A.GetHashCode();
             hashCode = hashCode * -1521134295 + this.B.GetHashCode();
             return hashCode;
+#pragma warning restore CS0162 // Unreachable code detected
         }
+
 
         public override bool Equals(object obj)
             => obj is Index2 other &&
