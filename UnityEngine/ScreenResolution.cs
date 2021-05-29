@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
 namespace UnityEngine
 {
     [Serializable]
-    public readonly struct ScreenResolution : IEquatableReadOnlyStruct<ScreenResolution>, ISerializable
+    public readonly partial struct ScreenResolution : IEquatableReadOnlyStruct<ScreenResolution>, ISerializable
     {
         public readonly int Width;
         public readonly int Height;
@@ -36,6 +37,28 @@ namespace UnityEngine
                 Width ?? this.Width,
                 Height ?? this.Height
             );
+
+        /// <summary>
+        /// Returns a new resolution where <see cref="Width"/> and <see cref="Height"/> are swapped
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ScreenResolution ChangeOrientation()
+            => new ScreenResolution(this.Height, this.Width);
+
+        public ScreenResolution ToLandscape()
+            => IsLandscape() ? this : ChangeOrientation();
+
+        public ScreenResolution ToPortrait()
+            => IsPortrait() ? this : ChangeOrientation();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsLandscape()
+            => this.Width > this.Height;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsPortrait()
+            => this.Height > this.Width;
 
         public override bool Equals(object obj)
             => obj is ScreenResolution other &&
