@@ -2,6 +2,11 @@
 
 ## Changelog
 
+### 2.6.0
+
+- Can define a `USE_SYSTEM_HASHCODE` symbol to change the behaviour of almost all `GetHashCode` methods
+    - Must install the [Microsoft.Bcl.HashCode](https://www.nuget.org/packages/Microsoft.Bcl.HashCode/) package before to avoid compilation errors
+
 ### 2.5.3
 
 #### Breaking changes
@@ -163,7 +168,8 @@
 - [Randomizer.ICache\<T>](./System.Collections.Generic/Randomizer/Randomizer.Cache%7BT%7D.cs)
 
 ### Misc.
-- [Values\<T>](./System.Collections.Generic/Values.cs)
+- [Values](./System.Collections.Generic/Values/Values.cs)
+- [Values\<T>](./System.Collections.Generic/Values/Values{T}.cs)
 - [EnumValues\<T>](./System.Collections.Generic/EnumValues.cs)
 - [EqualityComparerIn\<T>](./System.Collections.Generic/EqualityComparerIn%7BT%7D.cs)
 
@@ -288,6 +294,7 @@
 - [Offset](./UnityEngine/Offset.cs)
 - [OffsetInt](./UnityEngine/OffsetInt.cs)
 - [ScreenResolution](./UnityEngine/ScreenResolution.cs)
+- [ScreenResolution.Predefined](./UnityEngine/ScreenResolution.Predefined.cs)
 - [Size](./UnityEngine/Size.cs)
 - [SizeInt](./UnityEngine/SizeInt.cs)
 - [SingleLayer](./UnityEngine/SingleLayer.cs)
